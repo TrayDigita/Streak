@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Middleware;
 
-use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -33,6 +32,7 @@ class ErrorMiddlewareHandler extends AbstractMiddleware
             return $handler->handle($request);
         } catch (HttpSpecializedException $exception) {
             if (empty($exception->translated)) {
+                // try to converting data
                 $exception = $this->convertTranslationException($exception);
             }
             $response = $this
@@ -79,9 +79,11 @@ class ErrorMiddlewareHandler extends AbstractMiddleware
         }
 
         if (Validator::isCli()) {
+            // console
             $streamOutput   = StreamCreator::createStreamOutput(null, true);
             $this->getContainer(Runner::class)->renderThrowable($exception, $streamOutput);
-            return $response->withBody(new Stream($streamOutput->getStream()));
+            return $response
+                ->withBody(StreamCreator::createStreamFromResource($streamOutput->getStream()));
         }
 
         return $this
