@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-22 09:03+0700\n"
-"PO-Revision-Date: 2022-10-22 09:05+0700\n"
+"POT-Creation-Date: 2022-10-22 10:10+0700\n"
+"PO-Revision-Date: 2022-10-22 10:10+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -63,7 +63,7 @@ msgstr "Nama %s tidak boleh kosong."
 msgid "You must override the %s method in the concrete command class."
 msgstr "Anda harus mengganti metode %s di kelas perintah konkret."
 
-#: Console/Runner.php:45
+#: Console/Runner.php:46
 msgid "Enable Debug"
 msgstr "Aktifkan Debug"
 
@@ -264,6 +264,15 @@ msgstr ""
 msgid "Call to undefined Method %s."
 msgstr "Memanggil ke Metode yang tidak ditentukan %s."
 
+#: Database/Instance.php:870
+msgid "Argument must be subclass of %s, % given."
+msgstr "Argument kelas turunan dari %s, diberikan %s."
+
+#: Database/Instance.php:882 RouteAnnotations/RoutesAnnotations.php:110
+#, php-format
+msgid "Class name %s is not valid."
+msgstr "Nama kelas %s tidak sah."
+
 #: Helper/Util/ObjectFileReader.php:39
 #, php-format
 msgid "%s is not exist."
@@ -344,11 +353,6 @@ msgstr "Tidak meneukan kelas %s pada berkas %s."
 #, php-format
 msgid "Class %s is not instance of %s."
 msgstr "Kelas %s bukan merupakan instance dari %s."
-
-#: RouteAnnotations/RoutesAnnotations.php:110
-#, php-format
-msgid "Class name %s is not valid."
-msgstr "Nama kelas %s tidak sah."
 
 #: Scheduler/Abstracts/AbstractTask.php:98
 msgid "Processing task."

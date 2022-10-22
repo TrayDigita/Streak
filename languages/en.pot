@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-22 09:05+0700\n"
+"POT-Creation-Date: 2022-10-22 10:10+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -64,7 +64,7 @@ msgstr ""
 msgid "You must override the %s method in the concrete command class."
 msgstr ""
 
-#: Console/Runner.php:45
+#: Console/Runner.php:46
 msgid "Enable Debug"
 msgstr ""
 
@@ -255,6 +255,15 @@ msgstr ""
 msgid "Call to undefined Method %s."
 msgstr ""
 
+#: Database/Instance.php:870
+msgid "Argument must be subclass of %s, % given."
+msgstr ""
+
+#: Database/Instance.php:882 RouteAnnotations/RoutesAnnotations.php:110
+#, php-format
+msgid "Class name %s is not valid."
+msgstr ""
+
 #: Helper/Util/ObjectFileReader.php:39
 #, php-format
 msgid "%s is not exist."
@@ -334,11 +343,6 @@ msgstr ""
 #: RouteAnnotations/RoutesAnnotations.php:100
 #, php-format
 msgid "Class %s is not instance of %s."
-msgstr ""
-
-#: RouteAnnotations/RoutesAnnotations.php:110
-#, php-format
-msgid "Class name %s is not valid."
 msgstr ""
 
 #: Scheduler/Abstracts/AbstractTask.php:98
