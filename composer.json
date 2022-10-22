@@ -1,0 +1,75 @@
+{
+    "name": "traydigita/streak",
+    "description": "Streak!",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "arrayiterator",
+            "email": "arrayiterator@gmail.com",
+            "role": "developer"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "~8.1||~8.2",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-filter": "*",
+        "ext-openssl": "*",
+        "amphp/amp": "~2.6.2",
+        "doctrine/annotations": "~1.13",
+        "doctrine/dbal": "~3.4",
+        "doctrine/migrations": "~3.4",
+        "guzzlehttp/guzzle": "^7",
+        "gettext/languages": "~2",
+        "laminas/laminas-code": "~4.7",
+        "laminas/laminas-i18n": "~2.18",
+        "laminas/laminas-eventmanager": "~3.5",
+        "lcobucci/jwt": "~4.2.1",
+        "monolog/monolog": "~3.2",
+        "nikic/php-parser": "~4.15",
+        "psr/cache": "^1.0 || ^2.0 || ^3.0",
+        "psr/http-message": "~1.0",
+        "psr/log": "^1.0||^2.0||^3.0",
+        "psr/simple-cache": "~3",
+        "psr/http-factory": "^1.0",
+        "slim/slim": "~4",
+        "symfony/cache": "~5.4||~6",
+        "symfony/expression-language": "~5.4||~6",
+        "symfony/console": "~5.4||~6",
+        "symfony/mailer": "~5.4||~6",
+        "symfony/polyfill": "~1.26",
+        "symfony/polyfill-intl-idn": "~1.26",
+        "woohoolabs/yang": "~2.3||^3",
+        "woohoolabs/yin": "~4",
+        "wa72/htmlpagedom": "~3"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3",
+        "jetbrains/phpstorm-stubs": "dev-master"
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
+    "autoload": {
+        "psr-4": {
+            "TrayDigita\\Streak\\Source\\": "app/Source",
+            "TrayDigita\\Streak\\Controller\\": "app/Controller",
+            "TrayDigita\\Streak\\Middleware\\": "app/Middleware",
+            "TrayDigita\\Streak\\Model\\": "app/Model",
+            "TrayDigita\\Streak\\ACL\\": "app/ACL",
+            "TrayDigita\\Streak\\Scheduler\\": "app/Scheduler"
+        },
+        "psr-0": {
+            "TrayDigita\\Streak\\Source\\": "app/Source",
+            "TrayDigita\\Streak\\Controller\\": "app/Controller",
+            "TrayDigita\\Streak\\Middleware\\": "app/Middleware",
+            "TrayDigita\\Streak\\Model\\": "app/Model",
+            "TrayDigita\\Streak\\ACL\\": "app/ACL",
+            "TrayDigita\\Streak\\Scheduler\\": "app/Scheduler"
+        }
+    }
+}

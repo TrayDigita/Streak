@@ -1,0 +1,139 @@
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.DS_Store
+
+# KDE directory preferences
+.directory
+
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+*.iml
+# Directory-based project format:
+.idea/
+
+# File-based project format:
+*.ipr
+*.iws
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+
+# Temporary Directory
+.tmp/
+
+# wget hsts
+.wget-hsts
+
+#
+# =================================
+# Gitignore For Text Editor
+# =================================
+
+# cache files for sublime text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# workspace files are user-specific
+*.sublime-workspace
+
+# sftp configuration file
+sftp-config.json
+
+# Ignore Sublime .phpintel
+.phpintel
+
+# Ignore Visual Studio code
+.vscode
+
+#
+# =================================
+# Gitignore For Composer & Projects
+# =================================
+
+# ignore all lock file
+*.lock
+
+# ignore all log file
+*.log
+
+# ignore composer phar file
+composer.phar
+
+# backup file
+*.bak
+
+# php ini user
+.user.ini
+
+
+# gitignore
+/!.gitignore
+
+# Composer
+vendor/
+
+# Nodejs
+node_modules/
+
+# Storage Ignore except .gitkeep
+/storage/**/*
+/storage/*
+!/storage/.gitkeep
+
+# ACL Ignore except Acccess|Identity/.gitkeep
+/app/ACL/*/*
+/app/ACL/*/**/
+!/app/ACL/Access/.gitkeep
+!/app/ACL/Identity/.gitkeep
+
+# Controller Ignore except .gitkeep
+/app/Controller/**/*
+/app/Controller/*
+!/app/Controller/.gitkeep
+
+# Model Ignore except .gitkeep
+/app/Model/**/*
+/app/Model/*
+!/app/Model/.gitkeep
+
+# Scheduler Ignore except .gitkeep
+/app/Scheduler/**/*
+/app/Scheduler/*
+!/app/Scheduler/.gitkeep
+
+# Middleware Ignore except .gitkeep
+/app/Middleware/**/*
+/app/Middleware/*
+!/app/Middleware/.gitkeep
+!/app/Middleware/ErrorMiddlewareHandler.php
+!/app/Middleware/SafePathMiddlewareDebugHandler.php
+!/app/Middleware/SchedulerRegistrationMiddleware.php
+
+# Model Ignore except .gitkeep
+/app/Module/**/*
+/app/Module/storage/*
+!/app/Module/.gitkeep
+
+# Config File
+/Config.php
+
+# Loader
+/loader/*
+/loader/**/*
+!/loader/.gitkeep
+
+# Migration
+/migrations/*
+/migrations/**/*
+!/migrations/.gitkeep
+
+# Public
+/public/*
+/public/**/*
+!/public/index.php
