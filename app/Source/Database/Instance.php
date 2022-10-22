@@ -861,7 +861,32 @@ class Instance extends AbstractContainerization
         if (!isset($this->registeredModels[$lowerModel])) {
             return null;
         }
-        return new $lowerModel($this->getContainer());
+        try {
+            $ref = new ReflectionClass($model);
+            if (!$ref->isSubclassOf(Model::class)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        $this->translate(
+                            'Argument must be subclass of %s, % given.'
+                        ),
+                        Model::class,
+                        $model
+                    )
+                );
+            }
+            $model = $ref->getName();
+        } catch (ReflectionException) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    $this->translate(
+                        'Class name %s is not valid.'
+                    ),
+                    $model
+                )
+            );
+        }
+
+        return new $model($this->getContainer());
     }
 
     /**
