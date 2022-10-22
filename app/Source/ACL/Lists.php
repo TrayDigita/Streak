@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\ACL;
 
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
+use TrayDigita\Streak\Source\ACL\Interfaces\AccessInterface;
+use TrayDigita\Streak\Source\ACL\Interfaces\IdentityInterface;
 
 class Lists extends AbstractContainerization
 {
