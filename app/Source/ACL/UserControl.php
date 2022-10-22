@@ -3,13 +3,24 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\ACL;
 
+use TrayDigita\Streak\Source\ACL\Interfaces\IdentityInterface;
+use TrayDigita\Streak\Source\Traits\PasswordHashed;
+
 class UserControl
 {
+    use PasswordHashed;
+
     /**
      * @var array<string, IdentityInterface>
      */
     protected array $acl = [];
 
+    /**
+     * @param int $id
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     */
     public function __construct(
         protected int $id,
         protected string $username,
@@ -20,7 +31,7 @@ class UserControl
 
     public function validate(string $password) : bool
     {
-        return password_verify($password, $this->getPassword());
+        return self::verifyPassword($password, $this->getPassword());
     }
 
     /**
