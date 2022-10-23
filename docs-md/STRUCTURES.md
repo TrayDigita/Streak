@@ -8,11 +8,13 @@ Default structures.
     |      |---- ACL/ (Acl Roles Directory)
     |      |      |-- Access/
     |      |      |-- Identity/
+    |      |
     |      |---- Controller/ (Controller / Routes Directory)
     |      |---- Middleware/ (Middleware Directory)
     |      |      |-- ErrorMiddlewareHandler.php (Middleware Handle Error)
     |      |      |-- SafePathMiddlewareDebugHandler.php (Middleware Handle Debug)
     |      |      |-- SchedulerRegistrationMiddleware.php (Middleware Handle Task Scheduler)
+    |      |
     |      |---- Model/ (Model Directory)
     |      |---- Module/ (Module Directory)
     |      |---- Scheduler/ (Task Scheduler Directory)
