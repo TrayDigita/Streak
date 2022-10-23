@@ -8,6 +8,7 @@ use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Routing\RouteCollectorProxy;
+use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
 use TrayDigita\Streak\Source\Container;
@@ -32,6 +33,11 @@ class Storage extends AbstractContainerization implements Startable
      * @var array<string, array<string, array>>
      */
     protected array $duplicateRoutes = [];
+
+    /**
+     * @var array<string, array<string, string>>
+     */
+    protected array $invalidRoutes = [];
 
     /**
      * @param Container $container
@@ -93,8 +99,14 @@ class Storage extends AbstractContainerization implements Startable
                                 array_filter($methods, 'is_string')
                             )
                         );
+                        try {
+                            $parsed = $parser->parse("$groupPattern{$controller->getRoutePattern()}");
+                        } catch (Throwable $e) {
+                            $obj->invalidRoutes[$identifier][$classNameId] = $e->getMessage();
+                            $timeRecord->stop($classNameId);
+                            continue;
+                        }
 
-                        $parsed = $parser->parse("$groupPattern{$controller->getRoutePattern()}");
                         $methods = array_unique($methods);
                         if (in_array('ANY', $methods, true)
                             || in_array('ALL', $methods, true)
@@ -217,7 +229,7 @@ class Storage extends AbstractContainerization implements Startable
     }
 
     /**
-     * @return array
+     * @return array<string, array<string, array>>
      * @noinspection PhpUnused
      */
     public function getDuplicateRoutes(): array
@@ -226,9 +238,19 @@ class Storage extends AbstractContainerization implements Startable
     }
 
     /**
-     * @return Collector
+     * @return array<string, array<string, string>>
+     * @noinspection PhpUnused
      */
-    public function getControllers(): Collector
+    public function getInvalidRoutes(): array
+    {
+        return $this->invalidRoutes;
+    }
+
+    /**
+     * @return Collector
+     * @noinspection PhpUnused
+     */
+    public function getCollector(): Collector
     {
         return $this->controllers;
     }
