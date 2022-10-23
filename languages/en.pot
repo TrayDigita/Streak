@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-22 10:10+0700\n"
+"POT-Creation-Date: 2022-10-23 20:51+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -12,532 +12,645 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.1.1\n"
-"X-Poedit-Basepath: ../app/Source\n"
+"X-Poedit-Basepath: ../app\n"
 "X-Poedit-KeywordsList: translate;translatePlural\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-0: Source\n"
+"X-Poedit-SearchPath-1: Middleware/ErrorMiddlewareHandler.php\n"
+"X-Poedit-SearchPath-2: Middleware/SafePathMiddlewareDebugHandler.php\n"
+"X-Poedit-SearchPath-3: Middleware/SchedulerRegistrationMiddleware.php\n"
 
-#: Console/Abstracts/MakeClassCommand.php:35
+#: Source/Console/Abstracts/MakeClassCommand.php:34
 #, php-format
 msgid "[%s] Generate %s"
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:60
+#: Source/Console/Abstracts/MakeClassCommand.php:47
+#, php-format
+msgid "The %s command generates a blank %s class."
+msgstr ""
+
+#: Source/Console/Abstracts/MakeClassCommand.php:57
 #, php-format
 msgid "Name to use for the %s"
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:69
+#: Source/Console/Abstracts/MakeClassCommand.php:66
 #, php-format
 msgid "The namespace to use for class name %s"
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:92
+#: Source/Console/Abstracts/MakeClassCommand.php:89
 #, php-format
 msgid "Namespace `%s` is invalid."
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:113
+#: Source/Console/Abstracts/MakeClassCommand.php:110
 msgid "Please Insert Namespace (Empty To Ignore)"
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:116
+#: Source/Console/Abstracts/MakeClassCommand.php:113
 msgid "Please Insert Valid Namespace (Empty To Ignore)"
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:120
+#: Source/Console/Abstracts/MakeClassCommand.php:117
+#: Source/Module/Commands/MakeModule.php:46
 #, php-format
 msgid "Please Insert %s Name"
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:126
+#: Source/Console/Abstracts/MakeClassCommand.php:123
+#: Source/Module/Commands/MakeModule.php:52
 #, php-format
 msgid "Please Insert Valid %s Name"
 msgstr ""
 
-#: Console/Abstracts/MakeClassCommand.php:212
+#: Source/Console/Abstracts/MakeClassCommand.php:158
+#: Source/Console/Abstracts/MakeClassCommand.php:195
+#: Source/Console/Abstracts/MakeClassCommand.php:235
+#: Source/Module/Commands/MakeModule.php:72
+#: Source/Module/Commands/MakeModule.php:109
+#: Source/Module/Commands/MakeModule.php:146
+#, php-format
+msgid "Class Name %s exist or not valid for repository."
+msgstr ""
+
+#: Source/Console/Abstracts/MakeClassCommand.php:210
+#: Source/Module/Commands/MakeModule.php:124
 #, php-format
 msgid "%s name could not be empty."
 msgstr ""
 
-#: Console/Abstracts/NamespaceCommand.php:106
+#: Source/Console/Abstracts/NamespaceCommand.php:113
 #, php-format
 msgid "You must override the %s method in the concrete command class."
 msgstr ""
 
-#: Console/Runner.php:46
+#: Source/Console/Runner.php:46
 msgid "Enable Debug"
 msgstr ""
 
-#: Container.php:213
+#: Source/Container.php:213
 msgid "Parameters value contains invalid key name."
 msgstr ""
 
-#: Container.php:235
+#: Source/Container.php:235
 #, php-format
 msgid "Parameter %s is not exists."
 msgstr ""
 
-#: Container.php:449
+#: Source/Container.php:449
 #, php-format
 msgid "Cannot override frozen service \"%s\"."
 msgstr ""
 
-#: Container.php:499
+#: Source/Container.php:499
 #, php-format
 msgid "Identifier \"%s\" is not defined."
 msgstr ""
 
-#: Container.php:557
+#: Source/Container.php:557
 msgid "Argument object closure is not allowed."
 msgstr ""
 
-#: Container.php:581
+#: Source/Container.php:581
 #, php-format
 msgid "Class name %s is not exists."
 msgstr ""
 
-#: Container.php:605
+#: Source/Container.php:605
 #, php-format
 msgid "Class name %s is not instantiable."
 msgstr ""
 
-#: Container.php:687
+#: Source/Container.php:687
 #, php-format
 msgid "Class name %s contain required parameters (%s)."
 msgstr ""
 
-#: Container.php:800
+#: Source/Container.php:800
 #, php-format
 msgid "Class name %s contain required parameter type: (%s) that could not to be resolved."
 msgstr ""
 
-#: Container.php:819
+#: Source/Container.php:819
 #, php-format
 msgid "Class name %s contain required parameters."
 msgstr ""
 
-#: Container.php:878
+#: Source/Container.php:878
 #, php-format
 msgid "Call to undefined property %s."
 msgstr ""
 
-#: Controller/Collector.php:258 Middleware/Collector.php:195
-#: Module/Collector.php:174
+#: Source/Controller/Collector.php:258 Source/Middleware/Collector.php:195
+#: Source/Module/Collector.php:182
 #, php-format
 msgid "Can not add %1$s while the %1$s already initiated to processing."
 msgstr ""
 
-#: Controller/Collector.php:260
+#: Source/Controller/Collector.php:260
 msgid "controller"
 msgstr ""
 
-#: Controller/Commands/MakeController.php:42
+#: Source/Controller/Commands/MakeController.php:44
 msgid "Controller directory is not exist."
 msgstr ""
 
-#: Controller/Commands/MakeController.php:85 Database/Commands/MakeModel.php:71
+#: Source/Controller/Commands/MakeController.php:54
+#, php-format
+msgid "Max depth of class name is %d, you have %d depth."
+msgstr ""
+
+#: Source/Controller/Commands/MakeController.php:68
+#: Source/Database/Commands/MakeModel.php:50
+#: Source/Middleware/Commands/MakeMiddleware.php:56
+#, php-format
+msgid "File %s already exists."
+msgstr ""
+
+#: Source/Controller/Commands/MakeController.php:89
+#: Source/Database/Commands/MakeModel.php:70
+#: Source/Middleware/Commands/MakeMiddleware.php:76
+#: Source/Module/Commands/MakeModule.php:204
 msgid "Namespace"
 msgstr ""
 
-#: Controller/Commands/MakeController.php:86 Database/Commands/MakeModel.php:72
+#: Source/Controller/Commands/MakeController.php:90
+#: Source/Database/Commands/MakeModel.php:71
+#: Source/Middleware/Commands/MakeMiddleware.php:77
+#: Source/Module/Commands/MakeModule.php:205
 msgid "Base class name"
 msgstr ""
 
-#: Controller/Commands/MakeController.php:87 Database/Commands/MakeModel.php:73
+#: Source/Controller/Commands/MakeController.php:91
+#: Source/Database/Commands/MakeModel.php:72
+#: Source/Middleware/Commands/MakeMiddleware.php:78
+#: Source/Module/Commands/MakeModule.php:206
 msgid "Class name"
 msgstr ""
 
-#: Controller/Commands/MakeController.php:88
+#: Source/Controller/Commands/MakeController.php:92
 msgid "Controller directory"
 msgstr ""
 
-#: Controller/Commands/MakeController.php:89
+#: Source/Controller/Commands/MakeController.php:93
 msgid "Controller file"
 msgstr ""
 
-#: Controller/Commands/MakeController.php:103
-#: Database/Commands/MakeModel.php:89
+#: Source/Controller/Commands/MakeController.php:109
+#: Source/Database/Commands/MakeModel.php:89
+#: Source/Middleware/Commands/MakeMiddleware.php:95
+#: Source/Module/Commands/MakeModule.php:224
 msgid "Are you sure [Y/n]"
 msgstr ""
 
-#: Controller/Commands/MakeController.php:197
-#: Database/Commands/MakeModel.php:173
+#: Source/Controller/Commands/MakeController.php:209
+#: Source/Database/Commands/MakeModel.php:174
+#: Source/Middleware/Commands/MakeMiddleware.php:166
+#: Source/Module/Commands/MakeModule.php:321
 #, php-format
 msgid "Directory %s is not writable."
 msgstr ""
 
-#: Controller/Commands/MakeController.php:208
-#: Database/Commands/MakeModel.php:184
+#: Source/Controller/Commands/MakeController.php:220
+#: Source/Database/Commands/MakeModel.php:185
+#: Source/Middleware/Commands/MakeMiddleware.php:177
+#: Source/Module/Commands/MakeModule.php:332
 #, php-format
 msgid "File %s is exists."
 msgstr ""
 
-#: Controller/DynamicController.php:88
+#: Source/Controller/DynamicController.php:88
 #, php-format
 msgid "Route %s does not have controller."
 msgstr ""
 
-#: Controller/DynamicController.php:101
+#: Source/Controller/DynamicController.php:101
 #, php-format
 msgid "Route controller %s does not have fallback method."
 msgstr ""
 
-#: Controller/DynamicController.php:113
+#: Source/Controller/DynamicController.php:113
 #, php-format
 msgid "Route controller %s does not have fallback method %s."
 msgstr ""
 
-#: Controller/DynamicController.php:131
+#: Source/Controller/DynamicController.php:131
 #, php-format
 msgid "Route controller method does not returning %s."
 msgstr ""
 
-#: Database/Abstracts/Model.php:560
+#: Source/Database/Abstracts/Model.php:277
+#, php-format
+msgid "Table for model %s is not exist."
+msgstr ""
+
+#: Source/Database/Abstracts/Model.php:560
 #, php-format
 msgid "Argument parameters key index must be as a string, %s given."
 msgstr ""
 
-#: Database/Abstracts/Model.php:574
+#: Source/Database/Abstracts/Model.php:574
 #, php-format
 msgid "Table %s does not have primary key"
 msgstr ""
 
-#: Database/Abstracts/Model.php:738
+#: Source/Database/Abstracts/Model.php:738
 msgid "Update method does not where statement"
 msgstr ""
 
-#: Database/Abstracts/Model.php:891
+#: Source/Database/Abstracts/Model.php:891
 #, php-format
 msgid "Column (%s) must be set."
 msgstr ""
 
-#: Database/Abstracts/Model.php:1299
+#: Source/Database/Abstracts/Model.php:1299
 #, php-format
 msgid "Columns %s is not exists on index %s column %s"
 msgstr ""
 
-#: Database/Commands/MakeModel.php:38
+#: Source/Database/Commands/MakeModel.php:38
 msgid "Model directory is not exist."
 msgstr ""
 
-#: Database/Commands/MakeModel.php:74
+#: Source/Database/Commands/MakeModel.php:73
 msgid "Model directory"
 msgstr ""
 
-#: Database/Commands/MakeModel.php:75
+#: Source/Database/Commands/MakeModel.php:74
 msgid "Model file"
 msgstr ""
 
-#: Database/Instance.php:389 Database/Instance.php:433
+#: Source/Database/Instance.php:389 Source/Database/Instance.php:433
 msgid "Invalid value to be quote, quote value could not be instance of `Closure` or as a `Resource`."
 msgstr ""
 
-#: Database/Instance.php:410
+#: Source/Database/Instance.php:410
 msgid "Invalid value to be quote, quote value must be as a string."
 msgstr ""
 
-#: Database/Instance.php:527
+#: Source/Database/Instance.php:527
 #, php-format
 msgid "Invalid statement binding count with sql query : %s."
 msgstr ""
 
-#: Database/Instance.php:614 Database/Instance.php:640
-#: Database/Instance.php:721 Database/Instance.php:746
+#: Source/Database/Instance.php:614 Source/Database/Instance.php:640
+#: Source/Database/Instance.php:721 Source/Database/Instance.php:746
 msgid "Invalid parameter table name. Table name could not be empty."
 msgstr ""
 
-#: Database/Instance.php:666
+#: Source/Database/Instance.php:666
 msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 
-#: Database/Instance.php:777
+#: Source/Database/Instance.php:777
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr ""
 
-#: Database/Instance.php:870
+#: Source/Database/Instance.php:870
 msgid "Argument must be subclass of %s, % given."
 msgstr ""
 
-#: Database/Instance.php:882 RouteAnnotations/RoutesAnnotations.php:110
+#: Source/Database/Instance.php:882
+#: Source/RouteAnnotations/RoutesAnnotations.php:110
 #, php-format
 msgid "Class name %s is not valid."
 msgstr ""
 
-#: Helper/Util/ObjectFileReader.php:39
+#: Source/Helper/Util/ObjectFileReader.php:39
 #, php-format
 msgid "%s is not exist."
 msgstr ""
 
-#: Helper/Util/ObjectFileReader.php:47
+#: Source/Helper/Util/ObjectFileReader.php:47
 #, php-format
 msgid "%s is not a valid file."
 msgstr ""
 
-#: Helper/Util/ObjectFileReader.php:62
+#: Source/Helper/Util/ObjectFileReader.php:62
 #, php-format
 msgid "File %s contains empty data."
 msgstr ""
 
-#: Helper/Util/ObjectFileReader.php:94
+#: Source/Helper/Util/ObjectFileReader.php:94
 msgid "Argument is empty data or whitespace only."
 msgstr ""
 
-#: Json/ApiCreator.php:126 Traits/HttpThrowableException.php:164
-#: Views/ExceptionsView.php:26
+#: Source/Json/ApiCreator.php:126 Source/Traits/HttpThrowableException.php:164
+#: Source/Views/ExceptionsView.php:26
 msgid "500 Internal Server Error"
 msgstr ""
 
-#: Middleware/Collector.php:197
+#: Source/Middleware/Collector.php:197
 msgid "middleware"
 msgstr ""
 
-#: Module/Collector.php:176
+#: Source/Middleware/Commands/MakeMiddleware.php:42
+msgid "Middleware directory is not exist."
+msgstr ""
+
+#: Source/Middleware/Commands/MakeMiddleware.php:48
+msgid "Middleware could not contain nested class."
+msgstr ""
+
+#: Source/Middleware/Commands/MakeMiddleware.php:79
+msgid "Middleware directory"
+msgstr ""
+
+#: Source/Middleware/Commands/MakeMiddleware.php:80
+msgid "Middleware file"
+msgstr ""
+
+#: Source/Module/Abstracts/AbstractModule.php:126
+#, php-format
+msgid "Module %s initialized."
+msgstr ""
+
+#: Source/Module/Collector.php:184
 msgid "module"
 msgstr ""
 
-#: RouteAnnotations/Collector.php:42
+#: Source/Module/Commands/MakeModule.php:167
+msgid "Module directory is not exist."
+msgstr ""
+
+#: Source/Module/Commands/MakeModule.php:175
+msgid "Module could not contain nested class."
+msgstr ""
+
+#: Source/Module/Commands/MakeModule.php:182
+#, php-format
+msgid "Directory %s already exists."
+msgstr ""
+
+#: Source/Module/Commands/MakeModule.php:203
+msgid "Module name"
+msgstr ""
+
+#: Source/Module/Commands/MakeModule.php:207
+msgid "Module directory"
+msgstr ""
+
+#: Source/Module/Commands/MakeModule.php:208
+msgid "Module file"
+msgstr ""
+
+#: Source/Module/Commands/MakeModule.php:241
+#, php-format
+msgid "Module %s."
+msgstr ""
+
+#: Source/RouteAnnotations/Collector.php:42
 msgid "Controller path is not defined."
 msgstr ""
 
-#: RouteAnnotations/Collector.php:50
+#: Source/RouteAnnotations/Collector.php:50
 #, php-format
 msgid "Controller path %s is not exists."
 msgstr ""
 
-#: RouteAnnotations/ControllerReader.php:136
+#: Source/RouteAnnotations/ControllerReader.php:136
 #, php-format
 msgid "%s does not exists."
 msgstr ""
 
-#: RouteAnnotations/ControllerReader.php:146
+#: Source/RouteAnnotations/ControllerReader.php:146
 #, php-format
 msgid "%s is a directory."
 msgstr ""
 
-#: RouteAnnotations/ControllerReader.php:153
+#: Source/RouteAnnotations/ControllerReader.php:153
 #, php-format
 msgid "%s is not readable."
 msgstr ""
 
-#: RouteAnnotations/ControllerReader.php:160
+#: Source/RouteAnnotations/ControllerReader.php:160
 #, php-format
 msgid "%s is not php file."
 msgstr ""
 
-#: RouteAnnotations/ControllerReader.php:175
+#: Source/RouteAnnotations/ControllerReader.php:175
 #, php-format
 msgid "Suffix %s is not match with basename %s."
 msgstr ""
 
-#: RouteAnnotations/ControllerReader.php:232
+#: Source/RouteAnnotations/ControllerReader.php:232
 #, php-format
 msgid "Could not found object on file %s."
 msgstr ""
 
-#: RouteAnnotations/ControllerReader.php:244
+#: Source/RouteAnnotations/ControllerReader.php:244
 #, php-format
 msgid "Could not found class %s on file %s."
 msgstr ""
 
-#: RouteAnnotations/RoutesAnnotations.php:100
+#: Source/RouteAnnotations/RoutesAnnotations.php:100
 #, php-format
 msgid "Class %s is not instance of %s."
 msgstr ""
 
-#: Scheduler/Abstracts/AbstractTask.php:98
+#: Source/Scheduler/Abstracts/AbstractTask.php:98
 msgid "Processing task."
 msgstr ""
 
-#: Scheduler/Abstracts/AbstractTask.php:106
+#: Source/Scheduler/Abstracts/AbstractTask.php:106
 msgid "Task done."
 msgstr ""
 
-#: Scheduler/Abstracts/AbstractTask.php:114
+#: Source/Scheduler/Abstracts/AbstractTask.php:114
 msgid "Task error."
 msgstr ""
 
-#: Scheduler/Abstracts/AbstractTask.php:131
-#: Scheduler/Commands/RunScheduler.php:165
+#: Source/Scheduler/Abstracts/AbstractTask.php:131
+#: Source/Scheduler/Commands/RunScheduler.php:164
 msgid "Unknown"
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:37
+#: Source/Scheduler/Commands/RunScheduler.php:29
+#, php-format
+msgid "The %s to run the task scheduler"
+msgstr ""
+
+#: Source/Scheduler/Commands/RunScheduler.php:36
 #, php-format
 msgid "[%s] Run the scheduler"
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:62
+#: Source/Scheduler/Commands/RunScheduler.php:61
 msgid "Database Schema"
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:67
+#: Source/Scheduler/Commands/RunScheduler.php:66
 msgid "Checking database schema"
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:82
+#: Source/Scheduler/Commands/RunScheduler.php:81
 #, php-format
 msgid "Creating database tables %s"
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:91
+#: Source/Scheduler/Commands/RunScheduler.php:90
 msgid "Database schema tables for scheduler are complete."
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:109
+#: Source/Scheduler/Commands/RunScheduler.php:108
 msgid "No schedule to be execute"
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:118
+#: Source/Scheduler/Commands/RunScheduler.php:117
 msgid "Scheduler"
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:123
+#: Source/Scheduler/Commands/RunScheduler.php:122
 #, php-format
 msgid "Execute %d scheduler on total."
 msgstr ""
 
-#: Scheduler/Commands/RunScheduler.php:137
+#: Source/Scheduler/Commands/RunScheduler.php:136
 msgid "Pending"
 msgstr ""
 
-#: Scheduler/Scheduler.php:75
+#: Source/Scheduler/Scheduler.php:75
 #, php-format
 msgid "Task must be subclass of %s, %s given."
 msgstr ""
 
-#: Scheduler/Scheduler.php:92
+#: Source/Scheduler/Scheduler.php:92
 #, php-format
 msgid "Can not add task, task %s already processed."
 msgstr ""
 
-#: Scheduler/Scheduler.php:101
+#: Source/Scheduler/Scheduler.php:101
 #, php-format
 msgid "Can not add task, task %s in progress."
 msgstr ""
 
-#: Scheduler/Scheduler.php:119
+#: Source/Scheduler/Scheduler.php:119
 #, php-format
 msgid "Can not delete task, task %s in progress."
 msgstr ""
 
-#: Session/Driver/DefaultDriver.php:49
+#: Source/Session/Driver/DefaultDriver.php:49
 #, php-format
 msgid "Session save path %s is not writable."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:26 Traits/HttpThrowableException.php:73
+#: Source/Traits/HttpThrowableException.php:26
+#: Source/Traits/HttpThrowableException.php:73
 msgid "Method not allowed."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:50
+#: Source/Traits/HttpThrowableException.php:50
 msgid "Not found."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:53
+#: Source/Traits/HttpThrowableException.php:53
 msgid "404 Not Found"
 msgstr ""
 
-#: Traits/HttpThrowableException.php:57
+#: Source/Traits/HttpThrowableException.php:57
 msgid "The requested resource could not be found. Please verify the URI and try again."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:76
+#: Source/Traits/HttpThrowableException.php:76
 msgid "405 Method Not Allowed"
 msgstr ""
 
-#: Traits/HttpThrowableException.php:80
+#: Source/Traits/HttpThrowableException.php:80
 msgid "The request method is not supported for the requested resource."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:95
+#: Source/Traits/HttpThrowableException.php:95
 msgid "Bad request."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:98
+#: Source/Traits/HttpThrowableException.php:98
 msgid "400 Bad Request"
 msgstr ""
 
-#: Traits/HttpThrowableException.php:102
+#: Source/Traits/HttpThrowableException.php:102
 msgid "The server cannot or will not process the request due to an apparent client error."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:117
+#: Source/Traits/HttpThrowableException.php:117
 msgid "Unauthorized."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:120
+#: Source/Traits/HttpThrowableException.php:120
 msgid "401 Unauthorized"
 msgstr ""
 
-#: Traits/HttpThrowableException.php:124
+#: Source/Traits/HttpThrowableException.php:124
 msgid "The request requires valid user authentication."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:139
+#: Source/Traits/HttpThrowableException.php:139
 msgid "Not implemented."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:142
+#: Source/Traits/HttpThrowableException.php:142
 msgid "501 Not Implemented"
 msgstr ""
 
-#: Traits/HttpThrowableException.php:146
+#: Source/Traits/HttpThrowableException.php:146
 msgid "The server does not support the functionality required to fulfill the request."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:161 Views/ExceptionsView.php:46
+#: Source/Traits/HttpThrowableException.php:161
+#: Source/Views/ExceptionsView.php:46
 msgid "Internal server error."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:168 Views/ExceptionsView.php:48
+#: Source/Traits/HttpThrowableException.php:168
+#: Source/Views/ExceptionsView.php:48
 msgid "Unexpected condition encountered preventing server from fulfilling request."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:183
+#: Source/Traits/HttpThrowableException.php:183
 msgid "Gone."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:186
+#: Source/Traits/HttpThrowableException.php:186
 msgid "410 Gone"
 msgstr ""
 
-#: Traits/HttpThrowableException.php:190
+#: Source/Traits/HttpThrowableException.php:190
 msgid "The target resource is no longer available at the origin server."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:205
+#: Source/Traits/HttpThrowableException.php:205
 msgid "Forbidden."
 msgstr ""
 
-#: Traits/HttpThrowableException.php:208
+#: Source/Traits/HttpThrowableException.php:208
 msgid "403 Forbidden"
 msgstr ""
 
-#: Traits/HttpThrowableException.php:212
+#: Source/Traits/HttpThrowableException.php:212
 msgid "You are not permitted to perform the requested operation."
 msgstr ""
 
-#: Views/ExceptionsView.php:112
+#: Source/Views/ExceptionsView.php:112
 msgid "Type"
 msgstr ""
 
-#: Views/ExceptionsView.php:119
+#: Source/Views/ExceptionsView.php:119
 msgid "Code"
 msgstr ""
 
-#: Views/ExceptionsView.php:124
+#: Source/Views/ExceptionsView.php:124
 msgid "Message"
 msgstr ""
 
-#: Views/ExceptionsView.php:129
+#: Source/Views/ExceptionsView.php:129
 msgid "File"
 msgstr ""
 
-#: Views/ExceptionsView.php:134
+#: Source/Views/ExceptionsView.php:134
 msgid "Line"
 msgstr ""
 
-#: Views/ExceptionsView.php:137
+#: Source/Views/ExceptionsView.php:137
 msgid "Trace"
 msgstr ""

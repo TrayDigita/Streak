@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-22 10:10+0700\n"
-"PO-Revision-Date: 2022-10-22 10:10+0700\n"
+"POT-Creation-Date: 2022-10-23 20:51+0700\n"
+"PO-Revision-Date: 2022-10-23 20:52+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -11,101 +11,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.1.1\n"
-"X-Poedit-Basepath: ../app/Source\n"
+"X-Poedit-Basepath: ../app\n"
 "X-Poedit-KeywordsList: translate;translatePlural\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-0: Source\n"
+"X-Poedit-SearchPath-1: Middleware/ErrorMiddlewareHandler.php\n"
+"X-Poedit-SearchPath-2: Middleware/SafePathMiddlewareDebugHandler.php\n"
+"X-Poedit-SearchPath-3: Middleware/SchedulerRegistrationMiddleware.php\n"
 
-#: Console/Abstracts/MakeClassCommand.php:35
+#: Source/Console/Abstracts/MakeClassCommand.php:34
 #, php-format
 msgid "[%s] Generate %s"
 msgstr "[%s] Hasilkan %s"
 
-#: Console/Abstracts/MakeClassCommand.php:60
+#: Source/Console/Abstracts/MakeClassCommand.php:47
+#, php-format
+msgid "The %s command generates a blank %s class."
+msgstr "Perintah %s menghasilkan kelas kosong %s."
+
+#: Source/Console/Abstracts/MakeClassCommand.php:57
 #, php-format
 msgid "Name to use for the %s"
 msgstr "Nama yang digunakan untuk %s"
 
-#: Console/Abstracts/MakeClassCommand.php:69
+#: Source/Console/Abstracts/MakeClassCommand.php:66
 #, php-format
 msgid "The namespace to use for class name %s"
 msgstr "Namespace untuk digunakan pada nama kelas %s"
 
-#: Console/Abstracts/MakeClassCommand.php:92
+#: Source/Console/Abstracts/MakeClassCommand.php:89
 #, php-format
 msgid "Namespace `%s` is invalid."
 msgstr "Namespace `%s` tidak sah."
 
-#: Console/Abstracts/MakeClassCommand.php:113
+#: Source/Console/Abstracts/MakeClassCommand.php:110
 msgid "Please Insert Namespace (Empty To Ignore)"
 msgstr "Harap Masukkan Namaspace (Kosongkan Untuk Abaikan)"
 
-#: Console/Abstracts/MakeClassCommand.php:116
+#: Source/Console/Abstracts/MakeClassCommand.php:113
 msgid "Please Insert Valid Namespace (Empty To Ignore)"
 msgstr "Harap Masukkan Namespace Yang Sah (Kosongkan Untuk Abaikan)"
 
-#: Console/Abstracts/MakeClassCommand.php:120
+#: Source/Console/Abstracts/MakeClassCommand.php:117
+#: Source/Module/Commands/MakeModule.php:46
 #, php-format
 msgid "Please Insert %s Name"
 msgstr "Mohon Masukkan Nama %s"
 
-#: Console/Abstracts/MakeClassCommand.php:126
+#: Source/Console/Abstracts/MakeClassCommand.php:123
+#: Source/Module/Commands/MakeModule.php:52
 #, php-format
 msgid "Please Insert Valid %s Name"
 msgstr "Harap Masukkan Nama %s yang Valid"
 
-#: Console/Abstracts/MakeClassCommand.php:212
+#: Source/Console/Abstracts/MakeClassCommand.php:158
+#: Source/Console/Abstracts/MakeClassCommand.php:195
+#: Source/Console/Abstracts/MakeClassCommand.php:235
+#: Source/Module/Commands/MakeModule.php:72
+#: Source/Module/Commands/MakeModule.php:109
+#: Source/Module/Commands/MakeModule.php:146
+#, php-format
+msgid "Class Name %s exist or not valid for repository."
+msgstr "Nama kelas %s tidak  ada atau tidak sah pada repositori."
+
+#: Source/Console/Abstracts/MakeClassCommand.php:210
+#: Source/Module/Commands/MakeModule.php:124
 #, php-format
 msgid "%s name could not be empty."
 msgstr "Nama %s tidak boleh kosong."
 
-#: Console/Abstracts/NamespaceCommand.php:106
+#: Source/Console/Abstracts/NamespaceCommand.php:113
 #, php-format
 msgid "You must override the %s method in the concrete command class."
 msgstr "Anda harus mengganti metode %s di kelas perintah konkret."
 
-#: Console/Runner.php:46
+#: Source/Console/Runner.php:46
 msgid "Enable Debug"
 msgstr "Aktifkan Debug"
 
-#: Container.php:213
+#: Source/Container.php:213
 msgid "Parameters value contains invalid key name."
 msgstr "Nilai parameter berisi nama kunci yang tidak valid."
 
-#: Container.php:235
+#: Source/Container.php:235
 #, php-format
 msgid "Parameter %s is not exists."
 msgstr "Parameter %s tidak ada."
 
-#: Container.php:449
+#: Source/Container.php:449
 #, php-format
 msgid "Cannot override frozen service \"%s\"."
 msgstr "Tidak dapat mengganti layanan yang dibekukan \"%s\"."
 
-#: Container.php:499
+#: Source/Container.php:499
 #, php-format
 msgid "Identifier \"%s\" is not defined."
 msgstr "Pengenal \"%s\" tidak ditentukan."
 
-#: Container.php:557
+#: Source/Container.php:557
 msgid "Argument object closure is not allowed."
 msgstr "Objek argumen closure tidak diijinkan."
 
-#: Container.php:581
+#: Source/Container.php:581
 #, php-format
 msgid "Class name %s is not exists."
 msgstr "Nama kelas %s tidak ada."
 
-#: Container.php:605
+#: Source/Container.php:605
 #, php-format
 msgid "Class name %s is not instantiable."
 msgstr "Nama kelas %s tidak dapat dipakai."
 
-#: Container.php:687
+#: Source/Container.php:687
 #, php-format
 msgid "Class name %s contain required parameters (%s)."
 msgstr "Nama kelas %s berisi parameter yang diperlukan (%s)."
 
-#: Container.php:800
+#: Source/Container.php:800
 #, php-format
 msgid ""
 "Class name %s contain required parameter type: (%s) that could not to be "
@@ -114,124 +135,156 @@ msgstr ""
 "Nama kelas %s berisi jenis parameter yang diperlukan: (%s) yang tidak dapat "
 "diselesaikan."
 
-#: Container.php:819
+#: Source/Container.php:819
 #, php-format
 msgid "Class name %s contain required parameters."
 msgstr "Nama kelas %s berisi parameter yang diperlukan."
 
-#: Container.php:878
+#: Source/Container.php:878
 #, php-format
 msgid "Call to undefined property %s."
 msgstr "Panggil ke properti yang tidak ditentukan %s."
 
-#: Controller/Collector.php:258 Middleware/Collector.php:195
-#: Module/Collector.php:174
+#: Source/Controller/Collector.php:258 Source/Middleware/Collector.php:195
+#: Source/Module/Collector.php:182
 #, php-format
 msgid "Can not add %1$s while the %1$s already initiated to processing."
 msgstr "Tidak dapat menambahkan %1$s saat %1$s sudah mulai memproses."
 
-#: Controller/Collector.php:260
+#: Source/Controller/Collector.php:260
 msgid "controller"
 msgstr "controller"
 
-#: Controller/Commands/MakeController.php:42
+#: Source/Controller/Commands/MakeController.php:44
 msgid "Controller directory is not exist."
 msgstr "Direktori controller tidak ada."
 
-#: Controller/Commands/MakeController.php:85 Database/Commands/MakeModel.php:71
+#: Source/Controller/Commands/MakeController.php:54
+#, php-format
+msgid "Max depth of class name is %d, you have %d depth."
+msgstr "Kedalaman maksimum nama kelas adalah %d, Anda memiliki kedalaman %d."
+
+#: Source/Controller/Commands/MakeController.php:68
+#: Source/Database/Commands/MakeModel.php:50
+#: Source/Middleware/Commands/MakeMiddleware.php:56
+#, php-format
+msgid "File %s already exists."
+msgstr "Berkas %s sudah ada."
+
+#: Source/Controller/Commands/MakeController.php:89
+#: Source/Database/Commands/MakeModel.php:70
+#: Source/Middleware/Commands/MakeMiddleware.php:76
+#: Source/Module/Commands/MakeModule.php:204
 msgid "Namespace"
 msgstr "Namespace"
 
-#: Controller/Commands/MakeController.php:86 Database/Commands/MakeModel.php:72
+#: Source/Controller/Commands/MakeController.php:90
+#: Source/Database/Commands/MakeModel.php:71
+#: Source/Middleware/Commands/MakeMiddleware.php:77
+#: Source/Module/Commands/MakeModule.php:205
 msgid "Base class name"
 msgstr "Nama basis kelas"
 
-#: Controller/Commands/MakeController.php:87 Database/Commands/MakeModel.php:73
+#: Source/Controller/Commands/MakeController.php:91
+#: Source/Database/Commands/MakeModel.php:72
+#: Source/Middleware/Commands/MakeMiddleware.php:78
+#: Source/Module/Commands/MakeModule.php:206
 msgid "Class name"
 msgstr "Name kelas"
 
-#: Controller/Commands/MakeController.php:88
+#: Source/Controller/Commands/MakeController.php:92
 msgid "Controller directory"
 msgstr "Direktori controller"
 
-#: Controller/Commands/MakeController.php:89
+#: Source/Controller/Commands/MakeController.php:93
 msgid "Controller file"
 msgstr "Berkas controller"
 
-#: Controller/Commands/MakeController.php:103
-#: Database/Commands/MakeModel.php:89
+#: Source/Controller/Commands/MakeController.php:109
+#: Source/Database/Commands/MakeModel.php:89
+#: Source/Middleware/Commands/MakeMiddleware.php:95
+#: Source/Module/Commands/MakeModule.php:224
 msgid "Are you sure [Y/n]"
 msgstr "Apa anda yakin [Y/n]"
 
-#: Controller/Commands/MakeController.php:197
-#: Database/Commands/MakeModel.php:173
+#: Source/Controller/Commands/MakeController.php:209
+#: Source/Database/Commands/MakeModel.php:174
+#: Source/Middleware/Commands/MakeMiddleware.php:166
+#: Source/Module/Commands/MakeModule.php:321
 #, php-format
 msgid "Directory %s is not writable."
 msgstr "Direktori %s tidak dapat ditulis."
 
-#: Controller/Commands/MakeController.php:208
-#: Database/Commands/MakeModel.php:184
+#: Source/Controller/Commands/MakeController.php:220
+#: Source/Database/Commands/MakeModel.php:185
+#: Source/Middleware/Commands/MakeMiddleware.php:177
+#: Source/Module/Commands/MakeModule.php:332
 #, php-format
 msgid "File %s is exists."
 msgstr "Berkas %s tidak ada."
 
-#: Controller/DynamicController.php:88
+#: Source/Controller/DynamicController.php:88
 #, php-format
 msgid "Route %s does not have controller."
 msgstr "Rute %s tidak memiliki controller."
 
-#: Controller/DynamicController.php:101
+#: Source/Controller/DynamicController.php:101
 #, php-format
 msgid "Route controller %s does not have fallback method."
 msgstr "Pengontrol rute %s tidak memiliki metode kembalian."
 
-#: Controller/DynamicController.php:113
+#: Source/Controller/DynamicController.php:113
 #, php-format
 msgid "Route controller %s does not have fallback method %s."
 msgstr "Route controller %s tidak memiliki metode kembalian %s."
 
-#: Controller/DynamicController.php:131
+#: Source/Controller/DynamicController.php:131
 #, php-format
 msgid "Route controller method does not returning %s."
 msgstr "Route controller method tidak mengembalikan %s."
 
-#: Database/Abstracts/Model.php:560
+#: Source/Database/Abstracts/Model.php:277
+#, php-format
+msgid "Table for model %s is not exist."
+msgstr "Tabel untuk model %s tidak ada."
+
+#: Source/Database/Abstracts/Model.php:560
 #, php-format
 msgid "Argument parameters key index must be as a string, %s given."
 msgstr "Parameter argumen indeks kunci harus sebagai string, %s diberikan."
 
-#: Database/Abstracts/Model.php:574
+#: Source/Database/Abstracts/Model.php:574
 #, php-format
 msgid "Table %s does not have primary key"
 msgstr "Tabel %s tidak memiliki kunci utama"
 
-#: Database/Abstracts/Model.php:738
+#: Source/Database/Abstracts/Model.php:738
 msgid "Update method does not where statement"
 msgstr "Metode pembaruan tidak ada pernyataan where"
 
-#: Database/Abstracts/Model.php:891
+#: Source/Database/Abstracts/Model.php:891
 #, php-format
 msgid "Column (%s) must be set."
 msgstr "Kolom (%s) harus deklarasikan."
 
-#: Database/Abstracts/Model.php:1299
+#: Source/Database/Abstracts/Model.php:1299
 #, php-format
 msgid "Columns %s is not exists on index %s column %s"
 msgstr "Kolom %s tidak ada pada indeks %s kolom %s"
 
-#: Database/Commands/MakeModel.php:38
+#: Source/Database/Commands/MakeModel.php:38
 msgid "Model directory is not exist."
 msgstr "Direktori model %s tidak ada."
 
-#: Database/Commands/MakeModel.php:74
+#: Source/Database/Commands/MakeModel.php:73
 msgid "Model directory"
 msgstr "Direktori model"
 
-#: Database/Commands/MakeModel.php:75
+#: Source/Database/Commands/MakeModel.php:74
 msgid "Model file"
 msgstr "Berkas model"
 
-#: Database/Instance.php:389 Database/Instance.php:433
+#: Source/Database/Instance.php:389 Source/Database/Instance.php:433
 msgid ""
 "Invalid value to be quote, quote value could not be instance of `Closure` or "
 "as a `Resource`."
@@ -239,215 +292,273 @@ msgstr ""
 "Nilai kutipan tidak valid, nilai kutipan tidak boleh berupa instance "
 "`Closure` atau sebagai `Resource`."
 
-#: Database/Instance.php:410
+#: Source/Database/Instance.php:410
 msgid "Invalid value to be quote, quote value must be as a string."
 msgstr ""
 "Nilai tidak valid untuk dijadikan kutipan, nilai kutipan harus berupa string."
 
-#: Database/Instance.php:527
+#: Source/Database/Instance.php:527
 #, php-format
 msgid "Invalid statement binding count with sql query : %s."
 msgstr "Jumlah pengikatan pernyataan tidak valid dengan kueri sql : %s."
 
-#: Database/Instance.php:614 Database/Instance.php:640
-#: Database/Instance.php:721 Database/Instance.php:746
+#: Source/Database/Instance.php:614 Source/Database/Instance.php:640
+#: Source/Database/Instance.php:721 Source/Database/Instance.php:746
 msgid "Invalid parameter table name. Table name could not be empty."
 msgstr "Nama parameter tabel tidak valid. Nama tabel wajib diisi."
 
-#: Database/Instance.php:666
+#: Source/Database/Instance.php:666
 msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 "Jenis nama tabel tidak valid. Nama tabel harus berupa string atau array."
 
-#: Database/Instance.php:777
+#: Source/Database/Instance.php:777
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr "Memanggil ke Metode yang tidak ditentukan %s."
 
-#: Database/Instance.php:870
+#: Source/Database/Instance.php:870
 msgid "Argument must be subclass of %s, % given."
 msgstr "Argument kelas turunan dari %s, diberikan %s."
 
-#: Database/Instance.php:882 RouteAnnotations/RoutesAnnotations.php:110
+#: Source/Database/Instance.php:882
+#: Source/RouteAnnotations/RoutesAnnotations.php:110
 #, php-format
 msgid "Class name %s is not valid."
 msgstr "Nama kelas %s tidak sah."
 
-#: Helper/Util/ObjectFileReader.php:39
+#: Source/Helper/Util/ObjectFileReader.php:39
 #, php-format
 msgid "%s is not exist."
 msgstr "%s tidak ada."
 
-#: Helper/Util/ObjectFileReader.php:47
+#: Source/Helper/Util/ObjectFileReader.php:47
 #, php-format
 msgid "%s is not a valid file."
 msgstr "%s bukan file yang sah."
 
-#: Helper/Util/ObjectFileReader.php:62
+#: Source/Helper/Util/ObjectFileReader.php:62
 #, php-format
 msgid "File %s contains empty data."
 msgstr "Berkas %s berisi data kosong."
 
-#: Helper/Util/ObjectFileReader.php:94
+#: Source/Helper/Util/ObjectFileReader.php:94
 msgid "Argument is empty data or whitespace only."
 msgstr "Argument berupa data kosong atau hanya whitespace."
 
-#: Json/ApiCreator.php:126 Traits/HttpThrowableException.php:164
-#: Views/ExceptionsView.php:26
+#: Source/Json/ApiCreator.php:126 Source/Traits/HttpThrowableException.php:164
+#: Source/Views/ExceptionsView.php:26
 msgid "500 Internal Server Error"
 msgstr "500 Kesalahan Internal Server"
 
-#: Middleware/Collector.php:197
+#: Source/Middleware/Collector.php:197
 msgid "middleware"
 msgstr "middleware"
 
-#: Module/Collector.php:176
+#: Source/Middleware/Commands/MakeMiddleware.php:42
+msgid "Middleware directory is not exist."
+msgstr "Direktori middleware %s tidak ada."
+
+#: Source/Middleware/Commands/MakeMiddleware.php:48
+msgid "Middleware could not contain nested class."
+msgstr "Middleware tidak dapat berisi kelas bersarang."
+
+#: Source/Middleware/Commands/MakeMiddleware.php:79
+msgid "Middleware directory"
+msgstr "Direktori middleware"
+
+#: Source/Middleware/Commands/MakeMiddleware.php:80
+msgid "Middleware file"
+msgstr "Berkas middleware"
+
+#: Source/Module/Abstracts/AbstractModule.php:126
+#, php-format
+msgid "Module %s initialized."
+msgstr "Module %s initialized."
+
+#: Source/Module/Collector.php:184
 msgid "module"
 msgstr "modul"
 
-#: RouteAnnotations/Collector.php:42
+#: Source/Module/Commands/MakeModule.php:167
+msgid "Module directory is not exist."
+msgstr "Direktori modul %s tidak ada."
+
+#: Source/Module/Commands/MakeModule.php:175
+msgid "Module could not contain nested class."
+msgstr "Modul tidak boleh berisi kelas bersarang."
+
+#: Source/Module/Commands/MakeModule.php:182
+#, php-format
+msgid "Directory %s already exists."
+msgstr "Direktori %s sudah ada."
+
+#: Source/Module/Commands/MakeModule.php:203
+msgid "Module name"
+msgstr "Nama modul"
+
+#: Source/Module/Commands/MakeModule.php:207
+msgid "Module directory"
+msgstr "Direktori modul"
+
+#: Source/Module/Commands/MakeModule.php:208
+msgid "Module file"
+msgstr "Berkas modul"
+
+#: Source/Module/Commands/MakeModule.php:241
+#, php-format
+msgid "Module %s."
+msgstr "Module %s."
+
+#: Source/RouteAnnotations/Collector.php:42
 msgid "Controller path is not defined."
 msgstr "Path controller tidak ditentukan."
 
-#: RouteAnnotations/Collector.php:50
+#: Source/RouteAnnotations/Collector.php:50
 #, php-format
 msgid "Controller path %s is not exists."
 msgstr "Path controller %s tidak ada."
 
-#: RouteAnnotations/ControllerReader.php:136
+#: Source/RouteAnnotations/ControllerReader.php:136
 #, php-format
 msgid "%s does not exists."
 msgstr "%s tidak ada."
 
-#: RouteAnnotations/ControllerReader.php:146
+#: Source/RouteAnnotations/ControllerReader.php:146
 #, php-format
 msgid "%s is a directory."
 msgstr "%s merupakan direktori."
 
-#: RouteAnnotations/ControllerReader.php:153
+#: Source/RouteAnnotations/ControllerReader.php:153
 #, php-format
 msgid "%s is not readable."
 msgstr "%s tidak dapat dibaca."
 
-#: RouteAnnotations/ControllerReader.php:160
+#: Source/RouteAnnotations/ControllerReader.php:160
 #, php-format
 msgid "%s is not php file."
 msgstr "%s bukan berkas php."
 
-#: RouteAnnotations/ControllerReader.php:175
+#: Source/RouteAnnotations/ControllerReader.php:175
 #, php-format
 msgid "Suffix %s is not match with basename %s."
 msgstr "Akhiran %s tidak sesuai dengan nama dasar %s."
 
-#: RouteAnnotations/ControllerReader.php:232
+#: Source/RouteAnnotations/ControllerReader.php:232
 #, php-format
 msgid "Could not found object on file %s."
 msgstr "Tidak dapat menemukan object pada berkas %s."
 
-#: RouteAnnotations/ControllerReader.php:244
+#: Source/RouteAnnotations/ControllerReader.php:244
 #, php-format
 msgid "Could not found class %s on file %s."
 msgstr "Tidak meneukan kelas %s pada berkas %s."
 
-#: RouteAnnotations/RoutesAnnotations.php:100
+#: Source/RouteAnnotations/RoutesAnnotations.php:100
 #, php-format
 msgid "Class %s is not instance of %s."
 msgstr "Kelas %s bukan merupakan instance dari %s."
 
-#: Scheduler/Abstracts/AbstractTask.php:98
+#: Source/Scheduler/Abstracts/AbstractTask.php:98
 msgid "Processing task."
 msgstr "Memproses tugas."
 
-#: Scheduler/Abstracts/AbstractTask.php:106
+#: Source/Scheduler/Abstracts/AbstractTask.php:106
 msgid "Task done."
 msgstr "Tugas selesai."
 
-#: Scheduler/Abstracts/AbstractTask.php:114
+#: Source/Scheduler/Abstracts/AbstractTask.php:114
 msgid "Task error."
 msgstr "Tugas bermasalah."
 
-#: Scheduler/Abstracts/AbstractTask.php:131
-#: Scheduler/Commands/RunScheduler.php:165
+#: Source/Scheduler/Abstracts/AbstractTask.php:131
+#: Source/Scheduler/Commands/RunScheduler.php:164
 msgid "Unknown"
 msgstr "Tidak diketahui"
 
-#: Scheduler/Commands/RunScheduler.php:37
+#: Source/Scheduler/Commands/RunScheduler.php:29
+#, php-format
+msgid "The %s to run the task scheduler"
+msgstr "%s untuk menjalankan penjadwal tugas"
+
+#: Source/Scheduler/Commands/RunScheduler.php:36
 #, php-format
 msgid "[%s] Run the scheduler"
 msgstr "[%s] Menjalankan penjadwal"
 
-#: Scheduler/Commands/RunScheduler.php:62
+#: Source/Scheduler/Commands/RunScheduler.php:61
 msgid "Database Schema"
 msgstr "Skema Basis Data"
 
-#: Scheduler/Commands/RunScheduler.php:67
+#: Source/Scheduler/Commands/RunScheduler.php:66
 msgid "Checking database schema"
 msgstr "Memeriksa skema basis data"
 
-#: Scheduler/Commands/RunScheduler.php:82
+#: Source/Scheduler/Commands/RunScheduler.php:81
 #, php-format
 msgid "Creating database tables %s"
 msgstr "Membuat tabel %s pada basis data"
 
-#: Scheduler/Commands/RunScheduler.php:91
+#: Source/Scheduler/Commands/RunScheduler.php:90
 msgid "Database schema tables for scheduler are complete."
 msgstr "Skema tabel basis data untuk penjadwal telah selesai."
 
-#: Scheduler/Commands/RunScheduler.php:109
+#: Source/Scheduler/Commands/RunScheduler.php:108
 msgid "No schedule to be execute"
 msgstr "Tidak ada jadwal yang bisa dieksekusi"
 
-#: Scheduler/Commands/RunScheduler.php:118
+#: Source/Scheduler/Commands/RunScheduler.php:117
 msgid "Scheduler"
 msgstr "Penjadwal"
 
-#: Scheduler/Commands/RunScheduler.php:123
+#: Source/Scheduler/Commands/RunScheduler.php:122
 #, php-format
 msgid "Execute %d scheduler on total."
 msgstr "Mengeksekusi dengan total %d penjadwal."
 
-#: Scheduler/Commands/RunScheduler.php:137
+#: Source/Scheduler/Commands/RunScheduler.php:136
 msgid "Pending"
 msgstr "Tertunda"
 
-#: Scheduler/Scheduler.php:75
+#: Source/Scheduler/Scheduler.php:75
 #, php-format
 msgid "Task must be subclass of %s, %s given."
 msgstr "Tugas harus kelas turunan dari %s, diberikan %s."
 
-#: Scheduler/Scheduler.php:92
+#: Source/Scheduler/Scheduler.php:92
 #, php-format
 msgid "Can not add task, task %s already processed."
 msgstr "Tidak dapat menambahakan tugas, tugas %s telah diproses."
 
-#: Scheduler/Scheduler.php:101
+#: Source/Scheduler/Scheduler.php:101
 #, php-format
 msgid "Can not add task, task %s in progress."
 msgstr "Tidak dapat menambah tugas, tugas %s sedang berlangsung."
 
-#: Scheduler/Scheduler.php:119
+#: Source/Scheduler/Scheduler.php:119
 #, php-format
 msgid "Can not delete task, task %s in progress."
 msgstr "Tidak dapat menghapus tugas, tugas %s sedang berlangsung."
 
-#: Session/Driver/DefaultDriver.php:49
+#: Source/Session/Driver/DefaultDriver.php:49
 #, php-format
 msgid "Session save path %s is not writable."
 msgstr "Penyimpanan session %s tidak dapat ditulisi."
 
-#: Traits/HttpThrowableException.php:26 Traits/HttpThrowableException.php:73
+#: Source/Traits/HttpThrowableException.php:26
+#: Source/Traits/HttpThrowableException.php:73
 msgid "Method not allowed."
 msgstr "Metode tidak diijinkan."
 
-#: Traits/HttpThrowableException.php:50
+#: Source/Traits/HttpThrowableException.php:50
 msgid "Not found."
 msgstr "Tidak ditemukan."
 
-#: Traits/HttpThrowableException.php:53
+#: Source/Traits/HttpThrowableException.php:53
 msgid "404 Not Found"
 msgstr "404 Tidak Ditemukan"
 
-#: Traits/HttpThrowableException.php:57
+#: Source/Traits/HttpThrowableException.php:57
 msgid ""
 "The requested resource could not be found. Please verify the URI and try "
 "again."
@@ -455,23 +566,23 @@ msgstr ""
 "Sumber daya yang diminta tidak dapat ditemukan. Harap verifikasi URI dan "
 "coba lagi."
 
-#: Traits/HttpThrowableException.php:76
+#: Source/Traits/HttpThrowableException.php:76
 msgid "405 Method Not Allowed"
 msgstr "405 Metode Tidak Diijinkan"
 
-#: Traits/HttpThrowableException.php:80
+#: Source/Traits/HttpThrowableException.php:80
 msgid "The request method is not supported for the requested resource."
 msgstr "Metode permintaan tidak didukung untuk sumber daya yang diminta."
 
-#: Traits/HttpThrowableException.php:95
+#: Source/Traits/HttpThrowableException.php:95
 msgid "Bad request."
 msgstr "Permintaan buruk."
 
-#: Traits/HttpThrowableException.php:98
+#: Source/Traits/HttpThrowableException.php:98
 msgid "400 Bad Request"
 msgstr "400 Permintaan Buruk"
 
-#: Traits/HttpThrowableException.php:102
+#: Source/Traits/HttpThrowableException.php:102
 msgid ""
 "The server cannot or will not process the request due to an apparent client "
 "error."
@@ -479,27 +590,27 @@ msgstr ""
 "Server tidak dapat atau tidak akan memproses permintaan dikarenakan "
 "kesalahan klien yang nyata."
 
-#: Traits/HttpThrowableException.php:117
+#: Source/Traits/HttpThrowableException.php:117
 msgid "Unauthorized."
 msgstr "Tidak sah."
 
-#: Traits/HttpThrowableException.php:120
+#: Source/Traits/HttpThrowableException.php:120
 msgid "401 Unauthorized"
 msgstr "401 Tidak Sah"
 
-#: Traits/HttpThrowableException.php:124
+#: Source/Traits/HttpThrowableException.php:124
 msgid "The request requires valid user authentication."
 msgstr "Permintaan memerlukan otentikasi pengguna yang valid."
 
-#: Traits/HttpThrowableException.php:139
+#: Source/Traits/HttpThrowableException.php:139
 msgid "Not implemented."
 msgstr "Tidak dapat diterapkan."
 
-#: Traits/HttpThrowableException.php:142
+#: Source/Traits/HttpThrowableException.php:142
 msgid "501 Not Implemented"
 msgstr "501 Tidak Dapat Diterapkan"
 
-#: Traits/HttpThrowableException.php:146
+#: Source/Traits/HttpThrowableException.php:146
 msgid ""
 "The server does not support the functionality required to fulfill the "
 "request."
@@ -507,68 +618,61 @@ msgstr ""
 "Server tidak mendukung fungsionalitas yang diperlukan untuk memenuhi "
 "permintaan."
 
-#: Traits/HttpThrowableException.php:161 Views/ExceptionsView.php:46
+#: Source/Traits/HttpThrowableException.php:161
+#: Source/Views/ExceptionsView.php:46
 msgid "Internal server error."
 msgstr "Kesalahan internal server."
 
-#: Traits/HttpThrowableException.php:168 Views/ExceptionsView.php:48
+#: Source/Traits/HttpThrowableException.php:168
+#: Source/Views/ExceptionsView.php:48
 msgid ""
 "Unexpected condition encountered preventing server from fulfilling request."
 msgstr "Terjadi kondisi tak terduga yang mencegah server memenuhi permintaan."
 
-#: Traits/HttpThrowableException.php:183
+#: Source/Traits/HttpThrowableException.php:183
 msgid "Gone."
 msgstr "Hilang."
 
-#: Traits/HttpThrowableException.php:186
+#: Source/Traits/HttpThrowableException.php:186
 msgid "410 Gone"
 msgstr "410 Hilang"
 
-#: Traits/HttpThrowableException.php:190
+#: Source/Traits/HttpThrowableException.php:190
 msgid "The target resource is no longer available at the origin server."
 msgstr "Sumber daya target tidak lagi tersedia di server asal."
 
-#: Traits/HttpThrowableException.php:205
+#: Source/Traits/HttpThrowableException.php:205
 msgid "Forbidden."
 msgstr "Terlarang."
 
-#: Traits/HttpThrowableException.php:208
+#: Source/Traits/HttpThrowableException.php:208
 msgid "403 Forbidden"
 msgstr "403 Terlarang"
 
-#: Traits/HttpThrowableException.php:212
+#: Source/Traits/HttpThrowableException.php:212
 msgid "You are not permitted to perform the requested operation."
 msgstr "Anda tidak diizinkan untuk melakukan operasi yang diminta."
 
-#: Views/ExceptionsView.php:112
+#: Source/Views/ExceptionsView.php:112
 msgid "Type"
 msgstr "Tipe"
 
-#: Views/ExceptionsView.php:119
+#: Source/Views/ExceptionsView.php:119
 msgid "Code"
 msgstr "Kode"
 
-#: Views/ExceptionsView.php:124
+#: Source/Views/ExceptionsView.php:124
 msgid "Message"
 msgstr "Pesan"
 
-#: Views/ExceptionsView.php:129
+#: Source/Views/ExceptionsView.php:129
 msgid "File"
 msgstr "Berkas"
 
-#: Views/ExceptionsView.php:134
+#: Source/Views/ExceptionsView.php:134
 msgid "Line"
 msgstr "Baris"
 
-#: Views/ExceptionsView.php:137
+#: Source/Views/ExceptionsView.php:137
 msgid "Trace"
 msgstr "Rekam Jejak"
-
-#~ msgid "Command not allowed!"
-#~ msgstr "Perintah tidak diijinkan!"
-
-#~ msgid "Internal Server Error"
-#~ msgstr "Kesalahan Pada Server"
-
-#~ msgid "Page Not Found"
-#~ msgstr "Halaman Tidak Ditemukan"
