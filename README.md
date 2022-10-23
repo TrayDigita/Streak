@@ -13,3 +13,8 @@
 # Notes
 
 - [Routing & Controller](ROUTES.md)
+- [Directory & File Structures](STRUCTURES.md)
+
+
+Please create `Config.php` from `Example.Config.php` to make sure application working properly
+even though it will run without config file.
