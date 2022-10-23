@@ -18,7 +18,7 @@ class UserControl
     /**
      * @var array<string, IdentityInterface>
      */
-    protected array $acl = [];
+    protected array $identities = [];
 
     /**
      * @param int|string|float $id
@@ -84,22 +84,22 @@ class UserControl
 
     public function addControl(IdentityInterface $identity) : static
     {
-        $this->acl[$identity->getId()] = $identity;
+        $this->identities[$identity->getId()] = $identity;
         return $this;
     }
 
     public function removeControl(IdentityInterface|string $identity) : static
     {
         $identity = is_string($identity) ? $identity : $identity->getId();
-        unset($this->acl[$identity]);
+        unset($this->identities[$identity]);
         return $this;
     }
 
     /**
      * @return array<string, IdentityInterface>
      */
-    public function getAcl(): array
+    public function getIdentities(): array
     {
-        return $this->acl;
+        return $this->identities;
     }
 }
