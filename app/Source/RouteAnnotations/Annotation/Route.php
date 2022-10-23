@@ -10,6 +10,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\RouteAnnotations\Abstracts\AnnotationController;
+use TrayDigita\Streak\Source\RouteAnnotations\Interfaces\AnnotationRequirementsInterface;
 
 /**
  * Annotation class for @Route().
@@ -17,7 +18,7 @@ use TrayDigita\Streak\Source\RouteAnnotations\Abstracts\AnnotationController;
  * @Annotation
  * @Target({"CLASS", "METHOD"})
  */
-class Route implements JsonSerializable
+class Route implements JsonSerializable, AnnotationRequirementsInterface
 {
     private string $path = '';
     private array $localizedPaths = [];

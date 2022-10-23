@@ -17,6 +17,7 @@ use TrayDigita\Streak\Source\Helper\Util\ObjectFileReader;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Clearable;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
 use TrayDigita\Streak\Source\RouteAnnotations\Abstracts\AnnotationController;
+use TrayDigita\Streak\Source\RouteAnnotations\Interfaces\AnnotationRequirementsInterface;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 
@@ -65,6 +66,7 @@ class ControllerReader extends AbstractContainerization implements Clearable, St
             $nameSpace = __NAMESPACE__ .'\\Annotation';
             // ignore
             AnnotationReader::addGlobalIgnoredName(AnnotationController::class);
+            AnnotationReader::addGlobalIgnoredName(AnnotationRequirementsInterface::class);
             foreach (new DirectoryIterator(__DIR__.'/Annotation') as $di) {
                 if ($di->isDot() || !$di->isFile() || $di->getExtension() !== 'php') {
                     continue;

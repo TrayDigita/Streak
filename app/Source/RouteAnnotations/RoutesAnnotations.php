@@ -5,8 +5,10 @@ namespace TrayDigita\Streak\Source\RouteAnnotations;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JetBrains\PhpStorm\Pure;
+use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
 use RuntimeException;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
@@ -14,6 +16,7 @@ use TrayDigita\Streak\Source\Interfaces\Abilities\Clearable;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
 use TrayDigita\Streak\Source\RouteAnnotations\Abstracts\AnnotationController;
 use TrayDigita\Streak\Source\RouteAnnotations\Annotation\Route;
+use TrayDigita\Streak\Source\RouteAnnotations\Interfaces\AnnotationRequirementsInterface;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 
 final class RoutesAnnotations extends AbstractContainerization implements Startable, Clearable
@@ -117,11 +120,39 @@ final class RoutesAnnotations extends AbstractContainerization implements Starta
         $this->fileName = $ref->getFileName();
         $this->className = $ref->getName();
         /**
-         * @var ?Route $annotation
+         * @var ?Route|AnnotationRequirementsInterface $annotation
          */
         $annotation = $this->annotationReader->getClassAnnotations($ref)[0]??null;
-        $this->groupPath = $annotation ? $annotation->getPath() : '';
-        if ($annotation && is_array($requirements = $annotation->getRequirements())) {
+        $groupPath = $annotation ? $annotation->getRoutePattern() : '';
+        if (!is_string($groupPath??'')) {
+            return $this;
+        }
+
+        // checking condition
+        $expression = $this->getContainer(ExpressionLanguage::class);
+        $condition = $annotation?->getCondition();
+        if ($condition) {
+            try {
+                $matches = $expression->evaluate(
+                    $condition,
+                    [
+                        'annotation' => $annotation,
+                        'route' => null,
+                        'controller' => null,
+                        'request' => $this->getContainer(ServerRequestInterface::class),
+                        'container' => $this->getContainer(),
+                    ]
+                );
+                if (!$matches) {
+                    return $this;
+                }
+            } catch (Throwable) {
+                return $this;
+            }
+        }
+
+        $this->groupPath = $groupPath;
+        if (is_array($requirements = $annotation->getRequirements())) {
             $placeholder = '_'.mt_rand().'_';
             $this->groupPath = preg_replace('~([{][^}]+[}])~', sprintf('%s$1', $placeholder), $this->groupPath);
             foreach ($requirements as $key => $v) {
