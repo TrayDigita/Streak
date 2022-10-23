@@ -54,11 +54,10 @@ return (function () {
     if (Validator::isCli()) {
         $container = $application->getContainer();
         $console = $container->get(Runner::class);
-        // @todo completing
         $console->addCommands([
             new MakeController($container),
-            // new MakeModule($container),
-            // new MakeMiddleware($container),
+            new MakeModule($container),
+            new MakeMiddleware($container),
             new MakeModel($container),
             new RunScheduler($container)
         ]);
