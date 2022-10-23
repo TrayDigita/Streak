@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\ACL;
 
+use JetBrains\PhpStorm\ArrayShape;
 use ReturnTypeWillChange;
 use TrayDigita\Streak\Source\ACL\Interfaces\IdentityInterface;
 use TrayDigita\Streak\Source\Traits\PasswordHashed;
@@ -98,7 +99,9 @@ class UserControl
     /**
      * @return array<string, IdentityInterface>
      */
-    public function getIdentities(): array
+    #[ArrayShape([
+        'string' => 'array<IdentityInterface>'
+    ])] public function getIdentities(): array
     {
         return $this->identities;
     }
