@@ -12,8 +12,8 @@
 
 # Notes
 
-- [Routing & Controller](ROUTES.md)
-- [Directory & File Structures](STRUCTURES.md)
+- [Routing & Controller](docs-md/ROUTES.md)
+- [Directory & File Structures](docs-md/STRUCTURES.md)
 
 
 Please create `Config.php` from `Example.Config.php` to make sure application working properly

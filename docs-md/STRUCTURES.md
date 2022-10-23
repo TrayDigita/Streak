@@ -25,6 +25,9 @@ Default structures.
     |      |---- cron.php (Cron File)
     |      |---- cron (cron.php Symlink)
     |      |
+    |---- docs-md/ (Markdown Directory)
+    |      |---- *****.md (Markdown Files)
+    |      |
     |---- loader/ (Loader Directory)
     |      | ---- (File must be Init.php To Include On Load)
     |      |
