@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Bin {
 
+    use Psr\Http\Message\ResponseFactoryInterface;
+    use Psr\Http\Message\ServerRequestInterface;
+    use Psr\Http\Server\RequestHandlerInterface;
+    use Slim\Exception\HttpSpecializedException;
     use Symfony\Component\Console\Output\ConsoleOutput;
     use Throwable;
     use TrayDigita\Streak\Source\Application;
     use TrayDigita\Streak\Source\Console\Runner;
     use TrayDigita\Streak\Source\Container;
-    use TrayDigita\Streak\Source\Controller\Commands\MakeController;
-    use TrayDigita\Streak\Source\Database\Commands\MakeModel;
-    use TrayDigita\Streak\Source\Middleware\Commands\MakeMiddleware;
-    use TrayDigita\Streak\Source\Module\Commands\MakeModule;
     use TrayDigita\Streak\Source\Helper\Util\Validator;
-    use TrayDigita\Streak\Source\Scheduler\Commands\RunScheduler;
 
     /**
      * @var Application $app
@@ -26,7 +25,7 @@ namespace TrayDigita\Streak\Bin {
 
     try {
         $run = false;
-        $app->add(function () use (&$run) {
+        $app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) use (&$run) {
             $run = true;
             /**
              * @var Container $this
@@ -38,6 +37,11 @@ namespace TrayDigita\Streak\Bin {
                 $console->run();
             } catch (Throwable $e) {
                 $console->renderThrowable($e, $output);
+            }
+            try {
+                return $handler->handle($request);
+            } catch (HttpSpecializedException) {
+                return $this->get(ResponseFactoryInterface::class)->createResponse();
             }
         });
         return $app->run(false, true);
