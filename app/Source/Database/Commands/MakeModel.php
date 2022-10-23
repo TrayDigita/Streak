@@ -17,13 +17,13 @@ class MakeModel extends MakeClassCommand
     protected string $command = 'model';
     protected string $type = 'model';
     protected string $modelDirectory = '';
-    protected string $classNamespace = 'TrayDigita\\Streak\\Source\\Model';
+    protected string $classNamespace = 'TrayDigita\\Streak\\Model';
 
     protected function configure()
     {
+        parent::configure();
         $app = $this->getContainer(StoragePath::class)->getAppDirectory();
         $this->modelDirectory = "$app/Model";
-        parent::configure();
     }
 
     protected function isReadyForWriting(
@@ -45,11 +45,10 @@ class MakeModel extends MakeClassCommand
         $file .= "$name.php";
         $fileName = $this->modelDirectory . "/$file";
         if (file_exists($fileName)) {
-            return $this->translate(
-                sprintf(
-                    'File %s already exists',
-                    $file
-                )
+            $this->isYes = false;
+            return sprintf(
+                $this->translate('File %s already exists.'),
+                $file
             );
         }
         return true;
@@ -85,28 +84,28 @@ class MakeModel extends MakeClassCommand
 ------------------------------------------------------
 CLI
             );
-            $question = new Question(
-                $this->translate('Are you sure [Y/n]'),
-                'Y'
-            );
-            do {
-                $accept = $symfonyStyle->askQuestion($question);
-            } while (!preg_match('~(y(?:es)?|no?)~i', (string) $accept));
-
-            if (!$accept) {
-                $symfonyStyle->writeln(
-                    '<fg=red>[CANCELLED]</>'
+            if (!$this->isYes) {
+                $question = new Question(
+                    $this->translate('Are you sure [Y/n]'),
+                    'Y'
                 );
+                do {
+                    $accept = $symfonyStyle->askQuestion($question);
+                } while (!preg_match('~(y(?:es)?|no?)~i', (string)$accept));
 
-                return 0;
+                if (!$accept) {
+                    $symfonyStyle->writeln(
+                        '<fg=red>[CANCELLED]</>'
+                    );
+
+                    return 0;
+                }
             }
         }
 
         $date = $this->getContainer(Time::class);
         $date = $date->getCurrentTimeUTC()->format('Y-m-d H:i:s e');
         $basename = $subClass ? "$subClass\\$name" : $name;
-        $extends = Model::class;
-        $eventsClass = Events::class;
         $lower_class_name = preg_replace('~([A-Z])~', '_$1', $name);
         $lower_class_name = trim(preg_replace('~[_]+~', '_', $lower_class_name), '_');
         $lower_name = strtolower(str_replace('\\', '_', $subClass));
@@ -118,8 +117,7 @@ declare(strict_types=1);
 
 namespace $namespace;
 
-use $extends;
-use $eventsClass;
+use TrayDigita\Streak\Source\Database\Abstracts\Model;
 
 /**
  * Model $basename
@@ -156,8 +154,11 @@ class $name extends Model
         // example to add events
         \$value = parent::filterValue(\$name, \$value);
         return \$this
-            ->getContainer(Events::class)
-            ->dispatch('Model:$basename:filterValue', \$value, \$this);
+            ->eventDispatch(
+                'Model:$basename:filterValue',
+                \$value,
+                \$this
+            );
     }
 }
 

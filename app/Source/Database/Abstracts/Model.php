@@ -36,6 +36,7 @@ use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Interfaces\ContainerizeInterface;
 use TrayDigita\Streak\Source\Time;
 use TrayDigita\Streak\Source\Traits\Containerize;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 
 abstract class Model implements ContainerizeInterface, Stringable, Serializable, JsonSerializable
@@ -44,7 +45,8 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
     private static array $recordDatabaseTableModel = [];
 
     use TranslationMethods,
-        Containerize;
+        Containerize,
+        EventsMethods;
 
     /**
      * @var Container
@@ -271,11 +273,9 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         }
         if ($this->tableName === '') {
             throw new Exception(
-                $this->translate(
-                    sprintf(
-                        'Table for model %s is not exist.',
-                        $originalClassName
-                    )
+                sprintf(
+                    $this->translate('Table for model %s is not exist.'),
+                    $originalClassName
                 )
             );
         }

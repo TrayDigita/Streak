@@ -54,6 +54,14 @@ class Collector extends AbstractContainerization implements Scannable
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getModuleDirectory(): string
+    {
+        return $this->moduleDirectory;
+    }
+
     public function scan(): static
     {
         if ($this->scanned) {

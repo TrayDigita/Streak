@@ -9,6 +9,7 @@ abstract class RunCommand extends NamespaceCommand
 
     protected function configure()
     {
+        parent::configure();
         $this->setHelp(<<<EOT
 The <info>%command.name%</info> run command
 

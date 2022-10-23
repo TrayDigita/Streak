@@ -14,14 +14,11 @@ use TrayDigita\Streak\Source\Console\Runner;
 use TrayDigita\Streak\Source\Helper\Util\StreamCreator;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Json\ApiCreator;
-use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
 use TrayDigita\Streak\Source\Middleware\Abstracts\AbstractMiddleware;
 
 class ErrorMiddlewareHandler extends AbstractMiddleware
 {
-    use EventsMethods;
-
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler

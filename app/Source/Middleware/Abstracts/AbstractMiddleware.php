@@ -23,6 +23,16 @@ abstract class AbstractMiddleware extends AbstractResponse implements CallableMi
     }
 
     /**
+     * Priority of middleware, the lowest value will be last execute
+     *
+     * @return int
+     */
+    public static function thePriority(): int
+    {
+        return 10;
+    }
+
+    /**
      * @return RouteCollectorProxyInterface
      */
     public function getRouteCollectorProxy(): RouteCollectorProxyInterface

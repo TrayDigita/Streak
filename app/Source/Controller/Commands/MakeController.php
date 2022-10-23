@@ -11,6 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use TrayDigita\Streak\Source\Console\Abstracts\MakeClassCommand;
 use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
 use TrayDigita\Streak\Source\Controller\Collector;
+use TrayDigita\Streak\Source\Time;
 
 class MakeController extends MakeClassCommand
 {
@@ -19,15 +20,16 @@ class MakeController extends MakeClassCommand
     protected string $controllerDirectory = '';
     protected string $controllerNamespace = 'TrayDigita\\Streak\\Controller';
     protected int $maxDepth = 1;
+
     protected function configure()
     {
+        parent::configure();
         $collector = $this->getContainer(Collector::class);
         $namespace = $collector->getNamespaces();
         $this->classNamespace = reset($namespace);
         $this->controllerNamespace = $this->classNamespace;
         $this->maxDepth = $collector->getMaxDepth();
         $this->controllerDirectory = $collector->getControllerDirectory();
-        parent::configure();
     }
 
     protected function isReadyForWriting(
@@ -46,12 +48,13 @@ class MakeController extends MakeClassCommand
         $subClass = ltrim($subClass, '\\');
         $count = count(explode('\\', $subClass));
         if (($count+1) > $this->maxDepth) {
-            return $this->translate(
-                sprintf(
-                    'Max depth of class name is %d, you have %d depth',
-                    $this->maxDepth+1,
-                    $count
-                )
+            $this->isYes = false;
+            return sprintf(
+                $this->translate(
+                    'Max depth of class name is %d, you have %d depth.'
+                ),
+                $this->maxDepth+1,
+                $count
             );
         }
         $file = str_replace('\\', '/', $subClass);
@@ -59,11 +62,12 @@ class MakeController extends MakeClassCommand
         $file .= "$name.php";
         $fileName = $this->controllerDirectory . "/$file";
         if (file_exists($fileName)) {
-            return $this->translate(
-                sprintf(
-                    'File %s already exists',
-                    $file
-                )
+            $this->isYes = false;
+            return sprintf(
+                $this->translate(
+                    'File %s already exists.'
+                ),
+                $file
             );
         }
         return true;
@@ -99,26 +103,29 @@ class MakeController extends MakeClassCommand
 ------------------------------------------------------
 CLI
             );
-            $question = new Question(
-                $this->translate('Are you sure [Y/n]'),
-                'Y'
-            );
-            do {
-                $accept = $symfonyStyle->askQuestion($question);
-            } while (!preg_match('~(y(?:es)?|no?)~i', (string) $accept));
 
-            if (!$accept) {
-                $symfonyStyle->writeln(
-                    '<fg=red>[CANCELLED]</>'
+            if (!$this->isYes) {
+                $question = new Question(
+                    $this->translate('Are you sure [Y/n]'),
+                    'Y'
                 );
+                do {
+                    $accept = $symfonyStyle->askQuestion($question);
+                } while (!preg_match('~(y(?:es)?|no?)~i', (string)$accept));
 
-                return 0;
+                if (!$accept) {
+                    $symfonyStyle->writeln(
+                        '<fg=red>[CANCELLED]</>'
+                    );
+
+                    return 0;
+                }
             }
         }
 
-        $extends = AbstractController::class;
-        $serverInterface = ServerRequestInterface::class;
-        $responseInterface = ResponseInterface::class;
+        $date = $this->getContainer(Time::class);
+        $date = $date->getCurrentTimeUTC()->format('Y-m-d H:i:s e');
+        $basename = $subClass ? "$subClass\\$name" : $name;
         $lower_name = strtolower(str_replace('\\', '/', $subClass));
         /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
         $string = <<<PHP
@@ -127,10 +134,15 @@ declare(strict_types=1);
 
 namespace $namespace;
 
-use $extends;
-use $serverInterface;
-use $responseInterface;
+use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Controller $basename
+ *
+ * @generated $date
+ */
 class $name extends AbstractController
 {
     /**

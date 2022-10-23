@@ -31,9 +31,7 @@ abstract class MakeClassCommand extends MakeCommand
         if ($desc === '') {
             $this->setDescription(
                 sprintf(
-                    $this->translate(
-                        '[%s] Generate %s'
-                    ),
+                    $this->translate('[%s] Generate %s'),
                     $this->command,
                     ucfirst($this->type)
                 )
@@ -43,13 +41,12 @@ abstract class MakeClassCommand extends MakeCommand
 
     protected function configure()
     {
+        parent::configure();
         $this->classNamespace = trim($this->classNamespace);
-        $translate = $this->translate(
-            sprintf(
-                'The %s command generates a blank %s class.',
-                '<info>%command.name%</info>',
-                $this->type
-            )
+        $translate = sprintf(
+            $this->translate('The %s command generates a blank %s class.'),
+            '<info>%command.name%</info>',
+            $this->type
         );
         $this
             ->addOption(
@@ -146,7 +143,8 @@ EOT
                 $fullClassName .= $name;
                 $namespace = Validator::getNamespace($fullClassName);
                 $name      = Validator::getClassBaseName($fullClassName);
-                if (($ready = $this->isReadyForWriting(
+                $ready = false;
+                if (! $name || ($ready = $this->isReadyForWriting(
                     $namespace,
                     $name,
                     $fullClassName,
@@ -155,11 +153,11 @@ EOT
                     $symfonyStyle->writeln(
                         sprintf(
                             '<fg=red>%s</>',
-                            is_string($ready) ? $ready : $this->translate(
-                                sprintf(
-                                    'Class Name %s exist or not valid for repository.',
-                                    $name
-                                )
+                            is_string($ready) ? $ready : sprintf(
+                                $this->translate(
+                                    'Class Name %s exist or not valid for repository.'
+                                ),
+                                $name
                             )
                         )
                     );
@@ -182,6 +180,7 @@ EOT
                     $namespace = Validator::getNamespace($fullClassName);
                     $name      = Validator::getClassBaseName($fullClassName);
                 }
+
                 if ($name !== null && ($ready = $this->isReadyForWriting(
                     $namespace,
                     $name,
@@ -191,11 +190,11 @@ EOT
                     $symfonyStyle->writeln(
                         sprintf(
                             '<fg=red>%s</>',
-                            is_string($ready) ? $ready : $this->translate(
-                                sprintf(
-                                    'Class Name %s exist or not valid for repository.',
-                                    $name
-                                )
+                            is_string($ready) ? $ready : sprintf(
+                                $this->translate(
+                                    'Class Name %s exist or not valid for repository.'
+                                ),
+                                $name
                             )
                         )
                     );
@@ -207,16 +206,14 @@ EOT
         if (!is_string($name) || !$name || trim($name) === '') {
             throw new RuntimeException(
                 sprintf(
-                    sprintf(
-                        $this->translate(
-                            '%s name could not be empty.'
-                        ),
-                        ucwords($this->type)
+                    $this->translate(
+                        '%s name could not be empty.'
                     ),
-                    $namespace
+                    ucwords($this->type)
                 )
             );
         }
+
         if ($isQuiet) {
             $name = ucwords($name, '\\');
             $namespace = $namespace ? ucwords($namespace, '\\') : $namespace;
@@ -233,11 +230,11 @@ EOT
                 $symfonyStyle->writeln(
                     sprintf(
                         '<fg=red>%s</>',
-                        is_string($ready) ? $ready : $this->translate(
-                            sprintf(
-                                'Class Name %s exist or not valid for repository.',
-                                $name
-                            )
+                        is_string($ready) ? $ready : sprintf(
+                            $this->translate(
+                                'Class Name %s exist or not valid for repository.'
+                            ),
+                            $name
                         )
                     )
                 );

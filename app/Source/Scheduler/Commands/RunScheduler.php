@@ -24,11 +24,10 @@ class RunScheduler extends RunCommand
 
     protected function configure()
     {
-        $translate = $this->translate(
-            sprintf(
-                'The %s to run the task scheduler',
-                '<info>%command.name%</info>'
-            )
+        parent::configure();
+        $translate = sprintf(
+            $this->translate('The %s to run the task scheduler'),
+            '<info>%command.name%</info>'
         );
         $this
             ->setDescription(

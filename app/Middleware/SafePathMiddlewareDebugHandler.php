@@ -14,13 +14,10 @@ use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Middleware\Abstracts\AbstractMiddleware;
 use TrayDigita\Streak\Source\Records\Collections;
-use TrayDigita\Streak\Source\Traits\EventsMethods;
 use Wa72\HtmlPageDom\HtmlPageCrawler;
 
 class SafePathMiddlewareDebugHandler extends AbstractMiddleware
 {
-    use EventsMethods;
-
     private bool $inException = false;
     private ?string $quoted = null;
 

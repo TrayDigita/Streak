@@ -64,10 +64,10 @@ class Storage extends AbstractContainerization implements Startable
                 $module,
                 $moduleClass,
                 function (AbstractModule $module, $moduleName) use ($events) {
-                    $events->dispatch('StorageModules:module:prepare', $module, $this);
-                    $module->initModule();
                     $this->registered[$moduleName] = true;
-                    $events->dispatch('StorageModules:module:registered', $module, $this);
+                    if ($module->isInitializeModule()) {
+                        $module->initModule();
+                    }
                 }
             );
             $timeRecord->stop($moduleNameId);

@@ -34,6 +34,7 @@ abstract class NamespaceCommand extends Command implements ContainerizeInterface
      * @var bool
      */
     protected bool $isQuiet = false;
+    protected bool $isYes   = false;
 
     /**
      * @param Container $container
@@ -41,6 +42,11 @@ abstract class NamespaceCommand extends Command implements ContainerizeInterface
     public function __construct(private Container $container)
     {
         parent::__construct($this->getFullCommandName());
+    }
+
+    protected function configure()
+    {
+        $this->addOption('yes', 'y');
     }
 
     #[Pure] public function getFullCommandName() : string
@@ -81,9 +87,10 @@ abstract class NamespaceCommand extends Command implements ContainerizeInterface
     final protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $this->isQuiet = (
-            $input->getOption('no-interaction')
-            || $input->getOption('quiet')
+            $input->hasOption('no-interaction') && $input->getOption('no-interaction')
+            || $input->hasOption('quiet') && $input->getOption('quiet')
         );
+        $this->isYes = $input->hasOption('yes') && $input->getOption('yes');
         return $this->doExecute(new SymfonyStyle($input, $output), $input, $output);
     }
 

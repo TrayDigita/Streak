@@ -3,25 +3,18 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Middleware;
 
-use Composer\Autoload\ClassLoader;
 use DirectoryIterator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use ReflectionClass;
-use Symfony\Component\DomCrawler\Crawler;
 use Throwable;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Middleware\Abstracts\AbstractMiddleware;
 use TrayDigita\Streak\Source\Scheduler\Abstracts\AbstractTask;
 use TrayDigita\Streak\Source\Scheduler\Scheduler;
-use Wa72\HtmlPageDom\HtmlPageCrawler;
 
 class SchedulerRegistrationMiddleware extends AbstractMiddleware
 {
-    private bool $inException = false;
-
     public static function thePriority(): int
     {
         return PHP_INT_MIN + 10;
