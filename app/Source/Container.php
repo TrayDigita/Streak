@@ -136,7 +136,7 @@ class Container implements ContainerInterface, ArrayAccess
     private function buildFactory()
     {
         $this
-            ->setProtect(__CLASS__)
+            ->setProtect(__CLASS__, fn ($c) => $c)
             ->setGlobalAliases(__CLASS__)
             ->setGlobalAliases(ContainerInterface::class)
             ->setGlobalAliases('Container')
