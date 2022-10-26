@@ -45,24 +45,10 @@ class StoragePath extends AbstractContainerization
             $path = new Configurations();
         }
 
-        $rootSub = $_SERVER['DOCUMENT_ROOT']??null;
-        if (!$rootSub) {
-            try {
-                $ref = new ReflectionClass($this->getComposerClassLoader());
-                $rootSub = dirname($ref->getFileName(), 2);
-            } catch (Throwable) {
-                $rootSub = dirname(__DIR__);
-            }
-        }
-
-        $root               = dirname($rootSub);
-        $this->appDirectory = dirname(__DIR__);
-        if (!str_starts_with(__DIR__, $rootSub)) {
-            $root = dirname(__DIR__, 2);
-        }
+        $this->appDirectory = Consolidation::appDirectory();
 
         $defaultStorage      = $this->rootDirectory . DIRECTORY_SEPARATOR . 'storage';
-        $this->rootDirectory = $root;
+        $this->rootDirectory = Consolidation::rootDirectory();
         $storage             = ($path['storage']??null)?:null;
         $storage = !is_string($storage) ? null : $storage;
         if ($storage && !Validator::isRelativePath($storage)) {

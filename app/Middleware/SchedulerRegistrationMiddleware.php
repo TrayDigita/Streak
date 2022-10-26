@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
+use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Middleware\Abstracts\AbstractMiddleware;
 use TrayDigita\Streak\Source\Scheduler\Abstracts\AbstractTask;
@@ -22,10 +23,12 @@ class SchedulerRegistrationMiddleware extends AbstractMiddleware
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $target = dirname(__DIR__).'/Scheduler';
+        $appDir = Consolidation::appDirectory();
+        $target = "$appDir/Scheduler";
         if (!is_dir($target)) {
             return $handler->handle($request);
         }
+
         $scheduler = $this->getContainer(Scheduler::class);
         $namespace = "TrayDigita\\Streak\\Scheduler";
         foreach (new DirectoryIterator($target) as $iterator) {

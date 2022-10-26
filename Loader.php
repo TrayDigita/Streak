@@ -1,9 +1,9 @@
 <?php
+/** @noinspection PhpIncludeInspection */
 declare(strict_types=1);
 
 namespace TrayDigita\Streak;
 
-use ReflectionClass;
 use TrayDigita\Streak\Source\Application;
 use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Console\Runner;
@@ -11,6 +11,7 @@ use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Controller\Commands\MakeController;
 use TrayDigita\Streak\Source\Database\Commands\MakeModel;
 use TrayDigita\Streak\Source\Events;
+use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Middleware\Commands\MakeMiddleware;
 use TrayDigita\Streak\Source\Module\Commands\MakeModule;
@@ -18,13 +19,15 @@ use TrayDigita\Streak\Source\Scheduler\Commands\RunScheduler;
 
 return (function () {
 
-    require __DIR__ . '/vendor/autoload.php';
+    if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+        require __DIR__ . '/vendor/autoload.php';
+    }
 
     // add container
     $container = new Container();
-    $events = $container->get(Events::class);
-    $ref = new ReflectionClass($container);
-    $appPath = dirname($ref->getFileName(), 2);
+    $events  = $container->get(Events::class);
+    $appPath = Consolidation::appDirectory();
+    $rootDir = Consolidation::rootDirectory();
     $events->add('Middleware:directory', fn () => "$appPath/Middleware");
     $events->add('Controller:directory', fn () => "$appPath/Controller");
     $events->add('Module:directory', fn () => "$appPath/Module");
@@ -36,18 +39,20 @@ return (function () {
         $container->translation->addDirectory(__DIR__.'/languages', 'default');
     }
 
-    $container->set(Configurations::class, function () : Configurations {
-        $config = file_exists(__DIR__ .'/Config.php') && is_file(__DIR__ .'/Config.php')
-            ? (array) (require __DIR__ .'/Config.php')
-            : [];
-        return new Configurations($config);
-    })->protect();
+    if ($rootDir !== __DIR__ && is_dir("$rootDir/languages")) {
+        $container->translation->addDirectory("$rootDir/languages", 'default');
+    }
+
+    $container->set(Configurations::class, fn () => new Configurations(
+        is_file("$rootDir/Config.php")
+            ? (array) (require "$rootDir/Config.php")
+            : []
+    ))->protect();
     $application = new Application($container);
     unset($container);
-    (function () {
-        if (file_exists(__DIR__ .'/loader/Init.php')) {
-            /** @noinspection PhpIncludeInspection */
-            require_once __DIR__ .'/loader/Init.php';
+    (function () use ($rootDir) {
+        if (file_exists("$rootDir/loader/Init.php")) {
+            require_once "$rootDir/loader/Init.php";
         }
     })->call($application);
 

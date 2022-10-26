@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source;
 
 use Closure;
-use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\DBAL\Tools\Console\ConnectionProvider;
@@ -25,7 +24,6 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
 use Slim\App;
 use Slim\Factory\Psr17\ServerRequestCreator;
 use Slim\Factory\ServerRequestCreatorFactory;
@@ -63,6 +61,7 @@ use TrayDigita\Streak\Source\RouteAnnotations\Collector as AnnotationCollector;
 use TrayDigita\Streak\Source\Session\Driver\DefaultDriver;
 use TrayDigita\Streak\Source\Session\Sessions;
 use TrayDigita\Streak\Source\Scheduler\Scheduler;
+use TrayDigita\Streak\Source\Traits\ComposerLoaderObject;
 use TrayDigita\Streak\Source\Traits\Containerize;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
@@ -77,7 +76,8 @@ use WoohooLabs\Yin\JsonApi\Serializer\JsonDeserializer;
  */
 class Application implements ContainerizeInterface
 {
-    use Containerize;
+    use Containerize,
+        ComposerLoaderObject;
 
     private string $version = '1.0.0';
 
@@ -197,7 +197,7 @@ class Application implements ContainerizeInterface
     protected function createFactory(?Container $container = null) : Container
     {
         $baseNS = Consolidation::getNameSpace(__NAMESPACE__);
-        $appDir = dirname(__DIR__);
+        $appDir = Consolidation::appDirectory();
 
         $this->container = $container??new Container();
         $container = $this->container;
@@ -214,8 +214,7 @@ class Application implements ContainerizeInterface
             $container->set(
                 Configurations::class,
                 function () {
-                    $ref = new ReflectionClass(ClassLoader::class);
-                    $root = dirname($ref->getFileName(), 3);
+                    $root = Consolidation::rootDirectory();
                     $file = "$root/Config.php";
                     $config = file_exists($file) && is_file($file)
                         ? (require $file)
@@ -258,7 +257,7 @@ class Application implements ContainerizeInterface
             'applicationName'       => fn () => $this->getName(),
             'applicationVersion'    => fn () => $this->getVersion(),
             'controllerNamespaces'  => fn () => $events->dispatch('Controller:namespace', ["$baseNS\\Controller"]),
-            'controllerDirectory'   => fn () => $events->dispatch('Controller:directory', "$appDir/Middleware"),
+            'controllerDirectory'   => fn () => $events->dispatch('Controller:directory', "$appDir/Controller"),
 
             'moduleNamespaces'      => fn () => $events->dispatch('Module:namespace', ["$baseNS\\Module"]),
             'moduleDirectory'       => fn () => $events->dispatch('Module:directory', "$appDir/Module"),
@@ -361,7 +360,9 @@ class Application implements ContainerizeInterface
                     if (!is_array($configurations)) {
                         $configurations = [];
                     }
-                    if (!isset($configurations['migrations_paths']) || !is_array($configurations['migrations_paths'])) {
+                    if (!isset($configurations['migrations_paths'])
+                        || !is_array($configurations['migrations_paths'])
+                    ) {
                         $configurations['migrations_paths'] = $default['migrations_paths'];
                     }
                     foreach ($configurations['migrations_paths'] as $namespace => $path) {
