@@ -65,9 +65,9 @@
         "sha256": "d25d4d2fea4cea5163a150ecf1bc8e712e05c32797a310a141781837f0440e17"
     },
     "app/Source/Helper/Util/Consolidation.php": {
-        "md5": "66a70bc0a1419dce19da9e4c7f0b805e",
-        "sha1": "60dbaab6061e72be0efd5c10949ada1c50573b52",
-        "sha256": "05046e32bd48b51f617be2f2b373b7b88e1cc09af3a9cb986c0e7db018c91b18"
+        "md5": "fa575424fccd4f42d585083cbfeb64bd",
+        "sha1": "50122cfc0f4b7f7a95ff1caf523a9bf84ea0044a",
+        "sha256": "f4773a1d8601b8678ab56aa245034b4020e205c6b0b86f27ea9721a447cb4cfc"
     },
     "app/Source/Helper/Html/Attribute.php": {
         "md5": "4153e272217051baf1dcd807b825cfc8",
@@ -185,9 +185,9 @@
         "sha256": "4dc015f16ee11f59128443952405d3a192ce73bbb522474e93d4d3f34692e381"
     },
     "app/Source/Middleware/Collector.php": {
-        "md5": "ee10f376ede3c316753ba0462dcfbe8b",
-        "sha1": "61a32f1f13941b43577c954f0f6e52f97ee1f45a",
-        "sha256": "19894fe846fd2f6dbc30db448f16fad30c43e508a1efbb802936be6df89c3c52"
+        "md5": "6450774ba8c56827b0e7051ffd04a1a0",
+        "sha1": "89222e08097e318bf5526acfdf55bc8e07761d89",
+        "sha256": "740c1cd16353cb2d9cb999fc902a7e4f623bf39a78758bde2531e7e648e7cb75"
     },
     "app/Source/Time.php": {
         "md5": "41a98db458e2e4853263945715859fb3",
