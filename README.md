@@ -1,6 +1,16 @@
 # STREAK!
 
 
+## Installations
+
+```bash
+composer create-project traydigita/streak --stability dev example.com
+```
+
+
+Copy [Example.Config.php](Example.Config.php) to project root.
+
+
 ## Requirements
 
 - Php `8.1` or `8.2`
