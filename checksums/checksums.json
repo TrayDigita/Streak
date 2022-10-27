@@ -700,9 +700,9 @@
         "sha256": "7dc69d7e28f4e8e55e803e416ab8e59124847052e5e3213a4853a80e07f40814"
     },
     "composer.json": {
-        "md5": "83dfc9338802663964c9f81bfe017cc6",
-        "sha1": "b95fc25db319d965072e3dbf7f2e8a1d0f107e7b",
-        "sha256": "d1b0c56de4e3b53e15748cfdb5f6b3c5ebaa9e40c68af25551935f8454aed7b3"
+        "md5": "e4b3c300382dfe9403f3f7e5917d48d0",
+        "sha1": "35f364292591bf32068c27325f939661d362f2d6",
+        "sha256": "6ae4c13771dd058deab81a95aa6918e4e6eabc5159d0024df0d6d97d70547a7e"
     },
     "phpcs.xml": {
         "md5": "f22e709250d78aea18777d842ba16bf2",

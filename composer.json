@@ -1,6 +1,7 @@
 {
     "name": "traydigita/streak",
     "description": "Streak!",
+    "version": "1.0.0",
     "type": "project",
     "license": "MIT",
     "authors": [
