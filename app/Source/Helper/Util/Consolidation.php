@@ -37,6 +37,9 @@ class Consolidation
         if (self::$directories !== null) {
             return self::$directories;
         }
+
+        $appPath = defined('APP_PATH') ? APP_PATH : 'app';
+        $appPath = is_string($appPath) ? trim($appPath, '/\\') : $appPath;
         $loader = self::composerClassLoader();
         $app   = dirname(__DIR__, 3);
         if ($loader) {
@@ -45,7 +48,7 @@ class Consolidation
                 $vendor = dirname($loader->getFileName(), 2);
                 $root   = dirname($vendor);
                 if (str_starts_with($app, $vendor)) {
-                    $app = "$root/app";
+                    $app = "$root/$appPath";
                 }
 
                 self::$directories = [
@@ -58,16 +61,27 @@ class Consolidation
             }
         }
 
+        $root = dirname(__DIR__, 4);
         self::$directories = [
-            'root'   => dirname(__DIR__, 4),
-            'vendor' => dirname(__DIR__, 4) . '/vendor',
+            'root'   => $root,
+            'vendor' => "$root/vendor",
             'app'    => $app,
         ];
-
-        if (file_exists(self::$directories['root'] . '/composer/autoload.php')) {
+        $composer_json = self::$directories['root'] .'/composer.json';
+        if (is_file($composer_json) && is_readable($composer_json)) {
+            $composer = (string) file_get_contents($composer_json);
+            $composer = (array) json_decode($composer, true);
+            $vendor = $composer['config']??[];
+            $vendor = $vendor["vendor-dir"]??null;
+            if ($vendor) {
+                $vendor = preg_replace('~^[.]?/~', '', $vendor);
+                self::$directories['vendor'] = "$root/$vendor";
+            }
+        }
+        if (file_exists(self::$directories['root'] . '/composer/ClassLoader.php')) {
             self::$directories['vendor'] = self::$directories['root'];
             self::$directories['root']   = dirname(self::$directories['vendor']);
-            self::$directories['app']    = self::$directories['root'] . '/app';
+            self::$directories['app']    = self::$directories['root'] . "/$appPath";
         }
         return self::$directories;
     }
