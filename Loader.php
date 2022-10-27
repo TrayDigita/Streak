@@ -21,6 +21,12 @@ return (function () {
 
     if (file_exists(__DIR__ . '/vendor/autoload.php')) {
         require __DIR__ . '/vendor/autoload.php';
+    } elseif (
+        // if its on vendor
+        file_exists(dirname(__DIR__, 2).'/composer/ClassLoader.php')
+        && is_file(dirname(__DIR__, 2) . '/autoload.php')
+    ) {
+        require dirname(__DIR__, 2) . '/autoload.php';
     }
 
     // add container
