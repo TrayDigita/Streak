@@ -9,9 +9,11 @@ use ReflectionClass;
 use RuntimeException;
 use Slim\Interfaces\MiddlewareDispatcherInterface;
 use Slim\Interfaces\RouteCollectorProxyInterface;
+use SplFileInfo;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
+use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 use TrayDigita\Streak\Source\i18n\Translator;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Scannable;
 use TrayDigita\Streak\Source\Middleware\Abstracts\AbstractMiddleware;
@@ -93,44 +95,28 @@ class Collector extends AbstractContainerization implements Scannable
             return $this;
         }
 
-        foreach (new DirectoryIterator($this->middlewareDirectory) as $info) {
+        // append self middlewares
+        // include core
+        $sourceMiddlewareDir = realpath(dirname(__DIR__, 2).'/Middleware')?:null;
+        $vendorDir = Consolidation::vendorDirectory();
+        if ($sourceMiddlewareDir && $sourceMiddlewareDir !== $directory
+            && str_starts_with(__DIR__, $vendorDir)
+        ) {
+            foreach (new DirectoryIterator($sourceMiddlewareDir) as $info) {
+                if (!$info->isFile() || $info->getExtension() !== 'php') {
+                    continue;
+                }
+                $this->readMiddlewares($info, $middlewares);
+            }
+        }
+
+        foreach (new DirectoryIterator($directory) as $info) {
             if (!$info->isFile() || $info->getExtension() !== 'php') {
                 continue;
             }
-            $name = substr($info->getBasename(), 0, -4);
-            if (!preg_match('~[a-zA-Z_][A-Za-z_0-9]*$~', $name)) {
-                continue;
-            }
-            $alreadyInclude = false;
-            $foundClassName = false;
-            foreach ($this->getNamespaces() as $namespace) {
-                $className = sprintf('%1$s\\%2$s', $namespace, $name);
-                try {
-                    if (!$alreadyInclude && !class_exists($className)) {
-                        $alreadyInclude = true;
-                        (function ($info) {
-                            require_once $info->getRealPath();
-                        })->call(null, $info);
-                    }
-                    $ref = new ReflectionClass($className);
-                    if (!$ref->isSubclassOf(AbstractMiddleware::class)) {
-                        continue;
-                    }
-                    $className = $ref->getName();
-                    $foundClassName = $className;
-                    break;
-                } catch (Throwable) {
-                    continue;
-                }
-            }
-            if (!$foundClassName) {
-                continue;
-            }
-            /**
-             * @var AbstractMiddleware $foundClassName
-             */
-            $middlewares[$foundClassName::thePriority()][$foundClassName] = $foundClassName;
+            $this->readMiddlewares($info, $middlewares);
         }
+
         ksort($this->middlewares, SORT_ASC);
         foreach ($middlewares as $classNames) {
             foreach ($classNames as $className => $class) {
@@ -140,6 +126,45 @@ class Collector extends AbstractContainerization implements Scannable
         }
 
         return $this;
+    }
+
+    private function readMiddlewares(SplFileInfo|DirectoryIterator $info, &$middlewares) : bool
+    {
+        $name = substr($info->getBasename(), 0, -4);
+        if (!preg_match('~[a-zA-Z_][A-Za-z_0-9]*$~', $name)) {
+            return false;
+        }
+        $alreadyInclude = false;
+        $foundClassName = false;
+        foreach ($this->getNamespaces() as $namespace) {
+            $className = sprintf('%1$s\\%2$s', $namespace, $name);
+            try {
+                if (!$alreadyInclude && !class_exists($className)) {
+                    $alreadyInclude = true;
+                    (function ($info) {
+                        require_once $info->getRealPath();
+                    })->call(null, $info);
+                }
+                $ref = new ReflectionClass($className);
+                if (!$ref->isSubclassOf(AbstractMiddleware::class)) {
+                    continue;
+                }
+                $className = $ref->getName();
+                $foundClassName = $className;
+                break;
+            } catch (Throwable) {
+                continue;
+            }
+        }
+        if (!$foundClassName) {
+            return false;
+        }
+
+        /**
+         * @var AbstractMiddleware $foundClassName
+         */
+        $middlewares[$foundClassName::thePriority()][$foundClassName] = $foundClassName;
+        return true;
     }
 
     public function scanned(): bool
