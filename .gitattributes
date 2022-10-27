@@ -1,0 +1,6 @@
+/bin/sha-sum        export-ignore
+/bin/sha-sum.php    export-ignore
+/docs-md            export-ignore
+/checksums          export-ignore
+.gitkeep            export-ignore
+/.gitattributes     export-ignore
