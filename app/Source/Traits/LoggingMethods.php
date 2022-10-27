@@ -5,6 +5,7 @@ namespace TrayDigita\Streak\Source\Traits;
 
 use Psr\Log\LoggerInterface;
 use Stringable;
+use Throwable;
 
 trait LoggingMethods
 {
@@ -16,6 +17,16 @@ trait LoggingMethods
     public function logError(string|Stringable $message, array $context = [])
     {
         $this?->getContainer(LoggerInterface::class)->error($message, $context);
+    }
+
+    public function logException(Throwable $exception, array $context = [])
+    {
+        $this->logError($exception->getMessage(), ['exception' => $exception, ...$context]);
+    }
+
+    public function logWarningException(Throwable $exception, array $context = [])
+    {
+        $this->logWarning($exception->getMessage(), ['exception' => $exception, ...$context]);
     }
 
     public function logEmergency(string|Stringable $message, array $context = [])

@@ -67,7 +67,8 @@ class DynamicController extends AbstractController
             ->{$this->routeAnnotation->getControllerMethod()}(
                 $request,
                 $response,
-                $params
+                $params,
+                $this
             );
     }
 
@@ -142,6 +143,7 @@ class DynamicController extends AbstractController
                 $e
             );
         }
+
         $obj = new static($container);
         $obj->routeAnnotation = $route;
         $obj::$priority = $route->getPriority();

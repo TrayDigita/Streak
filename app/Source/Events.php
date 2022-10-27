@@ -5,7 +5,7 @@ namespace TrayDigita\Streak\Source;
 
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 
-class Events extends AbstractContainerization
+final class Events extends AbstractContainerization
 {
     /**
      * @var array
@@ -26,6 +26,11 @@ class Events extends AbstractContainerization
      * @var array
      */
     protected array $currentEvents = [];
+
+    /**
+     * @var array
+     */
+    protected array $storedEventsKey = [];
 
     /**
      * @param callable $callable
@@ -71,9 +76,26 @@ class Events extends AbstractContainerization
         callable $callable,
         int $priority = 10
     ): string {
-        $id                                    = $this->buildUniqueId($callable);
+        $id = $this->buildUniqueId($callable);
         $this->events[$name][$priority][$id][] = $callable;
+        $this->storedEventsKey[$name][$id][$priority] = true;
         return $id;
+    }
+
+    /**
+     * @param string $name
+     * @param ?callable $callable
+     *
+     * @return bool
+     */
+    public function has(string $name, callable $callable = null) : bool
+    {
+        if (!isset($this->storedEventsKey[$name]) || ! $callable) {
+            return false;
+        }
+
+        $id = $this->buildUniqueId($callable);
+        return !empty($this->storedEventsKey[$name][$id]);
     }
 
     /**
@@ -88,10 +110,11 @@ class Events extends AbstractContainerization
         callable $callable,
         int $priority = 10
     ): string {
-        $key                                    = $this->buildUniqueId($callable);
-        $this->events[$name][$priority][$key][] = $callable;
-        $this->dispatchOne[$name][$priority] = $key;
-        return $key;
+        $id = $this->buildUniqueId($callable);
+        $this->events[$name][$priority][$id][] = $callable;
+        $this->dispatchOne[$name][$priority] = $id;
+        $this->storedEventsKey[$name][$id][$priority] = true;
+        return $id;
     }
 
     /**
@@ -145,21 +168,49 @@ class Events extends AbstractContainerization
             if ($hash === null) {
                 $count += count($callables);
                 unset($this->events[$name][$prior]);
+                array_map(
+                    function ($id) use ($name, $prior) {
+                        unset($this->storedEventsKey[$name][$id][$prior]);
+                        if (empty($this->storedEventsKey[$name][$id])) {
+                            unset($this->storedEventsKey[$name][$id]);
+                        }
+                    },
+                    array_keys($callables)
+                );
                 continue;
             }
+
             foreach ($callables as $id => $callable) {
-                if ($hash == $id) {
-                    $count++;
-                    unset($this->events[$name][$prior][$id]);
+                if ($hash !== $id) {
+                    continue;
                 }
+                $count++;
+                unset($this->events[$name][$prior][$id]);
+                if (isset($this->storedEventsKey[$name][$id])) {
+                    unset($this->storedEventsKey[$name][$id][$prior]);
+                    if (empty($this->storedEventsKey[$name][$id])) {
+                        unset($this->storedEventsKey[$name][$id]);
+                    }
+                }
+            }
+
+            if (empty($this->events[$name][$prior])) {
+                unset($this->events[$name][$prior]);
             }
         }
 
+        if (empty($this->storedEventsKey[$name])) {
+            unset($this->storedEventsKey[$name]);
+        }
+        if (empty($this->events[$name])) {
+            unset($this->events[$name]);
+        }
         return $count;
     }
 
     /**
-     * @return string|null
+     * @return ?string
+     * @noinspection PhpUnused
      */
     public function getCurrentEvent(): ?string
     {
@@ -179,6 +230,7 @@ class Events extends AbstractContainerization
 
     /**
      * @return array
+     * @noinspection PhpUnused
      */
     public function getCurrentEvents(): array
     {
@@ -233,10 +285,21 @@ class Events extends AbstractContainerization
                 ) && $this->dispatchOne[$name][$priority] === $id) {
                     unset(
                         $this->events[$name][$priority][$id],
-                        $this->dispatchOne[$name][$priority]
+                        $this->dispatchOne[$name][$priority],
+                        $this->storedEventsKey[$name][$id][$priority]
                     );
+                    if (empty($this->storedEventsKey[$name][$id])) {
+                        unset($this->storedEventsKey[$name][$id]);
+                    }
                 }
             }
+        }
+
+        if (empty($this->dispatchOne[$name])) {
+            unset($this->dispatchOne[$name]);
+        }
+        if (empty($this->storedEventsKey[$name])) {
+            unset($this->storedEventsKey[$name]);
         }
 
         unset($this->currentEvents[$name]);

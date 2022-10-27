@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionClass;
+use ReflectionObject;
+use ReflectionProperty;
 use Symfony\Component\DomCrawler\Crawler;
 use Throwable;
 use TrayDigita\Streak\Source\Configurations;
@@ -52,7 +54,12 @@ class SafePathMiddlewareDebugHandler extends AbstractMiddleware
         return $exception;
     }
 
-    private function doReplaceJson($data)
+    /**
+     * @param mixed $data
+     *
+     * @return mixed
+     */
+    private function doReplaceJson(mixed $data) : mixed
     {
         if (is_array($data)) {
             foreach ($data as $key => $item) {
@@ -60,12 +67,29 @@ class SafePathMiddlewareDebugHandler extends AbstractMiddleware
             }
             return $data;
         }
+
+        if (is_object($data)) {
+            // clone to prevent replace old data
+            $data = clone $data;
+            $ref = new ReflectionObject($data);
+            foreach ($ref->getProperties(ReflectionProperty::IS_PUBLIC) as $prop) {
+                /** @noinspection PhpUndefinedMethodInspection */
+                if ($prop->isPublic() && $prop->isReadOnly() !== true) {
+                    $prop->setValue(
+                        $data,
+                        $this->doReplaceJson($prop->getValue($data))
+                    );
+                }
+            }
+            return $data;
+        }
+
         if (!is_string($data)) {
             return $data;
         }
 
         return preg_replace(
-            "~{$this->quoted}~",
+            "~$this->quoted~",
             '[ROOT]/',
             $data,
         );

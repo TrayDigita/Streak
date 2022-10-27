@@ -1,10 +1,10 @@
 <?php
-/** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Controller\Abstracts;
 
 use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,17 +12,48 @@ use ReflectionMethod;
 use Slim\Interfaces\RouteInterface;
 use Throwable;
 use TrayDigita\Streak\Source\Application;
+use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Interfaces\PriorityCallableInterface;
 use TrayDigita\Streak\Source\Benchmark;
+use TrayDigita\Streak\Source\Traits\LoggingMethods;
 
 abstract class AbstractController extends AbstractResponse implements PriorityCallableInterface, JsonSerializable
 {
+    use LoggingMethods;
+
+    /**
+     * @var array
+     */
     private array $parsedRoute = [];
+
+    /**
+     * @var ?ServerRequestInterface
+     */
+    private ?ServerRequestInterface $request = null;
+
+    /**
+     * @var ?ResponseInterface
+     */
+    private ?ResponseInterface $response = null;
+
+    /**
+     * @var array
+     */
+    private array $routeParameters = [];
 
     /**
      * @var ?RouteInterface
      */
     private ?RouteInterface $routeInterface = null;
+
+    /**
+     * @param Container $container
+     * @final
+     */
+    #[Pure] final public function __construct(Container $container)
+    {
+        parent::__construct($container);
+    }
 
     /**
      * @return array
@@ -46,6 +77,30 @@ abstract class AbstractController extends AbstractResponse implements PriorityCa
     public function getRouteInterface(): ?RouteInterface
     {
         return $this->routeInterface;
+    }
+
+    /**
+     * @return ?ServerRequestInterface
+     */
+    public function getRequest(): ?ServerRequestInterface
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return ?ResponseInterface
+     */
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRouteParameters(): array
+    {
+        return $this->routeParameters;
     }
 
     /**
@@ -86,7 +141,10 @@ abstract class AbstractController extends AbstractResponse implements PriorityCa
      */
     abstract public function getRoutePattern() : string;
 
-    private function determineResponseContentType()
+    /**
+     * @return string
+     */
+    private function determineResponseContentType(): string
     {
         $matched = [
             '~[+]\s*json|vnd\.api~i' => $this->jsonApiContentType,
@@ -117,8 +175,11 @@ abstract class AbstractController extends AbstractResponse implements PriorityCa
         ResponseInterface $response,
         array $params = [],
     ) : ResponseInterface {
+        $this->request  =& $request;
+        $this->response =& $response;
+        $this->routeParameters =& $params;
         $this->routeInterface = $routeInterface;
-        $this->parsedRoute = $parsedRoute;
+        $this->parsedRoute    = $parsedRoute;
         $isProto = false;
         try {
             $reflector = new ReflectionMethod($this, 'getDefaultResultContentType');
@@ -133,6 +194,7 @@ abstract class AbstractController extends AbstractResponse implements PriorityCa
                 $responseContentType
             );
         }
+
         $timer = $this->getContainer(Benchmark::class);
         $timerName = sprintf('Controller:routing[%s]', get_class($this));
 
@@ -145,29 +207,63 @@ abstract class AbstractController extends AbstractResponse implements PriorityCa
         // dispatch events
         $this->eventDispatch(
             'Controller:doRouting',
-            $response,
-            $request,
+            $this->response,
+            $this->request,
+            $this->getRouteParameters(),
             $this
         );
+
+        // log debug
+        $this->logDebug(
+            $this->translate('Dispatching route'),
+            [
+                'controller' => get_class($this),
+                'url'        => (string) $this->request->getUri(),
+                'method'     => $this->request->getMethod(),
+            ]
+        );
+
         // dispatch events
-        $response = $this->doRouting($request, $response, $params);
+        $this->response = $this->doRouting(
+            $this->request,
+            $this->response,
+            $this->routeParameters
+        );
 
+        // stop
         $timer->stop($timerName);
-
+        // dispatch event
         $response = $this->eventDispatch(
             'Controller:response',
-            $response,
-            $request,
+            $this->response,
+            $this->request,
+            $this->getRouteParameters(),
             $this
         );
+
+        if ($response instanceof ResponseInterface) {
+            $this->response = $response;
+        }
+
         $timer->addStop('dispatch:route');
-        return $response;
+        return $this->response;
     }
 
     #[ArrayShape(
         [
-            'controller' => "array",
-            'route' => "array"
+            'controller' => [
+                'className' => 'string',
+                'routePattern' => [
+                    'group' => 'string',
+                    'pattern' => 'string',
+                ]
+            ],
+            'route' => [
+                'name' => 'string',
+                'methods' => 'string[]',
+                'pattern' => 'string',
+                'patterns' => 'array',
+            ]
         ]
     )] public function jsonSerialize() : array
     {

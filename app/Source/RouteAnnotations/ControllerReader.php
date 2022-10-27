@@ -187,12 +187,18 @@ class ControllerReader extends AbstractContainerization implements Clearable, St
          */
         $cache = $this->getContainer(Cache::class);
         $cacheName = sprintf('resultParser%s', md5($this->file));
+        $mTime = filemtime($this->file);
         try {
             $item = $cache->getItem($cacheName);
             $result = $item->get();
-            if ($result instanceof ResultParser) {
+            if (is_array($result)
+                && isset($result['time'], $result['parser'])
+                && $result instanceof ResultParser
+                && $result['time'] === $mTime
+            ) {
                 $resultParser = $result;
             }
+            unset($result);
         } catch (InvalidArgumentException $e) {
         }
         if (!isset($resultParser)) {
@@ -220,7 +226,7 @@ class ControllerReader extends AbstractContainerization implements Clearable, St
                         ? static::CACHE_EXPIRED_AFTER
                         : $expiredAfter;
                     $item
-                        ->set($resultParser)
+                        ->set(['time' => $mTime, 'parser' => $resultParser])
                         ->expiresAfter($expiredAfter);
                     $cache->save($item);
                 } catch (Throwable) {

@@ -227,11 +227,11 @@ class Collector extends AbstractContainerization implements Scannable
                     $name = strtolower($name);
                     $controllers[$route->getPriority()][$name] = $controller;
                 } catch (Throwable $e) {
-                    $this->logWarning($e->getMessage(), ['exception' => $e]);
+                    $this->logWarningException($e, ['annotation' => $className]);
                 }
             }
         } catch (Throwable $e) {
-            $this->logError($e->getMessage(), ['exception' => $e]);
+            $this->logException($e);
         }
     }
 

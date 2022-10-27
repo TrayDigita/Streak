@@ -53,7 +53,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
     /**
      * @var array
      */
-    private array $driverArguments = [];
+    // private array $driverArguments = [];
 
     /**
      * @var string
@@ -247,16 +247,22 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         $cache->set('marshaller', $marshaller);
         $cache->set('path', $cachePath);
         $cache->set('version', $version);
-        $database = $this->getContainer(Instance::class);
-        $adapters = [
+        $adapterArgs = [
             ArrayAdapter::class => [
                 $lifetime,
                 $storeSerialize,
                 $maxLifetime,
                 $maxItems
             ],
+            PdoAdapter::class => [
+                null,
+                $namespace,
+                $lifetime,
+                $options,
+                $marshaller
+            ],
             DoctrineDbalAdapter::class => [
-                $database->getConnection(),
+                null,
                 $namespace,
                 $lifetime,
                 $options,
@@ -298,23 +304,15 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
             $pool = $pool instanceof PSRCache ? $pool : null;
             $pool = $this->eventDispatch('Cache:pool', $pool);
             if ($pool instanceof PSRCache) {
-                $adapters[Psr16Adapter::class] = [
+                $adapterArgs[Psr16Adapter::class] = [
                     $pool,
                     $namespace,
                     $lifetime
                 ];
             }
         }
-        if ($database->getNativeConnection() instanceof PDO) {
-            $adapters[PdoAdapter::class] = [
-                $database->getNativeConnection(),
-                $namespace,
-                $lifetime,
-                $options,
-                $marshaller
-            ];
-        }
-        $adapter = isset($adapters[$adapter]) ? $adapter : FilesystemAdapter::class;
+
+        $adapter = isset($adapterArgs[$adapter]) ? $adapter : FilesystemAdapter::class;
         $ref = new ReflectionClass($adapter);
         if ($ref->hasMethod('isSupported')) {
             if ($ref->getMethod('isSupported')->isPublic()
@@ -328,9 +326,22 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
             }
         }
 
-        $adapterArgs = $adapters[$adapter];
+        if (($doctrine = $adapter === DoctrineDbalAdapter::class)
+            || $adapter === PdoAdapter::class
+        ) {
+            $database = $this->getContainer(Instance::class);
+            if ($doctrine) {
+                $adapterArgs[DoctrineDbalAdapter::class][0] = $database->getConnection();
+            } elseif ($database->getNativeConnection() instanceof PDO) {
+                $adapterArgs[PdoAdapter::class][0] = $database->getNativeConnection();
+            } else {
+                $adapter = FilesystemAdapter::class;
+            }
+        }
+
+        $adapterArgs = $adapterArgs[$adapter];
         $this->driverClass = $adapter;
-        $this->driverArguments = $adapterArgs;
+        // $this->driverArguments = $adapterArgs;
 
         return new $adapter(...$adapterArgs);
     }
@@ -338,10 +349,10 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
     /**
      * @return array
      */
-    public function getDriverArguments(): array
+    /*public function getDriverArguments(): array
     {
         return $this->driverArguments;
-    }
+    }*/
 
     /**
      * @return string

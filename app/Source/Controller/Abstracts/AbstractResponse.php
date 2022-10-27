@@ -3,18 +3,16 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Controller\Abstracts;
 
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Json\ApiCreator;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\HttpThrowableException;
+use TrayDigita\Streak\Source\Traits\LoggingMethods;
 use TrayDigita\Streak\Source\Traits\SimpleDocumentCreator;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
-use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\JsonApi;
-use WoohooLabs\Yin\JsonApi\Request\JsonApiRequest;
 
 abstract class AbstractResponse extends AbstractContainerization
 {
@@ -23,11 +21,30 @@ abstract class AbstractResponse extends AbstractContainerization
         EventsMethods,
         SimpleDocumentCreator;
 
-    protected string $jsonContentType = 'application/json; charset-utf-8';
-    protected string $jsonApiContentType = 'application/vnd.api+json; charset-utf-8';
-    protected string $htmlContentType = 'text/html; charset-utf-8';
-    protected string $plainContentType = 'text/plain; charset-utf-8';
-    protected string $xmlContentType = 'application/xml; charset-utf-8';
+    /**
+     * @var string
+     */
+    protected string $jsonContentType = 'application/json';
+
+    /**
+     * @var string
+     */
+    protected string $jsonApiContentType = 'application/vnd.api+json';
+
+    /**
+     * @var string
+     */
+    protected string $htmlContentType = 'text/html';
+
+    /**
+     * @var string
+     */
+    protected string $plainContentType = 'text/plain';
+
+    /**
+     * @var string
+     */
+    protected string $xmlContentType = 'application/xml';
 
     /**
      * @param ResponseInterface $response
@@ -65,6 +82,11 @@ abstract class AbstractResponse extends AbstractContainerization
             ->withHeader('Content-Type', $this->htmlContentType);
     }
 
+    /**
+     * @param ResponseInterface $response
+     *
+     * @return ResponseInterface
+     */
     public function toPlainTextResponse(ResponseInterface $response) : ResponseInterface
     {
         return $response

@@ -61,8 +61,10 @@ use TrayDigita\Streak\Source\RouteAnnotations\Collector as AnnotationCollector;
 use TrayDigita\Streak\Source\Session\Driver\DefaultDriver;
 use TrayDigita\Streak\Source\Session\Sessions;
 use TrayDigita\Streak\Source\Scheduler\Scheduler;
+use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\ComposerLoaderObject;
 use TrayDigita\Streak\Source\Traits\Containerize;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
@@ -77,7 +79,8 @@ use WoohooLabs\Yin\JsonApi\Serializer\JsonDeserializer;
 class Application implements ContainerizeInterface
 {
     use Containerize,
-        ComposerLoaderObject;
+        ComposerLoaderObject,
+        EventsMethods;
 
     final const VERSION = '1.0.0';
 
@@ -232,7 +235,6 @@ class Application implements ContainerizeInterface
         // register handler
         $container->get(SystemInitialHandler::class)->register();
 
-        $events = $container->get(Events::class);
         /* ---------------------------------------------------------
          * Configurations
          */
@@ -282,20 +284,24 @@ class Application implements ContainerizeInterface
         $container->setParameters([
             'applicationName'       => fn () => $this->getName(),
             'applicationVersion'    => fn () => $this->getVersion(),
-            'controllerNamespaces'  => fn () => $events->dispatch('Controller:namespace', ["$baseNS\\Controller"]),
-            'controllerDirectory'   => fn () => $events->dispatch('Controller:directory', "$appDir/Controller"),
+            'controllerNamespaces'  => fn () => $this->eventDispatch('Controller:namespace', ["$baseNS\\Controller"]),
+            'controllerDirectory'   => fn () => $this->eventDispatch('Controller:directory', "$appDir/Controller"),
 
-            'moduleNamespaces'      => fn () => $events->dispatch('Module:namespace', ["$baseNS\\Module"]),
-            'moduleDirectory'       => fn () => $events->dispatch('Module:directory', "$appDir/Module"),
+            'moduleNamespaces'      => fn () => $this->eventDispatch('Module:namespace', ["$baseNS\\Module"]),
+            'moduleDirectory'       => fn () => $this->eventDispatch('Module:directory', "$appDir/Module"),
 
-            'middlewareNamespaces'  => fn () => $events->dispatch('Middleware:namespace', ["$baseNS\\Middleware"]),
-            'middlewareDirectory'   => fn () => $events->dispatch('Middleware:directory', "$appDir/Middleware"),
+            'middlewareNamespaces'  => fn () => $this->eventDispatch('Middleware:namespace', ["$baseNS\\Middleware"]),
+            'middlewareDirectory'   => fn () => $this->eventDispatch('Middleware:directory', "$appDir/Middleware"),
             'middlewareDispatcher'  => fn () => $container->get(App::class)->getMiddlewareDispatcher(),
 
             'connection'            => fn () => $container->get(Instance::class)->getConnection(),
-            'prettyJson'            => fn () => (bool) $events->dispatch('Json:pretty', (bool) $jsonConfig['pretty']),
+            'prettyJson'            => fn () => (bool) $this->eventDispatch(
+                'Json:pretty',
+                (bool) $jsonConfig['pretty']
+            ),
+            'themesDirectoryName'   => fn () => (bool) $this->eventDispatch('Theme:directoryName', 'themes'),
 
-            'logName'            => fn () => $events->dispatch('Logger:name', $this->getName()),
+            'logName'            => fn () => $this->eventDispatch('Logger:name', $this->getName()),
             'logTimezone'        => fn () => $container->get(Time::class)->getCurrentUTCTime()->getTimezone(),
             'logHandlers'           => function (Container $container) : array {
                 $defaultHandlers = [];
@@ -357,6 +363,11 @@ class Application implements ContainerizeInterface
             StoragePath::class => null,
             Renderer::class => null,
             ResponseEmitter::class => null,
+
+            /* ---------------------------------------------------------
+             * Themes
+             */
+            ThemeReader::class => null,
 
             /* ---------------------------------------------------------
              * Database
@@ -599,7 +610,7 @@ class Application implements ContainerizeInterface
         $this->addStop('Application:container');
 
         // dispatch container factory
-        $events->dispatch('Application:factory', $this);
+        $this->eventDispatch('Application:factory', $this);
 
         /* ADD STOP */
         $this->addStop('Application:factory');
@@ -615,10 +626,9 @@ class Application implements ContainerizeInterface
         }
 
         $this->moduleDispatched = true;
-        $events = $this->getContainer(Events::class);
-        $events->dispatch('Module:start', $this);
+        $this->eventDispatch('Module:start', $this);
         $this->getContainer(ModuleStorage::class)->start();
-        $events->dispatch('Module:end', $this);
+        $this->eventDispatch('Module:end', $this);
         /* ADD STOP */
         $this->addStop('Application:module');
         return $this;
@@ -629,14 +639,14 @@ class Application implements ContainerizeInterface
         if ($this->middlewareAttached) {
             return $this;
         }
-        $events                   = $this->getContainer(Events::class);
-        if ($events->dispatch('Dispatch:module', true) === true) {
+
+        if ($this->eventDispatch('Dispatch:module', true) === true) {
             $this->dispatchModule();
         }
         $this->middlewareAttached = true;
-        $events->dispatch('Middleware:start', $this);
+        $this->eventDispatch('Middleware:start', $this);
         $this->getContainer(MiddlewareStorage::class)->start();
-        $events->dispatch('Middleware:end', $this);
+        $this->eventDispatch('Middleware:end', $this);
         /* ADD STOP */
         $this->addStop('Application:middleware');
         return $this;
@@ -647,17 +657,17 @@ class Application implements ContainerizeInterface
         if ($this->controllerAttached) {
             return $this;
         }
-        $events                   = $this->getContainer(Events::class);
-        if ($events->dispatch('Attach:middleware', true) === true) {
+
+        if ($this->eventDispatch('Attach:middleware', true) === true) {
             $this->attachMiddleware();
-        } elseif ($events->dispatch('Dispatch:module', true) === true) {
+        } elseif ($this->eventDispatch('Dispatch:module', true) === true) {
             $this->dispatchModule();
         }
 
         $this->controllerAttached = true;
-        $events->dispatch('Controller:start', $this);
+        $this->eventDispatch('Controller:start', $this);
         $this->getContainer(ControllerStorage::class)->start();
-        $events->dispatch('Controller:end', $this);
+        $this->eventDispatch('Controller:end', $this);
         /* ADD STOP */
         $this->addStop('Application:controller');
         return $this;
@@ -669,16 +679,15 @@ class Application implements ContainerizeInterface
             return $this->response;
         }
 
-        $events = $this->getContainer(Events::class);
         $isCli = Validator::isCli();
         if (Validator::isCli()) {
-            $events->add('Buffer:memory', fn () => true);
+            $this->eventAdd('Buffer:memory', fn () => true);
         }
 
-        $dispatchModule     = !$isCli || $events->dispatch('Dispatch:module', true) === true;
-        $attachMiddleware   = !$isCli || $events->dispatch('Attach:middleware', true) === true;
-        $attachController   = !$isCli || $events->dispatch('Attach:controller', false) === true;
-        $dispatchHandle     = !$isCli || $events->dispatch('Dispatch:handle', false) === true;
+        $dispatchModule     = !$isCli || $this->eventDispatch('Dispatch:module', true) === true;
+        $attachMiddleware   = !$isCli || $this->eventDispatch('Attach:middleware', true) === true;
+        $attachController   = !$isCli || $this->eventDispatch('Attach:controller', false) === true;
+        $dispatchHandle     = !$isCli || $this->eventDispatch('Dispatch:handle', false) === true;
 
         /* ---------------------------------------------------------
          * Dispatch Module
@@ -698,7 +707,7 @@ class Application implements ContainerizeInterface
         /* ---------------------------------------------------------
          * Request Events
          */
-        $request = $events->dispatch(
+        $request = $this->eventDispatch(
             'Request:handle',
             $this->getContainer(ServerRequestInterface::class),
             $this
@@ -707,7 +716,7 @@ class Application implements ContainerizeInterface
         /* ADD STOP */
         $this->addStop('Application:request');
         $this->response = $dispatchHandle || $forceDispatch
-            ? $events->dispatch(
+            ? $this->eventDispatch(
                 'Response:handle',
                 $this->handle($request),
                 $this
@@ -721,23 +730,24 @@ class Application implements ContainerizeInterface
         /* ---------------------------------------------------------
          * Dispatching Response
          */
-        $emit = $events->dispatch(
+        $emit = $this->eventDispatch(
             'Dispatch:response',
             $emit,
             $this->response,
             $this
         );
-        $this->response = $events->dispatch(
+        $this->response = $this->eventDispatch(
             'Response:final',
             $this->response,
             $this
         );
+
         /* ADD STOP */
         $this->addStop('Application:dispatch');
 
         if ($dispatchHandle && $emit) {
             $this->getContainer(ResponseEmitter::class)->emit($this->response);
-            $this->response = $events->dispatch(
+            $this->response = $this->eventDispatch(
                 'Dispatch:emit',
                 $this->response,
                 $this

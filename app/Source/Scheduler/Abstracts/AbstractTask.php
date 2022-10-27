@@ -143,8 +143,8 @@ abstract class AbstractTask implements Startable
             $this->logError(
                 $this->translate('Task error.'),
                 [
-                    'task' => $this->getClassName(),
                     'exception' => $e,
+                    'task' => $this->getClassName(),
                 ]
             );
             $processed_time = microtime(true) - $startTime;
