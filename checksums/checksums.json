@@ -5,9 +5,9 @@
         "sha256": "39aa55e7e5dabbebd6bec4e242f9c5268fd1e08e4bff570be2a5595582de0187"
     },
     "Loader.php": {
-        "md5": "ee5d66241e1fce62669661bd00eee3ad",
-        "sha1": "a651dc9c810680ad8f31d35254712ede8071d74b",
-        "sha256": "8aae0adc67d660cf5e6c0890ee47d5c3e3a5a913e4a81d896e082af468e5a46f"
+        "md5": "dfcd05b230018faa1f022386f685f992",
+        "sha1": "8525cf9001773df2d672bf716d3b22ac0d730402",
+        "sha256": "1c81064c0ea744da1be0b98bfea2243bae6a892df1e03363de206ea01e1af0ac"
     },
     "app/Middleware/ErrorMiddlewareHandler.php": {
         "md5": "7404ff20a3036ee2f4edf3ae1b3d40a8",
@@ -680,9 +680,9 @@
         "sha256": "b2f6866d10b65802af43fd160dd1776b02cc3b3f9d34751975d524f1ddb8d7b8"
     },
     "public/index.php": {
-        "md5": "d17ec78f085edaee323c997c070bd86c",
-        "sha1": "6ddd961b5efe6564715b7eb318ee9531b5118b91",
-        "sha256": "5ef24e9f6906c0f7b30cfe88f0f65bd9039bdff5fbaee091e3af3b902edff7a8"
+        "md5": "a28b4c30b26d09432b97972dd9891a79",
+        "sha1": "de452812dbbbd7f8f26af15270627eeeb6ee3f6d",
+        "sha256": "f511b7e39ac24370493e12e2328824b1f2a2ebaffdcae11d5116295a36a25a07"
     },
     "languages/id.mo": {
         "md5": "9f48f66d776c2c596f3749faa601360e",
