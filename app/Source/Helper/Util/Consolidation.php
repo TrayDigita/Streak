@@ -26,22 +26,39 @@ class Consolidation
         'root' => 'string',
         'vendor' => 'string',
         'app' => 'string',
-    ])] private static ?array $directories = null;
+        'public' => 'string',
+    ])] private static array $directories = [];
 
     #[ArrayShape([
         'root' => 'string',
         'vendor' => 'string',
         'app' => 'string',
+        'public' => 'string',
     ])] private static function readDirectoriesData(): array
     {
-        if (self::$directories !== null) {
+        if (!empty(self::$directories)) {
             return self::$directories;
         }
 
         $appPath = defined('APP_PATH') ? APP_PATH : 'app';
+        $publicPath = defined('PUBLIC_PATH') ? PUBLIC_PATH : 'public';
         $appPath = is_string($appPath) ? trim($appPath, '/\\') : $appPath;
+        $publicPath = is_string($publicPath) ? trim($publicPath, '/\\') : $publicPath;
         $loader = self::composerClassLoader();
         $app   = dirname(__DIR__, 3);
+        $getPublic = function ($root) use ($publicPath) {
+            $public = "$root/$publicPath";
+            if (!Validator::isCli()) {
+                $path = $_SERVER['DOCUMENT_ROOT']??null;
+                $public = $path??(isset($_SERVER['SCRIPT_FILENAME'])
+                        ? dirname(realpath($_SERVER['SCRIPT_FILENAME']))
+                        : (isset($_SERVER['SCRIPT_FILENAME'])
+                            ? dirname(realpath($_SERVER['SCRIPT_FILENAME'])) : $public
+                        )
+                    );
+            }
+            return realpath($public)?:$public;
+        };
         if ($loader) {
             try {
                 $loader = new ReflectionClass($loader);
@@ -50,11 +67,11 @@ class Consolidation
                 if (str_starts_with($app, $vendor)) {
                     $app = "$root/$appPath";
                 }
-
                 self::$directories = [
                     'root'   => $root,
                     'vendor' => $vendor,
                     'app'    => $app,
+                    'public' => $getPublic($root)
                 ];
                 return self::$directories;
             } catch (Throwable) {
@@ -66,6 +83,7 @@ class Consolidation
             'root'   => $root,
             'vendor' => "$root/vendor",
             'app'    => $app,
+            'public' => $getPublic($root),
         ];
         $composer_json = self::$directories['root'] .'/composer.json';
         if (is_file($composer_json) && is_readable($composer_json)) {
@@ -84,6 +102,14 @@ class Consolidation
             self::$directories['app']    = self::$directories['root'] . "/$appPath";
         }
         return self::$directories;
+    }
+
+    /**
+     * @return string
+     */
+    public static function publicDirectory() : string
+    {
+        return self::readDirectoriesData()['public'];
     }
 
     /**
