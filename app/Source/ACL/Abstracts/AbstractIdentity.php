@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TrayDigita\Streak\Source\ACL;
+namespace TrayDigita\Streak\Source\ACL\Abstracts;
 
 use JetBrains\PhpStorm\Pure;
 use SplObjectStorage;

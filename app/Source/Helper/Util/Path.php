@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TrayDigita\Streak\Source\Helper\Data;
+namespace TrayDigita\Streak\Source\Helper\Util;
 
 use GuzzleHttp\Psr7\Uri;
 use JetBrains\PhpStorm\ArrayShape;
