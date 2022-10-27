@@ -79,7 +79,9 @@ class Application implements ContainerizeInterface
     use Containerize,
         ComposerLoaderObject;
 
-    private string $version = '1.0.0';
+    const VERSION = '1.0.0';
+
+    private string $version = self::VERSION;
 
     private string $name = 'Streak!';
 

@@ -27,6 +27,12 @@ Default structures.
     |      |---- cron.php (Cron File)
     |      |---- cron (cron.php Symlink)
     |      |
+    |---- checksums/ (Checksums Directory)
+    |      |---- checksums.json (Json File File Checksum)
+    |      |---- checksums.json.md5 (MD5 Of checksums.json)
+    |      |---- checksums.json.sha1 (SHA1 Of checksums.json)
+    |      |---- checksums.json.sha256 (SHA256 Of checksums.json)
+    |      |
     |---- docs-md/ (Markdown Directory)
     |      |---- *****.md (Markdown Files)
     |      |

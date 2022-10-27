@@ -137,3 +137,12 @@ node_modules/
 /public/*
 /public/**/*
 !/public/index.php
+
+bin/*
+bin/**/*
+!bin/console.php
+!bin/console
+!bin/cron
+!bin/cron.php
+!bin/sha-sum.php
+!bin/sha-sum
