@@ -251,8 +251,9 @@ class Instance extends AbstractContainerization
         }
 
         if (!$config->getResultCache() || !$resultCache instanceof CacheItemPoolInterface) {
-            $cache = $this->getContainer(Configurations::class)->get('cache');
-            $lifetime = $cache instanceof Collections ? $cache->get('lifetime') : 0;
+            $cache = $this->getContainer(Configurations::class)->get('cache', new Configurations());
+            $cache = !$cache instanceof Collections ? new Configurations() : $cache;
+            $lifetime = $cache->get('lifetime', 0);
             $defaultLifetime = !is_int($lifetime) ? 0 : $lifetime;
             $lifetime = $this->eventDispatch('Cache:lifetime', $lifetime);
             $lifetime = !is_int($lifetime) ? $defaultLifetime : $lifetime;
