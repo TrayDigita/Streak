@@ -91,15 +91,13 @@ class Collector extends AbstractContainerization implements Scannable
         $this->scanned = true;
         $middlewares = [];
         $directory = realpath($this->middlewareDirectory)?:false;
-        if (!$directory || !is_dir($directory)) {
-            return $this;
-        }
 
         // append self middlewares
         // include core
         $sourceMiddlewareDir = realpath(dirname(__DIR__, 2).'/Middleware')?:null;
         $vendorDir = Consolidation::vendorDirectory();
-        if ($sourceMiddlewareDir && $sourceMiddlewareDir !== $directory
+        if ($sourceMiddlewareDir
+            && $sourceMiddlewareDir !== $directory
             && str_starts_with(__DIR__, $vendorDir)
         ) {
             foreach (new DirectoryIterator($sourceMiddlewareDir) as $info) {
@@ -110,11 +108,13 @@ class Collector extends AbstractContainerization implements Scannable
             }
         }
 
-        foreach (new DirectoryIterator($directory) as $info) {
-            if (!$info->isFile() || $info->getExtension() !== 'php') {
-                continue;
+        if ($directory && is_dir($directory)) {
+            foreach (new DirectoryIterator($directory) as $info) {
+                if (!$info->isFile() || $info->getExtension() !== 'php') {
+                    continue;
+                }
+                $this->readMiddlewares($info, $middlewares);
             }
-            $this->readMiddlewares($info, $middlewares);
         }
 
         ksort($this->middlewares, SORT_ASC);
