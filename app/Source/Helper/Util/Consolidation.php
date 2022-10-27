@@ -49,13 +49,11 @@ class Consolidation
         $getPublic = function ($root) use ($publicPath) {
             $public = "$root/$publicPath";
             if (!Validator::isCli()) {
-                $path = $_SERVER['DOCUMENT_ROOT']??null;
-                $public = $path??(isset($_SERVER['SCRIPT_FILENAME'])
-                        ? dirname(realpath($_SERVER['SCRIPT_FILENAME']))
-                        : (isset($_SERVER['SCRIPT_FILENAME'])
-                            ? dirname(realpath($_SERVER['SCRIPT_FILENAME'])) : $public
-                        )
-                    );
+                $public = (
+                    isset($_SERVER['SCRIPT_FILENAME'])
+                    ? dirname(realpath($_SERVER['SCRIPT_FILENAME']))
+                    : $public
+                );
             }
             return realpath($public)?:$public;
         };
