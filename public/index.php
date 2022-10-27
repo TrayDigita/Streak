@@ -5,9 +5,18 @@ namespace TrayDigita\Streak\Public;
 
 use TrayDigita\Streak\Source\Application;
 use TrayDigita\Streak\Source\Events;
+use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 
-(function () : Application {
+(function () : ?Application {
     $application = require __DIR__ . '/../Loader.php';
+    $vendorDir = Consolidation::vendorDirectory();
+    $scriptName = isset($_SERVER['SCRIPT_FILENAME'])
+        ? realpath($_SERVER['SCRIPT_FILENAME'])
+        : null;
+    // prevent direct access to this file if on vendor
+    if ($scriptName && str_starts_with($scriptName, $vendorDir)) {
+        return null;
+    }
     $application->getContainer(Events::class)->dispatch('Serve:index');
     return $application;
-})()->run();
+})()?->run();

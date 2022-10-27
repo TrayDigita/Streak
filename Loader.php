@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak;
 
+use RuntimeException;
 use TrayDigita\Streak\Source\Application;
 use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Console\Runner;
@@ -27,6 +28,10 @@ return (function () {
         && is_file(dirname(__DIR__, 2) . '/autoload.php')
     ) {
         require dirname(__DIR__, 2) . '/autoload.php';
+    } elseif (!class_exists(Container::class)) {
+        throw new RuntimeException(
+            'Could not getting application to run. Please make sure composer installation completed.'
+        );
     }
 
     // add container
@@ -52,7 +57,8 @@ return (function () {
     $container->set(Configurations::class, fn () => new Configurations(
         is_file("$rootDir/Config.php")
             ? (array) (require "$rootDir/Config.php")
-            : []
+            // alternative using config.php
+            : (is_file("$rootDir/config.php") ? (array) (require "$rootDir/config.php") : [])
     ))->protect();
     $application = new Application($container);
     unset($container);
