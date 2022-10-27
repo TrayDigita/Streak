@@ -20,7 +20,7 @@ class ExceptionsView extends AbstractRenderer
     protected string $title = '500 Internal Server Error';
     protected int $code = 500;
 
-    #[Pure] public function __construct(Throwable|HttpSpecializedException $exception, Container $container)
+    public function __construct(Throwable|HttpSpecializedException $exception, Container $container)
     {
         parent::__construct($container);
         $this->title = $this->translate('500 Internal Server Error');

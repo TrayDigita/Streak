@@ -51,12 +51,13 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
     /**
      * @var Container
      */
-    private Container $container;
+    public readonly Container $container;
 
     /**
      * @var bool
      */
     private bool $checkedTable = false;
+
     /**
      * @var bool
      */
@@ -1103,6 +1104,16 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
     {
         $data = unserialize($data);
         $this->data = is_array($data) ? $data : $this->data;
+    }
+
+    #[Pure] public function __serialize(): array
+    {
+        return $this->getData();
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->data = $data;
     }
 
     #[Pure] public function jsonSerialize() : array

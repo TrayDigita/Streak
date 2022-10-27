@@ -28,11 +28,11 @@ final class Benchmark extends AbstractContainerization implements JsonSerializab
     /**
      * @var float
      */
-    private float $start_time;
+    public readonly float $startTime;
 
     #[Pure] public function __construct(Container $container)
     {
-        $this->start_time = microtime(true);
+        $this->startTime = microtime(true);
         parent::__construct($container);
     }
 
@@ -41,7 +41,7 @@ final class Benchmark extends AbstractContainerization implements JsonSerializab
      */
     public function getStartTime(): float
     {
-        return $this->start_time;
+        return $this->startTime;
     }
 
 

@@ -29,19 +29,49 @@ abstract class AbstractTask implements Startable
     const MINIMUM_EXECUTION_TIME = 0.0000001;
     const MINIMUM_CRON_TIME = 5;
 
+    /**
+     * @var Container
+     * @readonly
+     */
+    public readonly Container $container;
+
+    /**
+     * @var string
+     * @readonly
+     */
+    public readonly string $className;
+
+    /**
+     * @var ?TaskStatus
+     */
     private ?TaskStatus $status = null;
 
     protected int|float $interval = 0;
 
+    /**
+     * @var ?int
+     */
     private ?int $runStatus = null;
-    private string $className;
+
+
+    /**
+     * @var bool
+     */
     private bool $prevExists = false;
+
+    /**
+     * @var ?ActionSchedulers
+     */
     private ?ActionSchedulers $schedulers = null;
 
+    /**
+     * @var ?float
+     */
     private ?float $processedTime = null;
 
-    final public function __construct(private Container $container)
+    final public function __construct(Container $container)
     {
+        $this->container = $container;
         $this->className = get_class($this);
     }
 

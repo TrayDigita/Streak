@@ -11,6 +11,10 @@ final class Worker implements Startable
 {
     private bool $started = false;
 
+    /**
+     * @param AbstractTask $task
+     * @param Scheduler $tasks
+     */
     public function __construct(private AbstractTask $task, private Scheduler $tasks)
     {
     }

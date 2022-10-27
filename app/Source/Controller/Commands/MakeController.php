@@ -124,7 +124,7 @@ CLI
         }
 
         $date = $this->getContainer(Time::class);
-        $date = $date->getCurrentTimeUTC()->format('Y-m-d H:i:s e');
+        $date = $date->getCurrentUTCTime()->format('Y-m-d H:i:s e');
         $basename = $subClass ? "$subClass\\$name" : $name;
         $lower_name = strtolower(str_replace('\\', '/', $subClass));
         /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */

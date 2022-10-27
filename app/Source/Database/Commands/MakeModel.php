@@ -104,7 +104,7 @@ CLI
         }
 
         $date = $this->getContainer(Time::class);
-        $date = $date->getCurrentTimeUTC()->format('Y-m-d H:i:s e');
+        $date = $date->getCurrentUTCTime()->format('Y-m-d H:i:s e');
         $basename = $subClass ? "$subClass\\$name" : $name;
         $lower_class_name = preg_replace('~([A-Z])~', '_$1', $name);
         $lower_class_name = trim(preg_replace('~[_]+~', '_', $lower_class_name), '_');

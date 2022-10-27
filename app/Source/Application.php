@@ -79,16 +79,34 @@ class Application implements ContainerizeInterface
     use Containerize,
         ComposerLoaderObject;
 
-    const VERSION = '1.0.0';
+    final const VERSION = '1.0.0';
 
-    private string $version = self::VERSION;
+    public readonly string $version;
 
-    private string $name = 'Streak!';
+    /**
+     * Application Name
+     *
+     * @var string
+     */
+    public readonly string $name;
 
     /**
      * @var Container
+     * @readonly
      */
-    protected Container $container;
+    public readonly Container $container;
+
+    /**
+     * @var int
+     * @readonly
+     */
+    public readonly int $initialMemoryUsage;
+
+    /**
+     * @var array
+     * @readonly
+     */
+    public readonly array $defaultConfigurations;
 
     /**
      * @var string
@@ -101,68 +119,75 @@ class Application implements ContainerizeInterface
     private string $deploymentEnvironment = 'production';
 
     /**
-     * @var int
+     * @var bool
      */
-    private int $memoryStart;
-
     protected bool $middlewareAttached = false;
+    /**
+     * @var bool
+     */
     protected bool $moduleDispatched = false;
+
+    /**
+     * @var bool
+     */
     protected bool $controllerAttached = false;
     private ?ResponseInterface $response = null;
-    private array $defaultConfig = [
-        'application' => [
-            'environment' => 'production',
-            'siteUrl' => null,
-            'language' => null,
-        ],
-        'json' => [
-            'pretty' => null,
-            'displayVersion' => true,
-        ],
-        'logging' => [
-            'enable' => null,
-            'level'   => Level::Warning,
-        ],
-        'error' => [
-            'hidePath' => true,
-        ],
-        'security' => [
-            'salt' => null,
-            'secret' => null,
-        ],
-        'path' => [
-            'api'    => StoragePath::DEFAULT_API_PATH,
-            'admin'  => StoragePath::DEFAULT_ADMIN_PATH,
-            'member' => StoragePath::DEFAULT_MEMBER_PATH,
-            'storage' => 'storage',
-        ],
-        'database' => [
-            'driver' => 'pdo_mysql',
-            'host' => 'localhost',
-            'port' => 3306,
-            'user' => null,
-            'password' => '',
-            'name' => null,
-        ],
-        'cache' => [
-            'adapter' => FilesystemAdapter::class
-        ],
-        'session' => [
-            'driver' => DefaultDriver::class
-        ],
-        'directory' => [
-            'sbinDir'  => "/usr/sbin",
-            'binDir'   => "/usr/bin",
-            'root'     => "/",
-        ],
-    ];
 
     /**
      * @param ?Container $container will create factory container
      */
     public function __construct(Container $container = null)
     {
-        $this->memoryStart = memory_get_usage(true);
+        $this->version = self::VERSION;
+        $this->name    = 'Streak!';
+        $this->defaultConfigurations = [
+            'application' => [
+                'environment' => 'production',
+                'siteUrl' => null,
+                'language' => null,
+            ],
+            'json' => [
+                'pretty' => null,
+                'displayVersion' => true,
+            ],
+            'logging' => [
+                'enable' => null,
+                'level'   => Level::Warning,
+            ],
+            'error' => [
+                'hidePath' => true,
+            ],
+            'security' => [
+                'salt' => null,
+                'secret' => null,
+            ],
+            'path' => [
+                'api'    => StoragePath::DEFAULT_API_PATH,
+                'admin'  => StoragePath::DEFAULT_ADMIN_PATH,
+                'member' => StoragePath::DEFAULT_MEMBER_PATH,
+                'storage' => 'storage',
+            ],
+            'database' => [
+                'driver' => 'pdo_mysql',
+                'host' => 'localhost',
+                'port' => 3306,
+                'user' => null,
+                'password' => '',
+                'name' => null,
+            ],
+            'cache' => [
+                'adapter' => FilesystemAdapter::class
+            ],
+            'session' => [
+                'driver' => DefaultDriver::class
+            ],
+            'directory' => [
+                'sbinDir'  => "/usr/sbin",
+                'binDir'   => "/usr/bin",
+                'root'     => "/",
+            ],
+        ];
+        $this->initialMemoryUsage = memory_get_usage(true);
         $this->container = $this->createFactory($container);
     }
 
@@ -170,9 +195,9 @@ class Application implements ContainerizeInterface
      * @return int
      * @noinspection PhpUnused
      */
-    public function getMemoryStart(): int
+    public function getInitialMemoryUsage(): int
     {
-        return $this->memoryStart;
+        return $this->initialMemoryUsage;
     }
 
     public function addStop(string $name)
@@ -201,8 +226,7 @@ class Application implements ContainerizeInterface
         $baseNS = Consolidation::getNameSpace(__NAMESPACE__);
         $appDir = Consolidation::appDirectory();
 
-        $this->container = $container??new Container();
-        $container = $this->container;
+        $container = $container??new Container();
         // add application
         $container->setProtect(Application::class, $this);
         // register handler
@@ -229,7 +253,7 @@ class Application implements ContainerizeInterface
         // global
         $container->setGlobalAliases('Configurations', Configurations::class);
         $configurations = $container->get(Configurations::class);
-        $config = new Configurations($this->defaultConfig);
+        $config = new Configurations($this->defaultConfigurations);
         $config->merge($configurations->toArray());
         $app = $config['application'];
         $jsonConfig = $config['json'];
@@ -272,7 +296,7 @@ class Application implements ContainerizeInterface
             'prettyJson'            => fn () => (bool) $events->dispatch('Json:pretty', (bool) $jsonConfig['pretty']),
 
             'logName'            => fn () => $events->dispatch('Logger:name', $this->getName()),
-            'logTimezone'        => fn () => $container->get(Time::class)->getCurrentTimeUTC()->getTimezone(),
+            'logTimezone'        => fn () => $container->get(Time::class)->getCurrentUTCTime()->getTimezone(),
             'logHandlers'           => function (Container $container) : array {
                 $defaultHandlers = [];
                 if (Validator::isCli()) {
@@ -570,7 +594,6 @@ class Application implements ContainerizeInterface
         $documentUri = str_replace('\\', '/', $documentUri);
         $documentUri = substr($documentUri, 0, -1);
         $container->get(App::class)->setBasePath($documentUri);
-        unset($container);
 
         /* ADD STOP */
         $this->addStop('Application:container');
@@ -581,7 +604,7 @@ class Application implements ContainerizeInterface
         /* ADD STOP */
         $this->addStop('Application:factory');
 
-        return $this->container;
+        return $container;
     }
 
 

@@ -29,6 +29,10 @@ class ApiCreator extends AbstractContainerization
     const VERSION = "1.1";
     use EventsMethods,
         TranslationMethods;
+
+    /**
+     * @var string
+     */
     protected static string $version = self::VERSION;
 
     /**

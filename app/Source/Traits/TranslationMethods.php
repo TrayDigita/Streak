@@ -7,6 +7,14 @@ use TrayDigita\Streak\Source\i18n\Translator;
 
 trait TranslationMethods
 {
+    /**
+     * @param string $message
+     * @param string|null $textDomain
+     * @param string|null $locale
+     *
+     * @return string
+     * @uses Translator::translate()
+     */
     public function translate(
         string $message,
         ?string $textDomain = null,
@@ -22,6 +30,16 @@ trait TranslationMethods
         return $message;
     }
 
+    /**
+     * @param string $singular
+     * @param string $plural
+     * @param int $number
+     * @param string|null $textDomain
+     * @param string|null $locale
+     *
+     * @return string
+     * @uses Translator::translatePlural()
+     */
     public function translatePlural(
         string $singular,
         string $plural,

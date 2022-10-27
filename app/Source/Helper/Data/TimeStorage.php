@@ -15,7 +15,7 @@ class TimeStorage implements JsonSerializable, Stringable
     /**
      * @var int
      */
-    private int $memory;
+    private readonly int $memory;
 
     public function __construct(
         private Benchmark $time_record,

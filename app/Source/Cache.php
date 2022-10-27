@@ -40,9 +40,24 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
 {
     use EventsMethods;
 
-    private AdapterInterface $cacheAdapter;
+    /**
+     * @var AdapterInterface
+     */
+    public readonly AdapterInterface $adapter;
+
+    /**
+     * @var bool
+     */
     private bool $init = false;
+
+    /**
+     * @var array
+     */
     private array $driverArguments = [];
+
+    /**
+     * @var string
+     */
     private string $driverClass = FilesystemAdapter::class;
 
     /**
@@ -52,15 +67,15 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
     public function __construct(Container $container)
     {
         parent::__construct($container);
-        $this->cacheAdapter = $this->cacheAdapterInit();
+        $this->adapter = $this->cacheAdapterInit();
     }
 
     /**
      * @return AdapterInterface
      */
-    public function getCacheAdapter(): AdapterInterface
+    public function getAdapter(): AdapterInterface
     {
-        return $this->cacheAdapter;
+        return $this->adapter;
     }
 
     /**
@@ -74,7 +89,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
             $key = $key->getKey();
         }
         try {
-            return $this->getCacheAdapter()->deleteItem($key);
+            return $this->getAdapter()->deleteItem($key);
         } catch (Throwable) {
             return false;
         }
@@ -97,7 +112,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
             unset($key[$k]);
         }
         try {
-            return $this->getCacheAdapter()->deleteItems($key);
+            return $this->getAdapter()->deleteItems($key);
         } catch (Throwable) {
             return false;
         }
@@ -114,7 +129,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
             $key = $key->getKey();
         }
         try {
-            return $this->getCacheAdapter()->hasItem($key);
+            return $this->getAdapter()->hasItem($key);
         } catch (Throwable) {
             return false;
         }
@@ -126,7 +141,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
             $key = $key->getKey();
         }
         try {
-            return $this->getCacheAdapter()->getItem($key);
+            return $this->getAdapter()->getItem($key);
         } catch (Throwable $e) {
             $error = $e;
             return null;
@@ -140,7 +155,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         DateTimeInterface $expiration = null
     ): bool {
         try {
-            $cacheItem = $this->getCacheAdapter()->getItem($key);
+            $cacheItem = $this->getAdapter()->getItem($key);
         } catch (Throwable) {
             return false;
         }
@@ -166,7 +181,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
     private function cacheAdapterInit() : AdapterInterface
     {
         if ($this->init) {
-            return $this->getCacheAdapter();
+            return $this->getAdapter();
         }
 
         $this->init = true;
@@ -338,46 +353,46 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
 
     public function getItem(string $key): CacheItemInterface
     {
-        return $this->getCacheAdapter()->getItem($key);
+        return $this->getAdapter()->getItem($key);
     }
 
     public function getItems(array $keys = []): iterable
     {
-        return $this->getCacheAdapter()->getItems($keys);
+        return $this->getAdapter()->getItems($keys);
     }
 
     public function hasItem(string $key): bool
     {
-        return $this->getCacheAdapter()->hasItem($key);
+        return $this->getAdapter()->hasItem($key);
     }
 
     public function deleteItem(string $key): bool
     {
-        return $this->getCacheAdapter()->deleteItem($key);
+        return $this->getAdapter()->deleteItem($key);
     }
 
     public function saveDeferred(CacheItemInterface $item): bool
     {
-        return $this->getCacheAdapter()->saveDeferred($item);
+        return $this->getAdapter()->saveDeferred($item);
     }
 
     public function deleteItems(array $keys): bool
     {
-        return $this->getCacheAdapter()->deleteItems($keys);
+        return $this->getAdapter()->deleteItems($keys);
     }
 
     public function save(CacheItemInterface $item): bool
     {
-        return $this->getCacheAdapter()->save($item);
+        return $this->getAdapter()->save($item);
     }
 
     public function commit(): bool
     {
-        return $this->getCacheAdapter()->commit();
+        return $this->getAdapter()->commit();
     }
 
     public function clear() : bool
     {
-        return $this->getCacheAdapter()->clear();
+        return $this->getAdapter()->clear();
     }
 }

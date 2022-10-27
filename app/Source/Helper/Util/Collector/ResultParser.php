@@ -20,7 +20,7 @@ class ResultParser implements IteratorAggregate, Serializable
     /**
      * @var array
      */
-    protected array $definitions = [];
+    public readonly array $definitions = [];
 
     /**
      * ResultParserCollector constructor.
@@ -270,5 +270,14 @@ class ResultParser implements IteratorAggregate, Serializable
     public function unserialize($data)
     {
         $this->definitions = unserialize($data);
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->definitions = $data;
+    }
+    public function __serialize(): array
+    {
+        return $this->definitions;
     }
 }

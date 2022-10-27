@@ -22,9 +22,9 @@ class Handler extends SessionHandler implements ContainerizeInterface, ArrayAcce
     protected bool $isDestroyed = false;
 
     /**
-     * @var ?SessionDriverInterface
+     * @var SessionDriverInterface
      */
-    protected ?SessionDriverInterface $sessionDriver = null;
+    protected SessionDriverInterface $sessionDriver;
 
     /**
      * @var string
@@ -34,16 +34,23 @@ class Handler extends SessionHandler implements ContainerizeInterface, ArrayAcce
     use Containerize;
 
     /**
+     * @var Container
+     * @readonly
+     */
+    public readonly Container $container;
+
+    /**
      * @param Container $container
      * @param ?SessionDriverInterface $sessionDriver
      * @param bool $sessionAutoStart
      */
     public function __construct(
-        private Container $container,
+        Container $container,
         ?SessionDriverInterface $sessionDriver = null,
         protected bool $sessionAutoStart = false
     ) {
-        $this->sessionDriver = $sessionDriver;
+        $this->container = $container;
+        $this->sessionDriver = $sessionDriver??new DefaultDriver($container);
         $this->defaultSessionName = $sessionDriver->getDefaultSessionName();
     }
 
@@ -180,9 +187,6 @@ class Handler extends SessionHandler implements ContainerizeInterface, ArrayAcce
      */
     public function getSessionDriver(): SessionDriverInterface
     {
-        if (!$this->sessionDriver) {
-            $this->sessionDriver = new DefaultDriver($this->container);
-        }
         return $this->sessionDriver;
     }
 

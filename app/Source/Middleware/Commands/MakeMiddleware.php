@@ -110,7 +110,7 @@ CLI
         }
 
         $date = $this->getContainer(Time::class);
-        $date = $date->getCurrentTimeUTC()->format('Y-m-d H:i:s e');
+        $date = $date->getCurrentUTCTime()->format('Y-m-d H:i:s e');
         $string = <<<PHP
 <?php
 declare(strict_types=1);

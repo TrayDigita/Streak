@@ -15,6 +15,7 @@ trait Containerize
      */
     final public function getContainer(?string $name = null)
     {
-        return $name ? $this->container[$name] : $this->container;
+        $container = $this->container??Container::getInstance();
+        return $name ? $container[$name] : $container;
     }
 }

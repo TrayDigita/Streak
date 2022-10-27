@@ -9,21 +9,28 @@ use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 
 class Time extends AbstractContainerization
 {
-    protected DateTimeImmutable $currentTime;
-    protected DateTimeImmutable $currentTimeUTC;
+    /**
+     * @var DateTimeImmutable
+     */
+    public readonly DateTimeImmutable $currentLocalTime;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public readonly DateTimeImmutable $currentUTCTime;
 
     public function __construct(Container $container)
     {
         parent::__construct($container);
-        $this->currentTime = $this->newDateTime();
-        $this->currentTimeUTC = $this->currentTime->setTimezone(new DateTimeZone('UTC'));
+        $this->currentLocalTime = $this->newDateTime();
+        $this->currentUTCTime   = $this->currentLocalTime->setTimezone(new DateTimeZone('UTC'));
     }
 
     public function newDateTimeUTC() : DateTimeImmutable
     {
         return $this
             ->newDateTime()
-            ->setTimezone($this->currentTimeUTC->getTimezone());
+            ->setTimezone($this->currentUTCTime->getTimezone());
     }
 
     public function newDateTime() : DateTimeImmutable
@@ -34,17 +41,17 @@ class Time extends AbstractContainerization
     /**
      * @return DateTimeImmutable
      */
-    public function getCurrentTime(): DateTimeImmutable
+    public function getCurrentLocalTime(): DateTimeImmutable
     {
-        return $this->currentTime;
+        return $this->currentLocalTime;
     }
 
     /**
      * @return DateTimeImmutable|false
      */
-    public function getCurrentTimeUTC(): DateTimeImmutable|bool
+    public function getCurrentUTCTime(): DateTimeImmutable|bool
     {
-        return $this->currentTimeUTC;
+        return $this->currentUTCTime;
     }
 
     /**
@@ -54,7 +61,7 @@ class Time extends AbstractContainerization
      */
     public function toTimeZone(DateTimeZone $dateTimeZone) : DateTimeImmutable
     {
-        return $this->currentTimeUTC->setTimezone($dateTimeZone);
+        return $this->currentUTCTime->setTimezone($dateTimeZone);
     }
 
     private static ?array $listsAbbrZoneOffset = null;

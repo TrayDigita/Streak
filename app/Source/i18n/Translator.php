@@ -24,6 +24,7 @@ class Translator extends LaminasTranslator
 
     const DEFAULT_LOCALE = 'en';
     const DEFAULT_TEXTDOMAIN = 'default';
+
     /**
      * @var array<string, array<string, TextDomain>>
      */
@@ -44,8 +45,14 @@ class Translator extends LaminasTranslator
      */
     protected $fallbackLocale = null;
 
+    /**
+     * @var array<string>
+     */
     protected array $directories = [];
 
+    /**
+     * @var bool
+     */
     private bool $loadFoundOne = true;
 
     /**
@@ -53,8 +60,18 @@ class Translator extends LaminasTranslator
      */
     protected array $registeredDirectories = [];
 
-    public function __construct(private Container $container)
+    /**
+     * @var Container
+     * @readonly
+     */
+    public readonly Container $container;
+
+    /**
+     * @param Container $container
+     */
+    public function __construct(Container $container)
     {
+        $this->container = $container;
         $this->setTextDomain(static::DEFAULT_TEXTDOMAIN);
         $this->setLocale(static::DEFAULT_LOCALE);
     }

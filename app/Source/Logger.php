@@ -19,15 +19,31 @@ class Logger extends Monolog implements ContainerizeInterface
     use Containerize,
         EventsMethods;
 
-    private PsrHandler $psrHandler;
+    /**
+     * @var PsrHandler
+     */
+    public readonly PsrHandler $psrHandler;
 
+    /**
+     * @var Container
+     */
+    public readonly Container $container;
+
+    /**
+     * @param Container $container
+     * @param string|null $logName
+     * @param array $logHandlers
+     * @param array $logProcessors
+     * @param DateTimeZone|null $logTimezone
+     */
     public function __construct(
-        private Container $container,
+        Container $container,
         ?string $logName = null,
         array $logHandlers = [],
         array $logProcessors = [],
         DateTimeZone $logTimezone = null
     ) {
+        $this->container = $container;
         if (!$logName) {
             $appName = $container->get(Application::class)->getName();
             $logNamed = $this->eventDispatch('Logger:name', $appName);

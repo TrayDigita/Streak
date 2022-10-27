@@ -54,6 +54,9 @@ final class Scheduler extends AbstractContainerization implements Startable
      */
     private bool $started = false;
 
+    /**
+     * @var array[]
+     */
     private array $processRecords = [
         ActionSchedulers::PENDING => [],
         ActionSchedulers::SUCCESS => [],

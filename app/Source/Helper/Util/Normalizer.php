@@ -6,7 +6,7 @@ namespace TrayDigita\Streak\Source\Helper\Util;
 
 final class Normalizer
 {
-    protected static array $conversionTables = [
+    private static array $conversionTables = [
         'À' => 'A',
         'Á' => 'A',
         'Â' => 'A',

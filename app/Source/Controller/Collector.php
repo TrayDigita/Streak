@@ -300,6 +300,7 @@ class Collector extends AbstractContainerization implements Scannable
 
     /**
      * @return bool[]
+     * @noinspection PhpUnused
      */
     public function getLoadedControllers(): array
     {

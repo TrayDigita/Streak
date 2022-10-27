@@ -11,11 +11,12 @@ class Attribute implements AttributeInterface
     /**
      * @var string
      */
-    protected string $name;
+    public readonly string $name;
+
     /**
      * @var string
      */
-    protected string $value;
+    public readonly string $value;
 
     /**
      * @param string $name

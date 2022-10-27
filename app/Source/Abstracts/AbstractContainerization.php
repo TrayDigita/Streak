@@ -12,9 +12,16 @@ abstract class AbstractContainerization implements ContainerizeInterface
     use Containerize;
 
     /**
+     * @var Container
+     * @readonly
+     */
+    public readonly Container $container;
+
+    /**
      * @param Container $container
      */
-    public function __construct(private Container $container)
+    public function __construct(Container $container)
     {
+        $this->container = $container;
     }
 }

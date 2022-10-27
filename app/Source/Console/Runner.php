@@ -27,11 +27,22 @@ class Runner extends Application implements ContainerizeInterface
     use TranslationMethods,
         Containerize;
 
+    /**
+     * @var Container
+     */
+    public readonly Container $container;
+
+    /**
+     * @param Container $container
+     * @param string|null $applicationName
+     * @param string|null $applicationVersion
+     */
     public function __construct(
-        private Container $container,
+        Container $container,
         ?string $applicationName = null,
         ?string $applicationVersion = null
     ) {
+        $this->container = $container;
         $this->setAutoExit(false);
         parent::__construct($applicationName, $applicationVersion);
     }

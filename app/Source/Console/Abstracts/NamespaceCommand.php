@@ -20,6 +20,11 @@ abstract class NamespaceCommand extends Command implements ContainerizeInterface
         TranslationMethods;
 
     const NAMESPACE_SEPARATOR = ':';
+    /**
+     * @var Container
+     * @readonly
+     */
+    public readonly Container $container;
 
     /**
      * Command namespace
@@ -39,8 +44,9 @@ abstract class NamespaceCommand extends Command implements ContainerizeInterface
     /**
      * @param Container $container
      */
-    public function __construct(private Container $container)
+    public function __construct(Container $container)
     {
+        $this->container = $container;
         parent::__construct($this->getFullCommandName());
     }
 

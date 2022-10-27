@@ -50,12 +50,12 @@ class Collector extends AbstractContainerization implements Scannable
      * @param string $middlewareDirectory
      */
     public function __construct(
-        protected Container $container,
+        Container $container,
         protected RouteCollectorProxyInterface $collectorProxy,
         string|array $middlewareNamespaces,
         protected string $middlewareDirectory
     ) {
-        parent::__construct($this->container);
+        parent::__construct($container);
         $middlewareNamespaces = (array) $middlewareNamespaces;
         foreach ($middlewareNamespaces as $item) {
             if (!is_string($item) || trim($item) === '') {

@@ -26,6 +26,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
     protected string $charset = 'UTF-8';
     protected string $bodyContent = '';
     protected string $headerContent = '';
+
     /**
      * @var string[]
      */
