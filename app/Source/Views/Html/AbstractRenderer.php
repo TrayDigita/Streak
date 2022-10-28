@@ -9,6 +9,7 @@ use JetBrains\PhpStorm\Pure;
 use Laminas\I18n\Translator\Translator;
 use Psr\Http\Message\ResponseInterface;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
+use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Helper\Util\Normalizer;
 use TrayDigita\Streak\Source\Helper\Html\Attribute;
@@ -16,6 +17,7 @@ use TrayDigita\Streak\Source\Helper\Http\Code;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Clearable;
 use TrayDigita\Streak\Source\Interfaces\Html\AttributeInterface;
 use TrayDigita\Streak\Source\Interfaces\Html\RenderInterface;
+use TrayDigita\Streak\Source\Records\Collections;
 use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use Wa72\HtmlPageDom\HtmlPageCrawler;
@@ -336,14 +338,14 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
 
         $head    = $this->eventDispatch('Html:head', $head);
         $content = $this->eventDispatch('Html:body', $content);
+        $app = $this->getContainer(Configurations::class)->get('application');
+        $filterHtml = $app instanceof Collections ? $app->get('filterHtml') : false;
+        $filterHtml = (bool) $filterHtml;
+        $filterHtml = $this->eventDispatch('Html:filter_html', $filterHtml) === true;
+
         $content = $head . $content;
         unset($body, $head);
-
-        if ($this->eventDispatch('Html:balance_tags', false) === true) {
-            $content = Normalizer::forceBalanceTags($content);
-        }
-
-        if ($this->eventDispatch('Html:filterHtml', false) === true) {
+        if ($filterHtml) {
             $content = HtmlPageCrawler::create($content);
             $html    = $content->filter('html');
             $body    = $content->filter('body');
@@ -358,6 +360,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                     $html->setAttribute($v->getName(), $v->getValue());
                 }
             }
+
             if ($body->count()) {
                 /**
                  * @var AttributeInterface[] $body_attributes
@@ -369,6 +372,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                     $body->setAttribute($v->getName(), $v->getValue());
                 }
             }
+
             $head         = $content->filter('head');
             $titleH       = $head->filter('title');
             $charsetH     = $head->filter('meta[charset]');
@@ -435,6 +439,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 },
                 $content
             );
+
             $html = HtmlPageCrawler::create($content)->filter('html');
             if ($html->count()) {
                 if (!empty($html_attributes)) {

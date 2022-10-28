@@ -12,6 +12,8 @@ return [
         'siteUrl' => null,
         // Language: string(i18n language code)
         'language' => 'id',
+        // filtering html with dom document
+        'filterHtml' => true,
     ],
     'json' => [
         // Prettify Json: boolean(true|false) -> false

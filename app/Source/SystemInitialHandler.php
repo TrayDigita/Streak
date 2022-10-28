@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Slim\Exception\HttpSpecializedException;
-use Slim\ResponseEmitter;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Console\Runner;
@@ -172,7 +171,7 @@ class SystemInitialHandler extends AbstractContainerization
     ) {
         $this
             ->eventDispatch(
-                'Error:handler',
+                'Error:handleError',
                 $errno,
                 $errstr,
                 $errfile,
@@ -184,25 +183,35 @@ class SystemInitialHandler extends AbstractContainerization
 
     /**
      * @param Throwable $exception
+     *
+     * @return ResponseInterface|void
      */
     public function handleException(Throwable $exception)
     {
         // handle
         if (!$this->eventHas('Exception:handler')) {
-            $response = $this->renderError(
-                $exception,
-                $this->getContainer(ServerRequestInterface::class),
-                $this
-                    ->getContainer(ResponseFactoryInterface::class)
-                    ->createResponse(500)
-            );
-            $this->getContainer(ResponseEmitter::class)->emit($response);
-            return;
+            $response = $this
+                ->getContainer(ResponseFactoryInterface::class)
+                ->createResponse(500);
+            $exceptionView = $this
+                ->getContainer(Renderer::class)
+                ->createExceptionRenderView($exception);
+            // fallback if error
+            if ($this->handled) {
+                $exceptionView->setArgument(AbstractRenderer::SKIP_THEME, true);
+            } else {
+                ob_get_length() && ob_get_level() > 0 && ob_end_clean();
+                $this->previousStream = $this->getStream();
+                // reset stream
+                $this->stream = null;
+                ob_start([$this, 'handleBuffer']);
+            }
+            return $exceptionView->render($response);
         }
 
         $this
             ->eventDispatch(
-                'Exception:handler',
+                'Exception:handleException',
                 $exception,
                 $this
             );
