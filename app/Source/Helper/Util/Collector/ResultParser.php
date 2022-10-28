@@ -204,11 +204,17 @@ class ResultParser implements IteratorAggregate, Serializable
      * @param string|object $className
      * @return bool
      */
-    #[Pure] public function isSubClassOf(string|object $className) : bool
+    public function isSubClassOf(string|object $className) : bool
     {
         $classNameFull = $this->getFullClassName();
-        if (!$classNameFull) {
+        $parent = $this->getParentClass();
+        if (!$classNameFull || !$parent) {
             return false;
+        }
+        if (strtolower($parent) === strtolower($className) || (
+            class_exists($parent) && is_subclass_of($parent, $className)
+        )) {
+            return true;
         }
 
         return is_subclass_of($classNameFull, $className);
@@ -242,6 +248,15 @@ class ResultParser implements IteratorAggregate, Serializable
     #[Pure] public function getMethod(string $method) : ?array
     {
         return $this->getMethods()[strtolower($method)]??null;
+    }
+
+    /**
+     * @param string $method
+     * @return bool
+     */
+    #[Pure] public function hasMethod(string $method) : bool
+    {
+        return isset($this->getMethods()[strtolower($method)]);
     }
 
     /**

@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Slim\Exception\HttpSpecializedException;
+use Slim\ResponseEmitter;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Console\Runner;
@@ -52,6 +53,11 @@ class SystemInitialHandler extends AbstractContainerization
      * @var ?bool
      */
     private ?bool $handleBuffer = null;
+
+    /**
+     * @var ?Throwable
+     */
+    private ?Throwable $exception = null;
 
     /**
      * Register shutdown
@@ -138,6 +144,14 @@ class SystemInitialHandler extends AbstractContainerization
     }
 
     /**
+     * @return ?Throwable
+     */
+    public function getException(): ?Throwable
+    {
+        return $this->exception;
+    }
+
+    /**
      * Shutdown Handler
      */
     private function handleShutdown()
@@ -145,14 +159,14 @@ class SystemInitialHandler extends AbstractContainerization
         $error = error_get_last();
         $type = $error['type']??null;
         $this->handled = true;
-        // if contains error
+            // if contains error
         if ($type === E_COMPILE_ERROR || $type === E_ERROR) {
             ob_get_length() && ob_get_level() > 0 && ob_end_clean();
             $this->previousStream = $this->getStream();
             // reset stream
             $this->stream = null;
             ob_start([$this, 'handleBuffer']);
-            $exception = new ErrorException(
+            $exception = $this->exception??new ErrorException(
                 $error['message'],
                 $error['type'],
                 1,
@@ -189,8 +203,6 @@ class SystemInitialHandler extends AbstractContainerization
 
     /**
      * @param Throwable $exception
-     *
-     * @return ResponseInterface|void
      */
     public function handleException(Throwable $exception)
     {
@@ -199,6 +211,7 @@ class SystemInitialHandler extends AbstractContainerization
             $response = $this
                 ->getContainer(ResponseFactoryInterface::class)
                 ->createResponse(500);
+            $this->exception = $exception;
             $exceptionView = $this
                 ->getContainer(Renderer::class)
                 ->createExceptionRenderView($exception);
@@ -212,7 +225,8 @@ class SystemInitialHandler extends AbstractContainerization
                 $this->stream = null;
                 ob_start([$this, 'handleBuffer']);
             }
-            return $exceptionView->render($response);
+            $response =  $exceptionView->render($response);
+            $this->getContainer(ResponseEmitter::class)->emit($response);
         }
 
         $this
@@ -302,5 +316,12 @@ class SystemInitialHandler extends AbstractContainerization
         }
 
         return $exceptionView->render($response);
+    }
+
+    public function __destruct()
+    {
+        $this->exception = null;
+        $this->previousStream = null;
+        $this->stream = null;
     }
 }

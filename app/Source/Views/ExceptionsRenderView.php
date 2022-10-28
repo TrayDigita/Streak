@@ -100,6 +100,7 @@ pre {
 </style>
 HTML
         );
+
         $this->setBodyContent(sprintf('<div class="wrap">%s</div>', $body));
         unset($body);
         return parent::buildStructure();
@@ -134,9 +135,9 @@ HTML
             $this->translate('Line'),
             $exception->getLine()
         );
+
         $html .= sprintf('<h2>%s</h2>', $this->translate('Trace'));
         $html .= sprintf('<pre>%s</pre>', htmlentities($exception->getTraceAsString()));
-
         return $html;
     }
 

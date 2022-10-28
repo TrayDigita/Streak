@@ -10,7 +10,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionClass;
 use ReflectionObject;
 use ReflectionProperty;
-use Symfony\Component\DomCrawler\Crawler;
 use Throwable;
 use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Events;

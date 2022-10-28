@@ -252,6 +252,7 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                     $this->invalidThemes[$themeDir] = self::ERROR;
                     continue;
                 }
+
                 if (empty($item)) {
                     try {
                         $item = $cache->getItem($cacheName);
@@ -277,8 +278,17 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                     $this->invalidThemes[$themeDir] = self::CLASS_NOT_FOUND;
                     continue;
                 }
+
                 if (!$resultParser->isSubClassOf(AbstractTheme::class)) {
                     $this->invalidThemes[$themeDir] = self::INVALID_CLASS;
+                    continue;
+                }
+
+                if (!$resultParser->hasMethod('doRender')
+                    || !$resultParser->hasMethod('doRenderException')
+                ) {
+                    $this->invalidThemes[$themeDir] = self::INVALID_CLASS;
+                    continue;
                 }
                 unset($resultParser);
                 try {
@@ -291,6 +301,10 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                 }
                 try {
                     $ref = new ReflectionClass($className);
+                    if (!$ref->isSubclassOf(AbstractTheme::class)) {
+                        $this->invalidThemes[$themeDir] = self::INVALID_CLASS;
+                        continue;
+                    }
                     // if class name is not as theme file
                     if ($ref->getFileName() !== $themeFile) {
                         $this->invalidThemes[$themeDir] = self::INVALID_FILE;

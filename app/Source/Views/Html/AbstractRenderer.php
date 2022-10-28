@@ -288,9 +288,9 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 $this->setBodyContent($body);
                 unset($header, $body);
             }
+            unset($activeTheme);
         }
 
-        unset($activeTheme);
         $head    = $this->getHeaderContent();
         $content = $this->getBodyContent();
         $skipFailComments = '(?:<!--.*(*SKIP)(*FAIL))';
