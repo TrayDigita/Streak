@@ -46,7 +46,8 @@
         "symfony/polyfill-intl-idn": "~1.26",
         "woohoolabs/yang": "~2.3||^3",
         "woohoolabs/yin": "~4",
-        "wa72/htmlpagedom": "~3"
+        "wa72/htmlpagedom": "~3",
+        "ext-dom": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3",

@@ -12,7 +12,7 @@ use TrayDigita\Streak\Source\Application;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 
-class ExceptionsView extends AbstractRenderer
+class ExceptionsRenderView extends AbstractRenderer
 {
     use TranslationMethods;
 

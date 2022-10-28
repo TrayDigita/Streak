@@ -5,6 +5,6 @@ namespace TrayDigita\Streak\Source\Views;
 
 use TrayDigita\Streak\Source\Views\Html\AbstractRenderer;
 
-class DefaultView extends AbstractRenderer
+class DefaultRenderView extends AbstractRenderer
 {
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\Session\Driver;
 
 use RuntimeException;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\i18n\Translator;
 use TrayDigita\Streak\Source\Session\Abstracts\AbstractSessionDriver;
 use TrayDigita\Streak\Source\StoragePath;
@@ -26,7 +25,7 @@ class DefaultDriver extends AbstractSessionDriver
         $savePath = $this->getContainer(StoragePath::class);
         $savePath = $savePath->getSessionsPath();
         $originalPath = $savePath;
-        $savePath = $this->getContainer(Events::class)->dispatch('Session:save_path', $savePath);
+        $savePath = $this->eventDispatch('Session:save_path', $savePath);
         $savePath = !is_string($savePath) || !is_dir(dirname($savePath))
             ? $originalPath
             : (realpath($savePath)?:$originalPath);

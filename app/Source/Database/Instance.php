@@ -308,8 +308,7 @@ class Instance extends AbstractContainerization
                 $this->params,
                 $this->configuration
             );
-            $this->getContainer(Events::class)
-                 ->dispatch('Database:connection', $this->connection, $this);
+            $this->eventDispatch('Database:connection', $this->connection, $this);
             $driver = $this->params['driver'];
             $query = null;
             // set utc timezone
@@ -405,6 +404,7 @@ class Instance extends AbstractContainerization
             }
             return $quoteStr;
         }
+
         if (!is_string($quoteStr)) {
             throw new InvalidArgumentException(
                 $this->translate(

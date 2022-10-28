@@ -65,6 +65,7 @@ use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\ComposerLoaderObject;
 use TrayDigita\Streak\Source\Traits\Containerize;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
+use TrayDigita\Streak\Source\Views\Html\AbstractRenderer;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
@@ -124,16 +125,26 @@ class Application implements ContainerizeInterface
     /**
      * @var bool
      */
-    protected bool $middlewareAttached = false;
-    /**
-     * @var bool
-     */
-    protected bool $moduleDispatched = false;
+    private bool $middlewareAttached = false;
 
     /**
      * @var bool
      */
-    protected bool $controllerAttached = false;
+    private bool $moduleDispatched = false;
+
+    /**
+     * @var bool
+     */
+    private bool $controllerAttached = false;
+
+    /**
+     * @var bool
+     */
+    private bool $themeScanned = false;
+
+    /**
+     * @var ?ResponseInterface
+     */
     private ?ResponseInterface $response = null;
 
     /**
@@ -224,6 +235,11 @@ class Application implements ContainerizeInterface
         $this->defaultCurrentResponseType = $defaultCurrentResponseType;
     }
 
+    /**
+     * @param ?Container $container
+     *
+     * @return Container
+     */
     protected function createFactory(?Container $container = null) : Container
     {
         $baseNS = Consolidation::getNameSpace(__NAMESPACE__);
@@ -276,7 +292,7 @@ class Application implements ContainerizeInterface
         }
 
         $this->deploymentEnvironment = $app['environment'];
-
+        $obj = $this;
         // FREED
         /* ---------------------------------------------------------
          * Parameters
@@ -303,14 +319,14 @@ class Application implements ContainerizeInterface
 
             'logName'            => fn () => $this->eventDispatch('Logger:name', $this->getName()),
             'logTimezone'        => fn () => $container->get(Time::class)->getCurrentUTCTime()->getTimezone(),
-            'logHandlers'           => function (Container $container) : array {
+            'logHandlers'           => function (Container $container) use ($obj) : array {
                 $defaultHandlers = [];
                 if (Validator::isCli()) {
                     $defaultHandlers[] = new PsrHandler(
                         new ConsoleLogger($container->get(ConsoleOutput::class))
                     );
                 }
-                $handlers = $container->get(Events::class)->dispatch('Logger:handlers', $defaultHandlers);
+                $handlers = $obj->eventDispatch('Logger:handlers', $defaultHandlers);
                 foreach ($handlers as $key => $handler) {
                     if (!$handler instanceof HandlerInterface) {
                         unset($handlers[$key]);
@@ -321,7 +337,6 @@ class Application implements ContainerizeInterface
         ]);
 
         unset($configurations, $app);
-
         /* ---------------------------------------------------------
          * Factories
          */
@@ -380,10 +395,9 @@ class Application implements ContainerizeInterface
                 ConnectionProvider::class
             ],
             ConfigurationLoader::class => [
-                'callback' => function (Container $container) use ($baseNS) {
-                    $events = $container->get(Events::class);
+                'callback' => function (Container $container) use ($baseNS, $obj) {
                     $root   = $container->get(StoragePath::class)->getRootDirectory();
-                    $migrationPath = $events->dispatch(
+                    $migrationPath = $obj->eventDispatch(
                         'Migrations:path',
                         'migrations'
                     );
@@ -393,7 +407,7 @@ class Application implements ContainerizeInterface
                             "$baseNS\\Migrations" => $migrationDirectory
                         ]
                     ];
-                    $configurations = $events->dispatch('Migrations:configurations', $default);
+                    $configurations = $obj->eventDispatch('Migrations:configurations', $default);
                     if (!is_array($configurations)) {
                         $configurations = [];
                     }
@@ -427,7 +441,7 @@ class Application implements ContainerizeInterface
                     }
 
                     $metadata = new TableMetadataStorageConfiguration();
-                    $tableName = $events->dispatch('Migrations:table', $metadata->getTableName());
+                    $tableName = $obj->eventDispatch('Migrations:table', $metadata->getTableName());
                     if (!$tableName || !preg_match('~^[a-zA-Z0-9_]+$~', $tableName)) {
                         $tableName = $metadata->getTableName();
                     }
@@ -634,6 +648,11 @@ class Application implements ContainerizeInterface
         return $this;
     }
 
+    /**
+     * Attach the middleware
+     *
+     * @return $this
+     */
     public function attachMiddleware() : static
     {
         if ($this->middlewareAttached) {
@@ -643,6 +662,7 @@ class Application implements ContainerizeInterface
         if ($this->eventDispatch('Dispatch:module', true) === true) {
             $this->dispatchModule();
         }
+
         $this->middlewareAttached = true;
         $this->eventDispatch('Middleware:start', $this);
         $this->getContainer(MiddlewareStorage::class)->start();
@@ -652,13 +672,45 @@ class Application implements ContainerizeInterface
         return $this;
     }
 
+    /**
+     * Scan the theme
+     * @return $this
+     */
+    public function scanTheme() : static
+    {
+        if ($this->themeScanned) {
+            return $this;
+        }
+
+        if ($this->eventDispatch('Attach:middleware', true) === true) {
+            $this->attachMiddleware();
+        } elseif ($this->eventDispatch('Dispatch:module', true) === true) {
+            $this->dispatchModule();
+        }
+
+        $this->themeScanned = true;
+        $this->eventDispatch('Theme:start', $this);
+        $this->getContainer(ThemeReader::class)->scan();
+        $this->eventDispatch('Theme:end', $this);
+        /* ADD STOP */
+        $this->addStop('Application:controller');
+        return $this;
+    }
+
+    /**
+     * Attach controller
+     *
+     * @return $this
+     */
     public function attachController() : static
     {
         if ($this->controllerAttached) {
             return $this;
         }
 
-        if ($this->eventDispatch('Attach:middleware', true) === true) {
+        if ($this->eventDispatch('Scan:theme', true) === true) {
+            $this->scanTheme();
+        } elseif ($this->eventDispatch('Attach:middleware', true) === true) {
             $this->attachMiddleware();
         } elseif ($this->eventDispatch('Dispatch:module', true) === true) {
             $this->dispatchModule();
@@ -688,6 +740,7 @@ class Application implements ContainerizeInterface
         $attachMiddleware   = !$isCli || $this->eventDispatch('Attach:middleware', true) === true;
         $attachController   = !$isCli || $this->eventDispatch('Attach:controller', false) === true;
         $dispatchHandle     = !$isCli || $this->eventDispatch('Dispatch:handle', false) === true;
+        $scanTheme          = !$isCli || $this->eventDispatch('Scan:theme', true) === true;
 
         /* ---------------------------------------------------------
          * Dispatch Module
@@ -698,6 +751,11 @@ class Application implements ContainerizeInterface
          * Dispatch Middleware
          */
         $attachMiddleware && $this->attachMiddleware();
+
+        /* ---------------------------------------------------------
+         * Dispatch Theme
+         */
+        $scanTheme && $this->scanTheme();
 
         /* ---------------------------------------------------------
          * Dispatch Route
@@ -792,7 +850,7 @@ class Application implements ContainerizeInterface
      */
     public function getVersion(): string
     {
-        return $this->getContainer(Events::class)->dispatch(
+        return $this->eventDispatch(
             'Application:version',
             $this->version
         );
@@ -803,7 +861,7 @@ class Application implements ContainerizeInterface
      */
     public function getName(): string
     {
-        return $this->getContainer(Events::class)->dispatch(
+        return $this->eventDispatch(
             'Application:name',
             $this->name
         );

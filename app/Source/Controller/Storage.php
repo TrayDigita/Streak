@@ -12,13 +12,15 @@ use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
 use TrayDigita\Streak\Source\Container;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
 use TrayDigita\Streak\Source\Benchmark;
 use TrayDigita\Streak\Source\RouteAnnotations\Annotation\Route;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 
 class Storage extends AbstractContainerization implements Startable
 {
+    use EventsMethods;
+
     /**
      * @var bool
      */
@@ -40,6 +42,16 @@ class Storage extends AbstractContainerization implements Startable
     protected array $invalidRoutes = [];
 
     /**
+     * @var ?AbstractController
+     */
+    private ?AbstractController $currentController = null;
+
+    /**
+     * @var array
+     */
+    private array $matchedRouteParameters = [];
+
+    /**
      * @param Container $container
      * @param Collector $controllers
      * @param RouteCollectorProxy $routeCollectorProxy
@@ -52,6 +64,22 @@ class Storage extends AbstractContainerization implements Startable
         parent::__construct($container);
     }
 
+    /**
+     * @return ?AbstractController
+     */
+    public function getCurrentController(): ?AbstractController
+    {
+        return $this->currentController;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMatchedRouteParameters(): array
+    {
+        return $this->matchedRouteParameters;
+    }
+
     public function start()
     {
         if ($this->started) {
@@ -59,12 +87,11 @@ class Storage extends AbstractContainerization implements Startable
         }
 
         $this->started = true;
-        $events = $this->getContainer(Events::class);
         $timeRecord = $this->getContainer(Benchmark::class);
         $timeRecord->start('StorageControllers:load');
 
         // events
-        $events->dispatch('StorageControllers:controllers:start', $this);
+        $this->eventDispatch('StorageControllers:controllers:start', $this);
         $routes = [];
         foreach ($this->controllers->getControllersKey() as $controllerName) {
             $controller = $this->controllers->getController($controllerName);
@@ -83,7 +110,6 @@ class Storage extends AbstractContainerization implements Startable
                     $parser,
                     $obj,
                     $controllers,
-                    $events,
                     $timeRecord
                 ) {
                     /**
@@ -152,6 +178,7 @@ class Storage extends AbstractContainerization implements Startable
                             }
                             $routes_collections[$route] = $methods;
                         }
+
                         // add register
                         $obj->registered[$identifier] = true;
                         $obj->controllers->load(
@@ -162,12 +189,12 @@ class Storage extends AbstractContainerization implements Startable
                                 AbstractController $controller,
                                 RouteCollectorProxy $routeCollectorProxy
                             ) use (
-                                $events,
+                                $obj,
                                 $methods,
                                 $parsed,
                                 $identifier
                             ) {
-                                $events->dispatch(
+                                $obj->eventDispatch(
                                     'StorageControllers:controller:prepare',
                                     $controller,
                                     $this
@@ -188,10 +215,13 @@ class Storage extends AbstractContainerization implements Startable
                                     ) use (
                                         $parsed,
                                         $controller,
-                                        &$route
+                                        &$route,
+                                        $obj
                                     ) {
                                         $params['$controller'] = $controller;
                                         $params['$route'] = $route;
+                                        $obj->currentController = $controller;
+                                        $obj->matchedRouteParameters = $params;
                                         return $controller->doingRouting(
                                             $route,
                                             $parsed,
@@ -207,7 +237,7 @@ class Storage extends AbstractContainerization implements Startable
                                     }
                                 }
 
-                                $events->dispatch(
+                                $obj->eventDispatch(
                                     'StorageControllers:controller:registered',
                                     $controller,
                                     $this,
@@ -224,7 +254,7 @@ class Storage extends AbstractContainerization implements Startable
 
         unset($routes_collections, $controllers);
         // events
-        $events->dispatch('StorageControllers:controllers:registered', $this);
+        $this->eventDispatch('StorageControllers:controllers:registered', $this);
         $timeRecord->stop('StorageControllers:load');
     }
 

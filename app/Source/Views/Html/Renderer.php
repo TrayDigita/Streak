@@ -6,24 +6,36 @@ namespace TrayDigita\Streak\Source\Views\Html;
 use Slim\Exception\HttpSpecializedException;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
-use TrayDigita\Streak\Source\Views\DefaultView;
-use TrayDigita\Streak\Source\Views\ExceptionsView;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
+use TrayDigita\Streak\Source\Views\DefaultRenderView;
+use TrayDigita\Streak\Source\Views\ExceptionsRenderView;
 
 class Renderer extends AbstractContainerization
 {
+    use EventsMethods;
+
     /**
      * @param Throwable|HttpSpecializedException $exception
      *
-     * @return ExceptionsView
+     * @return ExceptionsRenderView
      */
-    public function exceptionView(
+    public function createExceptionRenderView(
         Throwable|HttpSpecializedException $exception
-    ) : ExceptionsView {
-        return new ExceptionsView($exception, $this->getContainer());
+    ) : ExceptionsRenderView {
+        return $this->eventDispatch(
+            'Renderer:exception',
+            new ExceptionsRenderView($exception, $this->getContainer())
+        );
     }
 
-    public function defaultView(): DefaultView
+    /**
+     * @return DefaultRenderView
+     */
+    public function createRenderView(): DefaultRenderView
     {
-        return new DefaultView($this->getContainer());
+        return $this->eventDispatch(
+            'Renderer:view',
+            new DefaultRenderView($this->getContainer())
+        );
     }
 }

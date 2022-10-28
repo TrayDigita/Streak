@@ -3,19 +3,40 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Themes\Abstracts;
 
+use BadMethodCallException;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
-use Laminas\Stdlib\ResponseInterface;
+use JetBrains\PhpStorm\Pure;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use ReflectionClass;
+use Slim\Exception\HttpInternalServerErrorException;
+use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpSpecializedException;
+use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
+use TrayDigita\Streak\Source\Controller\Storage;
+use TrayDigita\Streak\Source\Helper\Http\Code;
 use TrayDigita\Streak\Source\Helper\Util\Consolidation;
+use TrayDigita\Streak\Source\SystemInitialHandler;
+use TrayDigita\Streak\Source\Themes\ThemeReader;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
+use TrayDigita\Streak\Source\Traits\TranslationMethods;
+use TrayDigita\Streak\Source\Views\Html\AbstractRenderer;
+use TrayDigita\Streak\Source\Views\Html\Renderer;
 
+/**
+ * @mixin AbstractRenderer
+ */
 abstract class AbstractTheme extends AbstractContainerization
 {
+    use EventsMethods,
+        TranslationMethods;
+
     /**
      * @var string
      * @readonly
@@ -60,6 +81,46 @@ abstract class AbstractTheme extends AbstractContainerization
     protected string $authorURI = '';
 
     /**
+     * @var ?ServerRequestInterface
+     */
+    private ?ServerRequestInterface $request = null;
+
+    /**
+     * @var ?ResponseInterface
+     */
+    private ?ResponseInterface $response = null;
+
+    /**
+     * @var ?StreamInterface
+     */
+    private ?StreamInterface $headerStream = null;
+
+    /**
+     * @var ?StreamInterface
+     */
+    private ?StreamInterface $bodyStream = null;
+
+    /**
+     * @var ?StreamInterface
+     */
+    private ?StreamInterface $footerStream = null;
+
+    /**
+     * @var ?Throwable
+     */
+    private ?Throwable $exception = null;
+
+    /**
+     * @var bool
+     */
+    private bool $rendered = false;
+
+    /**
+     * @var ?AbstractRenderer
+     */
+    protected ?AbstractRenderer $renderView = null;
+
+    /**
      * @param Container $container
      */
     final public function __construct(Container $container)
@@ -75,25 +136,110 @@ abstract class AbstractTheme extends AbstractContainerization
     }
 
     /**
-     * @param ServerRequest|null $request
-     * @param string|null $after
+     * @return AbstractRenderer
+     */
+    public function getRenderView(): AbstractRenderer
+    {
+        if (!$this->renderView) {
+            $this->renderView = $this->getContainer(Renderer::class)->createRenderView();
+        }
+        return $this->renderView;
+    }
+
+    /**
+     * @return ?ServerRequestInterface
+     */
+    public function getRequest(): ?ServerRequestInterface
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return ?ResponseInterface
+     */
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
+    }
+
+    /**
+     * Get theme uri
+     *
+     * @param ?ServerRequest $request
+     * @param ?string $afterURI
      *
      * @return UriInterface
      */
     public function getURI(
         ?ServerRequest $request = null,
-        ?string $after = null
+        ?string $afterURI = null
     ): UriInterface {
-        $request = $request??$this->getContainer(ServerRequestInterface::class);
+        $request = $request??(
+            $this->getRequest()??$this->getContainer(ServerRequestInterface::class)
+        );
         $uri = $request
             ->getUri()
             ->withFragment('')
             ->withQuery('')
             ->withPath("/$this->path/");
-        if ($after) {
-            $uri = new Uri("$uri$after");
+        if ($afterURI) {
+            $uri = new Uri("$uri$afterURI");
         }
         return $uri;
+    }
+
+    /**
+     * @return StreamInterface
+     */
+    final public function getHeader() : StreamInterface
+    {
+        if ($this->headerStream) {
+            return $this->headerStream;
+        }
+
+        $this->headerStream = $this->getContainer(SystemInitialHandler::class)->createStream();
+        ob_start();
+        (function () {
+            include $this->getContainer(ThemeReader::class)->getHeaderFile();
+        })();
+        $this->headerStream->write(ob_get_clean()??'');
+        return $this->headerStream;
+    }
+
+    /**
+     * @return StreamInterface
+     */
+    final public function getBody() : StreamInterface
+    {
+        if ($this->bodyStream) {
+            return $this->bodyStream;
+        }
+
+        $this->bodyStream = $this->getContainer(SystemInitialHandler::class)->createStream();
+        ob_start();
+        (function () {
+            include $this->getContainer(ThemeReader::class)->getBodyFile();
+        })();
+        $this->bodyStream->write(ob_get_clean()??'');
+        return $this->bodyStream;
+    }
+
+    /**
+     * @return StreamInterface
+     */
+    final public function getFooter() : StreamInterface
+    {
+        if ($this->footerStream) {
+            return $this->footerStream;
+        }
+
+        $this->footerStream = $this->getContainer(SystemInitialHandler::class)->createStream();
+        ob_start();
+        (function () {
+            include $this->getContainer(ThemeReader::class)->getFooterFilePath();
+        })();
+        $this->footerStream->write(ob_get_clean()??'');
+        return $this->footerStream;
     }
 
     /**
@@ -137,6 +283,52 @@ abstract class AbstractTheme extends AbstractContainerization
     }
 
     /**
+     * @return ?Throwable
+     */
+    public function getException(): ?Throwable
+    {
+        return $this->exception;
+    }
+
+    /**
+     * @return bool
+     */
+    #[Pure] public function isErrorResponse() : bool
+    {
+        return $this->getException() !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function is404() : bool
+    {
+        return $this->getResponse()?->getStatusCode() === 404
+            || $this->getException() instanceof HttpNotFoundException;
+    }
+
+    /**
+     * @return bool
+     */
+    public function is500() : bool
+    {
+        if ($this->getResponse()?->getStatusCode() === 500) {
+            return true;
+        }
+        $exception = $this->getException();
+        if ($exception === null) {
+            return false;
+        }
+        if ($exception instanceof HttpSpecializedException) {
+            return $exception instanceof HttpInternalServerErrorException
+                || ($exception->getCode() >= 500 && $exception->getCode() < 600);
+        }
+        return true;
+    }
+
+    /**
+     * Render theme
+     *
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $params
@@ -144,7 +336,126 @@ abstract class AbstractTheme extends AbstractContainerization
      *
      * @return ResponseInterface
      */
-    abstract public function render(
+    final public function render(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $params,
+        ?AbstractController $controller = null
+    ) : ResponseInterface {
+        // prevent loop back
+        if ($this->rendered) {
+            return $response;
+        }
+
+        $this->renderView = $this->getContainer(Renderer::class)->createRenderView();
+        $this->request    = $request;
+        $this->response   =& $response;
+        $this->rendered   = true;
+        $this->eventDispatch(
+            'Theme:render',
+            $this,
+            $request,
+            $response,
+            $params,
+            $controller
+        );
+
+        return $this->doRender(
+            $this->request,
+            $this->response,
+            $params,
+            $controller
+        );
+    }
+
+    /**
+     * @param Throwable $exception
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $params
+     *
+     * @return ResponseInterface
+     */
+    final public function renderException(
+        Throwable $exception,
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $params = []
+    ) : ResponseInterface {
+        if ($this->rendered) {
+            return $response;
+        }
+
+        if ($exception instanceof HttpSpecializedException) {
+            $code = $exception->getCode();
+            $code = Code::statusMessage($code) ? $code :500;
+            $response = $response->withStatus($code);
+        }
+
+        $this->request   = $request;
+        $this->response =& $response;
+        $this->exception = $exception;
+        $this->renderView = $this
+            ->getContainer(Renderer::class)
+            ->createExceptionRenderView($this->exception);
+
+        $this->rendered = true;
+        $controller = $this->getContainer(Storage::class)->getCurrentController();
+        $this->eventDispatch(
+            'Theme:renderException',
+            $this,
+            $request,
+            $response,
+            $params,
+            $controller
+        );
+        return $this->doRenderException($exception, $request, $response, $params, $controller);
+    }
+
+    final public function __call(string $name, array $arguments)
+    {
+        if (!method_exists($this->getRenderView(), $name)) {
+            throw new BadMethodCallException(
+                sprintf(
+                    $this->translate("Call to undefined Method %s."),
+                    $name
+                ),
+                E_USER_ERROR
+            );
+        }
+
+        return call_user_func_array([
+            $this->getRenderView(),
+            $name
+        ], $arguments);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $params
+     * @param ?AbstractController $controller
+     *
+     * @return ResponseInterface
+     */
+    abstract protected function doRender(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $params = [],
+        ?AbstractController $controller = null
+    ) : ResponseInterface;
+
+    /**
+     * @param Throwable $exception
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $params
+     * @param AbstractController|null $controller
+     *
+     * @return ResponseInterface
+     */
+    abstract protected function doRenderException(
+        Throwable $exception,
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $params = [],

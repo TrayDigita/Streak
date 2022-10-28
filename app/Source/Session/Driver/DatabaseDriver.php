@@ -49,9 +49,7 @@ class DatabaseDriver extends AbstractSessionDriver
     {
         $this->gc = @ini_get('session.gc_maxlifetime');
         $this->gc = is_numeric($this->gc) ? (int) $this->gc : null;
-        $this->sessionTable = $this
-            ->getContainer(Events::class)
-            ->dispatch('Session:table', $this->sessionTable);
+        $this->sessionTable = $this->eventDispatch('Session:table', $this->sessionTable);
         if (!is_string($this->sessionTable)
             || !preg_match('~^[a-z0-9]{2}([a-z0-9_]+)?$~i', $this->sessionTable)
         ) {

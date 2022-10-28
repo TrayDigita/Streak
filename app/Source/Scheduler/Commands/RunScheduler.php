@@ -11,7 +11,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TrayDigita\Streak\Source\Console\Abstracts\RunCommand;
 use TrayDigita\Streak\Source\Database\Instance;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Scheduler\Abstracts\AbstractTask;
 use TrayDigita\Streak\Source\Scheduler\Model\ActionSchedulers;
@@ -96,7 +95,7 @@ EOT
         if ($exception) {
             throw $exception;
         }
-        $events = $this->getContainer(Events::class);
+
         $scheduler = $this->getContainer(Scheduler::class);
         $filtered = array_keys(array_filter($scheduler->getPending(), fn($e) => $e->isNeedToRun()));
         $total = count($filtered);
@@ -112,7 +111,7 @@ EOT
             return self::SUCCESS;
         }
 
-        $events->add("Scheduler:beforeRun", function () use ($symfonyStyle, $total) {
+        $this->eventAdd("Scheduler:beforeRun", function () use ($symfonyStyle, $total) {
             $symfonyStyle->section(
                 strtoupper($this->translate('Scheduler'))
             );
@@ -128,7 +127,7 @@ EOT
             );
         });
 
-        $events->add(
+        $this->eventAdd(
             "Scheduler:before:run",
             function (string $name) use ($symfonyStyle) {
                 $pendingMessage = sprintf(
@@ -149,7 +148,7 @@ EOT
                 return $progressBar;
             }
         );
-        $events->add(
+        $this->eventAdd(
             "Scheduler:after:run",
             function (
                 AbstractTask $result,

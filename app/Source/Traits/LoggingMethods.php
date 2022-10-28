@@ -29,6 +29,11 @@ trait LoggingMethods
         $this->logWarning($exception->getMessage(), ['exception' => $exception, ...$context]);
     }
 
+    public function logDebugException(Throwable $exception, array $context = [])
+    {
+        $this->logDebug($exception->getMessage(), ['exception' => $exception, ...$context]);
+    }
+
     public function logEmergency(string|Stringable $message, array $context = [])
     {
         $this?->getContainer(LoggerInterface::class)->emergency($message, $context);

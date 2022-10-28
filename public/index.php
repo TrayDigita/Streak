@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Public;
 
 use TrayDigita\Streak\Source\Application;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 
 (function () : ?Application {
+    /**
+     * @var Application $application
+     */
     $application = require __DIR__ . '/../Loader.php';
     $vendorDir = Consolidation::vendorDirectory();
     $scriptName = isset($_SERVER['SCRIPT_FILENAME'])
@@ -17,6 +19,6 @@ use TrayDigita\Streak\Source\Helper\Util\Consolidation;
     if ($scriptName && str_starts_with($scriptName, $vendorDir)) {
         return null;
     }
-    $application->getContainer(Events::class)->dispatch('Serve:index');
+    $application->eventDispatch('Serve:index', $application);
     return $application;
 })()?->run();

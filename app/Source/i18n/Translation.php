@@ -20,6 +20,15 @@ class Translation extends AbstractContainerization
             ->translate($message, $textDomain, $locale);
     }
 
+    /**
+     * @param string $singular
+     * @param string $plural
+     * @param int $number
+     * @param string|null $textDomain
+     * @param string|null $locale
+     *
+     * @return string
+     */
     public function translatePlural(
         string $singular,
         string $plural,

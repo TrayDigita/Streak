@@ -4,9 +4,12 @@ namespace TrayDigita\Streak\Source\Session\Abstracts;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Session\Interfaces\SessionDriverInterface;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 
 abstract class AbstractSessionDriver extends AbstractContainerization implements SessionDriverInterface
 {
+    use EventsMethods;
+
     protected ?int $ttl = null;
 
     /**
@@ -14,6 +17,9 @@ abstract class AbstractSessionDriver extends AbstractContainerization implements
      */
     protected string $defaultSessionName = 'PHPSSID';
 
+    /**
+     * @return bool
+     */
     public static function isSupported() : bool
     {
         return true;

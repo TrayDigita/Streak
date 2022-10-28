@@ -7,12 +7,14 @@ use JetBrains\PhpStorm\Pure;
 use Slim\Interfaces\MiddlewareDispatcherInterface;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
 use TrayDigita\Streak\Source\Benchmark;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 
 class Storage extends AbstractContainerization implements Startable
 {
+    use EventsMethods;
+
     /**
      * @var bool
      */
@@ -41,6 +43,7 @@ class Storage extends AbstractContainerization implements Startable
 
     /**
      * @return Collector
+     * @noinspection PhpUnused
      */
     public function getCollectorMiddleware(): Collector
     {
@@ -53,11 +56,11 @@ class Storage extends AbstractContainerization implements Startable
             return;
         }
         $this->started = true;
-        $events = $this->getContainer(Events::class);
         $timeRecord = $this->getContainer(Benchmark::class);
         $timeRecord->start('StorageMiddlewares:load');
         // events
-        $events->dispatch('StorageMiddlewares:middlewares:start', $this);
+        $this->eventDispatch('StorageMiddlewares:middlewares:start', $this);
+        $obj = $this;
         // reverse
         foreach (array_reverse($this->collectorModules->getMiddlewaresKey()) as $middlewareName) {
             $middleware = $this->collectorModules->getMiddleware($middlewareName);
@@ -68,19 +71,19 @@ class Storage extends AbstractContainerization implements Startable
                 $this,
                 $middleware,
                 $this->getMiddlewareDispatcher(),
-                function ($middleware) use ($events, $className) {
-                    $events->dispatch('StorageMiddlewares:middleware:prepare', $middleware, $this);
+                function ($middleware) use ($className, $obj) {
+                    $obj->eventDispatch('StorageMiddlewares:middleware:prepare', $middleware, $this);
                     $this
                         ->getMiddlewareDispatcher()
                         ->addMiddleware($middleware);
                     $this->registered[$className] = true;
-                    $events->dispatch('StorageMiddlewares:middleware:registered', $middleware, $this);
+                    $obj->eventDispatch('StorageMiddlewares:middleware:registered', $middleware, $this);
                 }
             );
             $timeRecord->stop($classNameId);
         }
         // events
-        $this->getContainer(Events::class)->dispatch(
+        $obj->eventDispatch(
             'StorageMiddlewares:middlewares:registered',
             $this
         );

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-23 20:51+0700\n"
+"POT-Creation-Date: 2022-10-28 16:06+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2\n"
 "X-Poedit-Basepath: ../app\n"
 "X-Poedit-KeywordsList: translate;translatePlural\n"
 "X-Poedit-SearchPath-0: Source\n"
@@ -80,69 +80,73 @@ msgstr ""
 msgid "%s name could not be empty."
 msgstr ""
 
-#: Source/Console/Abstracts/NamespaceCommand.php:113
+#: Source/Console/Abstracts/NamespaceCommand.php:121
 #, php-format
 msgid "You must override the %s method in the concrete command class."
 msgstr ""
 
-#: Source/Console/Runner.php:46
+#: Source/Console/Runner.php:57
 msgid "Enable Debug"
 msgstr ""
 
-#: Source/Container.php:213
+#: Source/Container.php:216
 msgid "Parameters value contains invalid key name."
 msgstr ""
 
-#: Source/Container.php:235
+#: Source/Container.php:238
 #, php-format
 msgid "Parameter %s is not exists."
 msgstr ""
 
-#: Source/Container.php:449
+#: Source/Container.php:452
 #, php-format
 msgid "Cannot override frozen service \"%s\"."
 msgstr ""
 
-#: Source/Container.php:499
+#: Source/Container.php:502
 #, php-format
 msgid "Identifier \"%s\" is not defined."
 msgstr ""
 
-#: Source/Container.php:557
+#: Source/Container.php:560
 msgid "Argument object closure is not allowed."
 msgstr ""
 
-#: Source/Container.php:581
+#: Source/Container.php:584
 #, php-format
 msgid "Class name %s is not exists."
 msgstr ""
 
-#: Source/Container.php:605
+#: Source/Container.php:608
 #, php-format
 msgid "Class name %s is not instantiable."
 msgstr ""
 
-#: Source/Container.php:687
+#: Source/Container.php:690
 #, php-format
 msgid "Class name %s contain required parameters (%s)."
 msgstr ""
 
-#: Source/Container.php:800
+#: Source/Container.php:803
 #, php-format
 msgid "Class name %s contain required parameter type: (%s) that could not to be resolved."
 msgstr ""
 
-#: Source/Container.php:819
+#: Source/Container.php:822
 #, php-format
 msgid "Class name %s contain required parameters."
 msgstr ""
 
-#: Source/Container.php:878
+#: Source/Container.php:901
 #, php-format
 msgid "Call to undefined property %s."
 msgstr ""
 
-#: Source/Controller/Collector.php:258 Source/Middleware/Collector.php:195
+#: Source/Controller/Abstracts/AbstractController.php:218
+msgid "Dispatching route"
+msgstr ""
+
+#: Source/Controller/Collector.php:258 Source/Middleware/Collector.php:220
 #: Source/Module/Collector.php:182
 #, php-format
 msgid "Can not add %1$s while the %1$s already initiated to processing."
@@ -220,51 +224,51 @@ msgstr ""
 msgid "File %s is exists."
 msgstr ""
 
-#: Source/Controller/DynamicController.php:88
+#: Source/Controller/DynamicController.php:89
 #, php-format
 msgid "Route %s does not have controller."
 msgstr ""
 
-#: Source/Controller/DynamicController.php:101
+#: Source/Controller/DynamicController.php:102
 #, php-format
 msgid "Route controller %s does not have fallback method."
 msgstr ""
 
-#: Source/Controller/DynamicController.php:113
+#: Source/Controller/DynamicController.php:114
 #, php-format
 msgid "Route controller %s does not have fallback method %s."
 msgstr ""
 
-#: Source/Controller/DynamicController.php:131
+#: Source/Controller/DynamicController.php:132
 #, php-format
 msgid "Route controller method does not returning %s."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:277
+#: Source/Database/Abstracts/Model.php:278
 #, php-format
 msgid "Table for model %s is not exist."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:560
+#: Source/Database/Abstracts/Model.php:561
 #, php-format
 msgid "Argument parameters key index must be as a string, %s given."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:574
+#: Source/Database/Abstracts/Model.php:575
 #, php-format
 msgid "Table %s does not have primary key"
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:738
+#: Source/Database/Abstracts/Model.php:739
 msgid "Update method does not where statement"
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:891
+#: Source/Database/Abstracts/Model.php:892
 #, php-format
 msgid "Column (%s) must be set."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:1299
+#: Source/Database/Abstracts/Model.php:1310
 #, php-format
 msgid "Columns %s is not exists on index %s column %s"
 msgstr ""
@@ -281,39 +285,40 @@ msgstr ""
 msgid "Model file"
 msgstr ""
 
-#: Source/Database/Instance.php:389 Source/Database/Instance.php:433
+#: Source/Database/Instance.php:389 Source/Database/Instance.php:434
 msgid "Invalid value to be quote, quote value could not be instance of `Closure` or as a `Resource`."
 msgstr ""
 
-#: Source/Database/Instance.php:410
+#: Source/Database/Instance.php:411
 msgid "Invalid value to be quote, quote value must be as a string."
 msgstr ""
 
-#: Source/Database/Instance.php:527
+#: Source/Database/Instance.php:528
 #, php-format
 msgid "Invalid statement binding count with sql query : %s."
 msgstr ""
 
-#: Source/Database/Instance.php:614 Source/Database/Instance.php:640
-#: Source/Database/Instance.php:721 Source/Database/Instance.php:746
+#: Source/Database/Instance.php:615 Source/Database/Instance.php:641
+#: Source/Database/Instance.php:722 Source/Database/Instance.php:747
 msgid "Invalid parameter table name. Table name could not be empty."
 msgstr ""
 
-#: Source/Database/Instance.php:666
+#: Source/Database/Instance.php:667
 msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 
-#: Source/Database/Instance.php:777
+#: Source/Database/Instance.php:778
+#: Source/Themes/Abstracts/AbstractTheme.php:420
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr ""
 
-#: Source/Database/Instance.php:870
+#: Source/Database/Instance.php:871
 msgid "Argument must be subclass of %s, % given."
 msgstr ""
 
-#: Source/Database/Instance.php:882
-#: Source/RouteAnnotations/RoutesAnnotations.php:110
+#: Source/Database/Instance.php:883
+#: Source/RouteAnnotations/RoutesAnnotations.php:113
 #, php-format
 msgid "Class name %s is not valid."
 msgstr ""
@@ -328,21 +333,21 @@ msgstr ""
 msgid "%s is not a valid file."
 msgstr ""
 
-#: Source/Helper/Util/ObjectFileReader.php:62
+#: Source/Helper/Util/ObjectFileReader.php:61
 #, php-format
 msgid "File %s contains empty data."
 msgstr ""
 
-#: Source/Helper/Util/ObjectFileReader.php:94
+#: Source/Helper/Util/ObjectFileReader.php:93
 msgid "Argument is empty data or whitespace only."
 msgstr ""
 
-#: Source/Json/ApiCreator.php:126 Source/Traits/HttpThrowableException.php:164
-#: Source/Views/ExceptionsView.php:26
+#: Source/Json/ApiCreator.php:130 Source/Traits/HttpThrowableException.php:164
+#: Source/Views/ExceptionsRenderView.php:26
 msgid "500 Internal Server Error"
 msgstr ""
 
-#: Source/Middleware/Collector.php:197
+#: Source/Middleware/Collector.php:222
 msgid "middleware"
 msgstr ""
 
@@ -410,128 +415,128 @@ msgstr ""
 msgid "Controller path %s is not exists."
 msgstr ""
 
-#: Source/RouteAnnotations/ControllerReader.php:136
+#: Source/RouteAnnotations/ControllerReader.php:138
 #, php-format
 msgid "%s does not exists."
 msgstr ""
 
-#: Source/RouteAnnotations/ControllerReader.php:146
+#: Source/RouteAnnotations/ControllerReader.php:148
 #, php-format
 msgid "%s is a directory."
 msgstr ""
 
-#: Source/RouteAnnotations/ControllerReader.php:153
+#: Source/RouteAnnotations/ControllerReader.php:155
 #, php-format
 msgid "%s is not readable."
 msgstr ""
 
-#: Source/RouteAnnotations/ControllerReader.php:160
+#: Source/RouteAnnotations/ControllerReader.php:162
 #, php-format
 msgid "%s is not php file."
 msgstr ""
 
-#: Source/RouteAnnotations/ControllerReader.php:175
+#: Source/RouteAnnotations/ControllerReader.php:177
 #, php-format
 msgid "Suffix %s is not match with basename %s."
 msgstr ""
 
-#: Source/RouteAnnotations/ControllerReader.php:232
+#: Source/RouteAnnotations/ControllerReader.php:240
 #, php-format
 msgid "Could not found object on file %s."
 msgstr ""
 
-#: Source/RouteAnnotations/ControllerReader.php:244
+#: Source/RouteAnnotations/ControllerReader.php:252
 #, php-format
 msgid "Could not found class %s on file %s."
 msgstr ""
 
-#: Source/RouteAnnotations/RoutesAnnotations.php:100
+#: Source/RouteAnnotations/RoutesAnnotations.php:103
 #, php-format
 msgid "Class %s is not instance of %s."
 msgstr ""
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:98
+#: Source/Scheduler/Abstracts/AbstractTask.php:128
 msgid "Processing task."
 msgstr ""
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:106
+#: Source/Scheduler/Abstracts/AbstractTask.php:136
 msgid "Task done."
 msgstr ""
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:114
+#: Source/Scheduler/Abstracts/AbstractTask.php:144
 msgid "Task error."
 msgstr ""
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:131
-#: Source/Scheduler/Commands/RunScheduler.php:164
+#: Source/Scheduler/Abstracts/AbstractTask.php:161
+#: Source/Scheduler/Commands/RunScheduler.php:163
 msgid "Unknown"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:29
+#: Source/Scheduler/Commands/RunScheduler.php:28
 #, php-format
 msgid "The %s to run the task scheduler"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:36
+#: Source/Scheduler/Commands/RunScheduler.php:35
 #, php-format
 msgid "[%s] Run the scheduler"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:61
+#: Source/Scheduler/Commands/RunScheduler.php:60
 msgid "Database Schema"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:66
+#: Source/Scheduler/Commands/RunScheduler.php:65
 msgid "Checking database schema"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:81
+#: Source/Scheduler/Commands/RunScheduler.php:80
 #, php-format
 msgid "Creating database tables %s"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:90
+#: Source/Scheduler/Commands/RunScheduler.php:89
 msgid "Database schema tables for scheduler are complete."
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:108
+#: Source/Scheduler/Commands/RunScheduler.php:107
 msgid "No schedule to be execute"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:117
+#: Source/Scheduler/Commands/RunScheduler.php:116
 msgid "Scheduler"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:122
+#: Source/Scheduler/Commands/RunScheduler.php:121
 #, php-format
 msgid "Execute %d scheduler on total."
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:136
+#: Source/Scheduler/Commands/RunScheduler.php:135
 msgid "Pending"
 msgstr ""
 
-#: Source/Scheduler/Scheduler.php:75
+#: Source/Scheduler/Scheduler.php:78
 #, php-format
 msgid "Task must be subclass of %s, %s given."
 msgstr ""
 
-#: Source/Scheduler/Scheduler.php:92
+#: Source/Scheduler/Scheduler.php:95
 #, php-format
 msgid "Can not add task, task %s already processed."
 msgstr ""
 
-#: Source/Scheduler/Scheduler.php:101
+#: Source/Scheduler/Scheduler.php:104
 #, php-format
 msgid "Can not add task, task %s in progress."
 msgstr ""
 
-#: Source/Scheduler/Scheduler.php:119
+#: Source/Scheduler/Scheduler.php:122
 #, php-format
 msgid "Can not delete task, task %s in progress."
 msgstr ""
 
-#: Source/Session/Driver/DefaultDriver.php:49
+#: Source/Session/Driver/DefaultDriver.php:48
 #, php-format
 msgid "Session save path %s is not writable."
 msgstr ""
@@ -598,12 +603,12 @@ msgid "The server does not support the functionality required to fulfill the req
 msgstr ""
 
 #: Source/Traits/HttpThrowableException.php:161
-#: Source/Views/ExceptionsView.php:46
+#: Source/Views/ExceptionsRenderView.php:46
 msgid "Internal server error."
 msgstr ""
 
 #: Source/Traits/HttpThrowableException.php:168
-#: Source/Views/ExceptionsView.php:48
+#: Source/Views/ExceptionsRenderView.php:48
 msgid "Unexpected condition encountered preventing server from fulfilling request."
 msgstr ""
 
@@ -631,26 +636,26 @@ msgstr ""
 msgid "You are not permitted to perform the requested operation."
 msgstr ""
 
-#: Source/Views/ExceptionsView.php:112
+#: Source/Views/ExceptionsRenderView.php:112
 msgid "Type"
 msgstr ""
 
-#: Source/Views/ExceptionsView.php:119
+#: Source/Views/ExceptionsRenderView.php:119
 msgid "Code"
 msgstr ""
 
-#: Source/Views/ExceptionsView.php:124
+#: Source/Views/ExceptionsRenderView.php:124
 msgid "Message"
 msgstr ""
 
-#: Source/Views/ExceptionsView.php:129
+#: Source/Views/ExceptionsRenderView.php:129
 msgid "File"
 msgstr ""
 
-#: Source/Views/ExceptionsView.php:134
+#: Source/Views/ExceptionsRenderView.php:134
 msgid "Line"
 msgstr ""
 
-#: Source/Views/ExceptionsView.php:137
+#: Source/Views/ExceptionsRenderView.php:137
 msgid "Trace"
 msgstr ""

@@ -34,6 +34,9 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
     final const CLASS_NOT_FOUND = 4;
     final const INVALID_CLASS = 5;
     final const INVALID_FILE = 6;
+    final const NO_HEADER = 7;
+    final const NO_FOOTER = 8;
+    final const NO_BODY = 9;
 
     /**
      * @var string
@@ -62,6 +65,21 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
     protected array $invalidThemes = [];
 
     /**
+     * @var string
+     */
+    protected string $headerFilePath = 'header.php';
+
+    /**
+     * @var string
+     */
+    protected string $bodyFilePath = 'body.php';
+
+    /**
+     * @var string
+     */
+    protected string $footerFilePath = 'footer.php';
+
+    /**
      * @param Container $container
      * @param string $themesDirectoryName
      */
@@ -83,6 +101,87 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
         return $this->themesDirectory;
     }
 
+    /**
+     * @return string
+     */
+    public function getHeaderFilePath(): string
+    {
+        return $this->headerFilePath;
+    }
+
+    /**
+     * Get Header file
+     *
+     * @return ?string
+     */
+    public function getHeaderFile() : ?string
+    {
+        $activeTheme = $this->getActiveTheme();
+        if (!$activeTheme) {
+            return null;
+        }
+        return sprintf(
+            '%1$s%2$s%3$s',
+            $activeTheme->directory,
+            DIRECTORY_SEPARATOR,
+            $this->getHeaderFilePath()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getBodyFilePath(): string
+    {
+        return $this->bodyFilePath;
+    }
+
+    /**
+     * Get Header file
+     *
+     * @return ?string
+     */
+    public function getBodyFile() : ?string
+    {
+        $activeTheme = $this->getActiveTheme();
+        if (!$activeTheme) {
+            return null;
+        }
+        return sprintf(
+            '%1$s%2$s%3$s',
+            $activeTheme->directory,
+            DIRECTORY_SEPARATOR,
+            $this->getBodyFilePath()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getFooterFilePath(): string
+    {
+        return $this->footerFilePath;
+    }
+
+    /**
+     * Get Header file
+     *
+     * @return ?string
+     */
+    public function getFooterFile() : ?string
+    {
+        $activeTheme = $this->getActiveTheme();
+        if (!$activeTheme) {
+            return null;
+        }
+        return sprintf(
+            '%1$s%2$s%3$s',
+            $activeTheme->directory,
+            DIRECTORY_SEPARATOR,
+            $this->getFooterFilePath()
+        );
+    }
+
     public function scan()
     {
         if ($this->scanned()) {
@@ -93,12 +192,18 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
             return;
         }
 
+        $this->headerFilePath = $this->eventDispatch('ThemeReader:headerFile', $this->headerFilePath);
+        $this->bodyFilePath   = $this->eventDispatch('ThemeReader:headerFile', $this->bodyFilePath);
+        $this->footerFilePath = $this->eventDispatch('ThemeReader:headerFile', $this->footerFilePath);
+
         $this->scanned = true;
         $cache = $this->getContainer(Cache::class);
         foreach (new DirectoryIterator($this->getThemesDirectory()) as $theme) {
             if (!$theme->isDir() || $theme->isDot()) {
                 continue;
             }
+
+            $themeDir = $theme->getRealPath();
             $themeFile = sprintf('%1$s%2$sTheme.php', $theme->getRealPath(), DIRECTORY_SEPARATOR);
             $baseName = $theme->getBasename();
             $is_readable = true;
@@ -108,6 +213,19 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                     : self::NONE_EXISTENCE;
                 continue;
             }
+            if (!is_file("$themeDir/$this->headerFilePath")) {
+                $this->invalidThemes[$themeDir] = self::NO_HEADER;
+                continue;
+            }
+            if (!is_file("$themeDir/$this->bodyFilePath")) {
+                $this->invalidThemes[$themeDir] = self::NO_BODY;
+                continue;
+            }
+            if (!is_file("$themeDir/$this->footerFilePath")) {
+                $this->invalidThemes[$themeDir] = self::NO_FOOTER;
+                continue;
+            }
+
             $cacheName = sprintf('resultParser%s', md5($themeFile));
             $mTime = $theme->getMTime();
             try {
@@ -123,14 +241,15 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                 unset($result);
             } catch (InvalidArgumentException $e) {
             }
+
             if (!isset($resultParser)) {
                 try {
                     $resultParser = $this
                         ->getContainer(ObjectFileReader::class)
                         ->fromFile($themeFile);
-                } catch (Throwable) {
+                } catch (Throwable $e) {
                     unset($data);
-                    $this->invalidThemes[$themeFile] = self::ERROR;
+                    $this->invalidThemes[$themeDir] = self::ERROR;
                     continue;
                 }
                 if (empty($item)) {
@@ -155,11 +274,11 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                 }
                 $className = $resultParser->getFullClassName();
                 if (!$className) {
-                    $this->invalidThemes[$themeFile] = self::CLASS_NOT_FOUND;
+                    $this->invalidThemes[$themeDir] = self::CLASS_NOT_FOUND;
                     continue;
                 }
                 if (!$resultParser->isSubClassOf(AbstractTheme::class)) {
-                    $this->invalidThemes[$themeFile] = self::INVALID_CLASS;
+                    $this->invalidThemes[$themeDir] = self::INVALID_CLASS;
                 }
                 unset($resultParser);
                 try {
@@ -167,21 +286,22 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                         require_once $themeFile;
                     }
                 } catch (Throwable $e) {
-                    $this->invalidThemes[$themeFile] = self::ERROR;
+                    $this->invalidThemes[$themeDir] = self::ERROR;
                     continue;
                 }
                 try {
                     $ref = new ReflectionClass($className);
                     // if class name is not as theme file
                     if ($ref->getFileName() !== $themeFile) {
-                        $this->invalidThemes[$themeFile] = self::INVALID_FILE;
+                        $this->invalidThemes[$themeDir] = self::INVALID_FILE;
                         continue;
                     }
                 } catch (Throwable $e) {
-                    $this->invalidThemes[$themeFile] = self::ERROR;
+                    $this->invalidThemes[$themeDir] = self::ERROR;
                     continue;
                 }
-                $this->themes[$baseName] = new $themeFile($this->getContainer());
+
+                $this->themes[$baseName] = new $className($this->getContainer());
             }
         }
 

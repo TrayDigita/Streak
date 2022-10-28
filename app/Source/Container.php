@@ -83,10 +83,11 @@ class Container implements ContainerInterface, ArrayAccess
      * Parameters
      */
     private array $parameters = [];
+
     /**
-     * @var Translation
+     * @var Translator
      */
-    private Translation $translation;
+    public readonly Translator $translator;
 
     /**
      * @var ?Container
@@ -96,7 +97,7 @@ class Container implements ContainerInterface, ArrayAccess
     final public function __construct()
     {
         self::$instance = $this;
-        $this->translation = new Translation($this);
+        $this->translator = new Translator($this);
 
         $this->buildFactory();
         $this->afterConstruct();
@@ -147,19 +148,21 @@ class Container implements ContainerInterface, ArrayAccess
             ->setGlobalAliases('TimeRecord')
             ->setProtect(SystemInitialHandler::class)
             ->setGlobalAliases('SystemErrorHandler')
-            /* ---------------------------------------------------------
-             * Translation
-             */
-            ->setProtect(Translation::class, fn () => $this->translation)
-            ->setGlobalAliases('Translation')
+
             /* ---------------------------------------------------------
              * Translator
              */
-            ->setProtect(Translator::class)
+            ->setProtect(Translator::class, fn() => $this->translator)
             ->setGlobalAliases(TranslatorInterface::class)
             ->setGlobalAliases(LaminasTranslator::class)
             ->setGlobalAliases('Translator')
             ->setGlobalAliases('TranslatorInterface')
+
+            /* ---------------------------------------------------------
+             * Translation
+             */
+            ->setProtect(Translation::class)
+            ->setGlobalAliases('Translation')
 
             /* ---------------------------------------------------------
              * Shared Event Manager
@@ -866,16 +869,36 @@ class Container implements ContainerInterface, ArrayAccess
         return $this->remove($offset);
     }
 
+    /**
+     * Magic method setter
+     *
+     * @param string $name
+     * @param callable|null|mixed $value
+     */
+    public function __set(string $name, mixed $value)
+    {
+        if ($value === null || !is_callable($value)) {
+            if (!class_exists($name)) {
+                $value = fn() => $value;
+            }
+        }
+
+        $this->set($name, $value);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function __get(string $name)
     {
-        if ($name === 'translation') {
-            return $this->translation;
-        }
         if ($this->has($name)) {
             return $this->get($name);
         }
+
         throw new RuntimeException(sprintf(
-            $this->translation->translate('Call to undefined property %s.'),
+            $this->translator->translate('Call to undefined property %s.'),
             $name
         ));
     }

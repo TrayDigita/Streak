@@ -54,7 +54,6 @@ class ObjectFileReader extends AbstractContainerization
         $node = (string) $stream;
         $stream->close();
         unset($stream);
-
         clearstatcache(true, $path);
         if (trim($node) === '') {
             throw new RuntimeException(

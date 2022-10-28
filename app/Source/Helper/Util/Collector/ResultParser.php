@@ -20,7 +20,7 @@ class ResultParser implements IteratorAggregate, Serializable
     /**
      * @var array
      */
-    public readonly array $definitions = [];
+    public readonly array $definitions;
 
     /**
      * ResultParserCollector constructor.

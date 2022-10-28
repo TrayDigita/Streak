@@ -6,15 +6,16 @@ namespace TrayDigita\Streak\Source\Module;
 use JetBrains\PhpStorm\Pure;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
 use TrayDigita\Streak\Source\Benchmark;
 use TrayDigita\Streak\Source\Module\Abstracts\AbstractModule;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\NamespacesArray;
 
 class Storage extends AbstractContainerization implements Startable
 {
-    use NamespacesArray;
+    use NamespacesArray,
+        EventsMethods;
 
     /**
      * @var bool
@@ -48,11 +49,10 @@ class Storage extends AbstractContainerization implements Startable
             return;
         }
         $this->started = true;
-        $events = $this->getContainer(Events::class);
         $timeRecord = $this->getContainer(Benchmark::class);
         $timeRecord->start('StorageModules:load');
         // events
-        $events->dispatch('StorageModules:modules:start', $this);
+        $this->eventDispatch('StorageModules:modules:start', $this);
         // reverse
         foreach ($this->collectorModules->getModulesKey() as $moduleName) {
             $module = $this->collectorModules->getModule($moduleName);
@@ -63,7 +63,7 @@ class Storage extends AbstractContainerization implements Startable
                 $this,
                 $module,
                 $moduleClass,
-                function (AbstractModule $module, $moduleName) use ($events) {
+                function (AbstractModule $module, $moduleName) {
                     $this->registered[$moduleName] = true;
                     if ($module->isInitializeModule()) {
                         $module->initModule();
@@ -74,7 +74,7 @@ class Storage extends AbstractContainerization implements Startable
         }
 
         // events
-        $events->dispatch('StorageModules:modules:registered', $this);
+        $this->eventDispatch('StorageModules:modules:registered', $this);
         $timeRecord->stop('StorageModules:load');
     }
 

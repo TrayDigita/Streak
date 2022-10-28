@@ -12,12 +12,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Interfaces\ContainerizeInterface;
 use TrayDigita\Streak\Source\Traits\Containerize;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 
 abstract class NamespaceCommand extends Command implements ContainerizeInterface
 {
     use Containerize,
-        TranslationMethods;
+        TranslationMethods,
+        EventsMethods;
 
     const NAMESPACE_SEPARATOR = ':';
     /**

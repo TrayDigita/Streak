@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Views\Html;
 
+use DOMAttr;
 use JetBrains\PhpStorm\Pure;
 use Laminas\I18n\Translator\Translator;
 use Psr\Http\Message\ResponseInterface;
@@ -15,6 +16,7 @@ use TrayDigita\Streak\Source\Helper\Http\Code;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Clearable;
 use TrayDigita\Streak\Source\Interfaces\Html\AttributeInterface;
 use TrayDigita\Streak\Source\Interfaces\Html\RenderInterface;
+use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use Wa72\HtmlPageDom\HtmlPageCrawler;
 
@@ -22,9 +24,26 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
 {
     use EventsMethods;
 
+    final const SKIP_THEME = 'skipTheme';
+
+    /**
+     * @var string
+     */
     protected string $title = '';
+
+    /**
+     * @var string
+     */
     protected string $charset = 'UTF-8';
+
+    /**
+     * @var string
+     */
     protected string $bodyContent = '';
+
+    /**
+     * @var string
+     */
     protected string $headerContent = '';
 
     /**
@@ -42,6 +61,14 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
      */
     protected array $htmlAttributes = [];
 
+    /**
+     * @var array
+     */
+    protected array $arguments = [];
+
+    /**
+     * @param Container $container
+     */
     #[Pure] public function __construct(Container $container)
     {
         parent::__construct($container);
@@ -51,6 +78,55 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         ];
     }
 
+    /**
+     * @return array
+     */
+    public function getArguments(): array
+    {
+        return $this->arguments;
+    }
+
+    /**
+     * @param array $arguments
+     *
+     * @return $this
+     */
+    public function setArguments(array $arguments) : static
+    {
+        $this->arguments = $arguments;
+        return $this;
+    }
+
+    /**
+     * @param string|float|int $name
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setArgument(string|float|int $name, $value) : static
+    {
+        $this->arguments[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * @param string|float|int $name
+     * @param mixed|null $default
+     * @param null $found
+     *
+     * @return mixed
+     */
+    public function getArgument(string|float|int $name, mixed $default = null, &$found = null) : mixed
+    {
+        $found = array_key_exists($name, $this->arguments);
+        return $found ? $this->arguments[$name] : $default;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
     public function setTitle(string $title): static
     {
         $this->title = $title;
@@ -163,9 +239,12 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         return $this->headerContent;
     }
 
+    /**
+     * @return string
+     * @noinspection HtmlRequiredLangAttribute
+     */
     protected function buildStructure() : string
     {
-        $head = Normalizer::forceBalanceTags($this->getHeaderContent());
         $charset = $this->getCharset();
         if (!$this->getHtmlAttribute('lang')) {
             $this->addHtmlAttribute(
@@ -175,60 +254,245 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 )
             );
         }
+        $this->addBodyAttribute(new Attribute('id', 'el'));
         $html_attributes = $this->getHtmlAttributes();
         $body_attributes = $this->getBodyAttributes();
 
-        $body = Normalizer::forceBalanceTags($this->getBodyContent());
-
         $html_attributes = $this->eventDispatch('Html:html_attributes', $html_attributes);
         $body_attributes = $this->eventDispatch('Html:body_attributes', $body_attributes);
-        $body = $this->eventDispatch('Html:body', $body);
-        $head = $this->eventDispatch('Html:head', $head);
 
-        $html_attributes = $this->buildFromAttributes($html_attributes);
-        $body_attributes = $this->buildFromAttributes($body_attributes);
-        $html_attributes = $html_attributes ? " $html_attributes" : '';
-        $body_attributes = $body_attributes ? " $body_attributes" : '';
+        // $html_attributes = $this->buildFromAttributes($html_attributes);
+        $this->eventAdd('html:attribute', fn () => $html_attributes);
 
-        $content = '<!DOCTYPE html>';
-        $content .= "<html$html_attributes>";
-        $content .= "<head>";
-        $content .= $head;
-        $content .= "</head>";
-        $content .= "<body$body_attributes>";
-        $content .= $body;
+        // $body_attributes = $this->buildFromAttributes($body_attributes);
+        $this->eventAdd('body:attribute', fn () => $body_attributes);
 
+        if ($this->getArgument(self::SKIP_THEME) !== true) {
+            $activeTheme = $this->getContainer(ThemeReader::class)->getActiveTheme();
+            if ($activeTheme) {
+                $header = $activeTheme->getHeader();
+                $header->rewind();
+                $body = $activeTheme->getBody();
+                $body->rewind();
+                $footer = $activeTheme->getFooter();
+                $footer->rewind();
+                $footer = (string)$footer;
+                $header = (string)$header;
+                $body   = (string)$body;
+                $body   .= $footer;
+                unset($footer);
+
+                $this->setHeaderContent($header);
+                $this->setBodyContent($body);
+                unset($header, $body);
+            }
+        }
+
+        unset($activeTheme);
+        $head    = $this->getHeaderContent();
+        $content = $this->getBodyContent();
+        $skipFailComments = '(?:<!--.*(*SKIP)(*FAIL))';
+        if (!preg_match("~$skipFailComments|<!DOCTYPE[^>]*>~i", $head)) {
+            $head = "<!DOCTYPE html>\n".ltrim($head);
+        }
+
+        if (!preg_match("~$skipFailComments|<html[^>]*>~i", $head)) {
+            $head = preg_replace(
+                "~$skipFailComments|(<!DOCTYPE[^>]*>)~i",
+                "\$1\n<html>",
+                $head
+            );
+        }
+
+        if (!preg_match("~$skipFailComments|<head[^>]*>~i", $head)) {
+            $head = preg_replace(
+                "~$skipFailComments|(<html[^>]*>)~i",
+                "\$1\n<head>",
+                $head
+            );
+        }
+
+        if (!preg_match("~$skipFailComments|</head[^>]*>~i", $head)) {
+            $head = preg_match("~$skipFailComments|(<body[^>]*>)~i", $head)
+                ? preg_replace("~$skipFailComments|(<body[^>]*>)~i", "\n</head>\$1", $head)
+                : "$head\n<body>\n";
+        }
+
+        if (!preg_match("$skipFailComments|<body[^>]*>~i", $head.$content)) {
+            $content = "<body>\n".ltrim($content);
+        }
+
+        if (!preg_match("~$skipFailComments|</html>~", $content)) {
+            $content .= '</html>';
+        }
+
+        if (!preg_match("~$skipFailComments|</body>~i", $content)) {
+            $content = preg_replace(
+                "~$skipFailComments|(</html>)~i",
+                "\n</body>\n$1",
+                $content
+            );
+        }
+
+        $head    = $this->eventDispatch('Html:head', $head);
+        $content = $this->eventDispatch('Html:body', $content);
+        $content = $head . $content;
         unset($body, $head);
 
-        $content .= '</body>';
-        $content .= '</html>';
-        $content = HtmlPageCrawler::create($content);
-        $head     = $content->filter('head');
-        $titleH   = $head->filter('title');
-        $charsetH = $head->filter('meta[charset]');
-        $title = $this->getTitle();
-        $title = $title ? htmlentities($title) : ($titleH->count() ? $titleH->getInnerHtml() : '');
-
-        $title = (string) $this->eventDispatch('Html:title', $title, $this);
-        $charset = (string) $this->eventDispatch('Html:charset', $charset, $this);
-
-        if (!$charsetH->count() && $head->getDOMDocument()) {
-            $charsetH = $head->getDOMDocument()->createElement('meta');
-            $charsetH->setAttribute('charset', $charset);
-            $head->prepend($charsetH);
-        } else {
-            $charsetH->setAttribute('charset', $charset);
+        if ($this->eventDispatch('Html:balance_tags', false) === true) {
+            $content = Normalizer::forceBalanceTags($content);
         }
 
-        if (!$titleH->count()) {
-            $titleH = $head->getDOMDocument()->createElement('title');
-            $titleH->append($title);
-            $charsetH->after($titleH);
+        if ($this->eventDispatch('Html:filterHtml', false) === true) {
+            $content = HtmlPageCrawler::create($content);
+            $html    = $content->filter('html');
+            $body    = $content->filter('body');
+            if ($html->count()) {
+                /**
+                 * @var AttributeInterface[] $html_attributes
+                 */
+                foreach ((array)$html_attributes as $v) {
+                    if (!$v instanceof AttributeInterface || $v->getName() === '') {
+                        continue;
+                    }
+                    $html->setAttribute($v->getName(), $v->getValue());
+                }
+            }
+            if ($body->count()) {
+                /**
+                 * @var AttributeInterface[] $body_attributes
+                 */
+                foreach ((array)$body_attributes as $v) {
+                    if (!$v instanceof AttributeInterface || $v->getName() === '') {
+                        continue;
+                    }
+                    $body->setAttribute($v->getName(), $v->getValue());
+                }
+            }
+            $head         = $content->filter('head');
+            $titleH       = $head->filter('title');
+            $charsetH     = $head->filter('meta[charset]');
+            $title        = $this->getTitle();
+            $titleContent = ($titleH->count() ? $titleH->getInnerHtml() : '');
+            $titleContent = trim($titleContent) ?: '';
+            $title        = $titleContent ?: htmlentities($title);
+            $title        = html_entity_decode($title);
+            $title        = (string)$this->eventDispatch('head:title', $title, $this);
+            $charset      = (string)$this->eventDispatch('head:charset', $charset, $this);
+
+            unset($titleContent);
+            if (!$charsetH->count() && $head->getDOMDocument()) {
+                $charsetH = $head->getDOMDocument()->createElement('meta');
+                $charsetH->setAttribute('charset', $charset);
+                $head->prepend($charsetH);
+            } else {
+                $charsetH->setAttribute('charset', $charset);
+            }
+            if (!$titleH->count() && $head->getDOMDocument()) {
+                $titleH = $head->getDOMDocument()->createElement('title');
+                $titleH->append($title);
+                $charsetH->after($titleH);
+            } else {
+                $titleH->setInnerHtml($title);
+            }
         } else {
-            $titleH->setInnerHtml($title);
+            $content = preg_replace_callback(
+                '~<(head)>(.*)</\1>~ims',
+                function ($head) use ($charset, $skipFailComments) {
+                    $head = $head[2];
+                    $title  = $this->getTitle();
+                    $title = html_entity_decode($title);
+                    $title = (string)$this->eventDispatch('head:title', $title, $this);
+                    $charset = (string)$this->eventDispatch('head:charset', $charset, $this);
+                    $header = HtmlPageCrawler::create($head);
+                    $domTitle = $header->filter('title');
+                    if ($domTitle->count()) {
+                        if ($title !== '' && trim($domTitle->getInnerHtml()) === '') {
+                            $head = preg_replace_callback(
+                                "~$skipFailComments|<title>\s*</title>~",
+                                function () use ($title) {
+                                    $title = htmlentities($title);
+                                    return "<title>$title</title>";
+                                },
+                                $head
+                            );
+                        }
+                    } else {
+                        $head = sprintf(
+                            "<title>%s</title>\n%s",
+                            htmlentities($title),
+                            $head
+                        );
+                    }
+                    if (!preg_match("~$skipFailComments|<meta\s+charset=[^>]+>~i", $head)) {
+                        $head = sprintf(
+                            "<meta charset=\"%s\">\n%s",
+                            htmlspecialchars($charset),
+                            $head
+                        );
+                    }
+                    return sprintf("<head>\n%s\n</head>", trim($head));
+                },
+                $content
+            );
+            $html = HtmlPageCrawler::create($content)->filter('html');
+            if ($html->count()) {
+                if (!empty($html_attributes)) {
+                    foreach ((array)$html_attributes as $v) {
+                        if (!$v instanceof AttributeInterface || $v->getName() === '') {
+                            continue;
+                        }
+                        $html->setAttribute($v->getName(), $v->getValue());
+                    }
+                    /**
+                     * @var DOMAttr $attribute
+                     */
+                    $html_attributes = [];
+                    foreach ($html->getNode(0)->attributes as $attribute) {
+                        $html_attributes[$attribute->name] = new Attribute(
+                            $attribute->name,
+                            $attribute->value
+                        );
+                    }
+                    $html_attributes = $this->buildFromAttributes($html_attributes);
+                    $content         = preg_replace_callback(
+                        "~$skipFailComments|<html[^>]*>~i",
+                        fn() => "<html $html_attributes>",
+                        $content
+                    );
+                }
+                $body = $html->filter('body');
+                if ($body->count() && !empty($body_attributes)) {
+                    foreach ((array)$body_attributes as $v) {
+                        if (!$v instanceof AttributeInterface || $v->getName() === '') {
+                            continue;
+                        }
+                        $body->setAttribute($v->getName(), $v->getValue());
+                    }
+                    /**
+                     * @var DOMAttr $attribute
+                     */
+                    $body_attributes = [];
+                    foreach ($body->getNode(0)->attributes as $attribute) {
+                        $body_attributes[$attribute->name] = new Attribute(
+                            $attribute->name,
+                            $attribute->value
+                        );
+                    }
+                    $body_attributes = $this->buildFromAttributes($body_attributes);
+                    $content         = preg_replace_callback(
+                        "~$skipFailComments|<body[^>]*>~i",
+                        fn() => "<body $body_attributes>",
+                        $content
+                    );
+                }
+            }
         }
 
-        return (string) $this->eventDispatch('Html:content', $content, $this);
+        unset($html, $body, $body_attributes, $html_attributes);
+        unset($charset, $title, $titleH);
+
+        return (string) $this->eventDispatch('Html:content', (string) $content, $this);
     }
 
     /**
@@ -285,6 +549,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         $this->headerContent = '';
         $this->htmlAttributes = [];
         $this->bodyAttributes = [];
+        $this->arguments = [];
     }
 
     public function __destruct()

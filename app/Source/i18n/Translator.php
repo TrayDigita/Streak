@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\i18n;
@@ -14,13 +15,14 @@ use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\I18n\Translator\TextDomain;
 use Laminas\I18n\Translator\Translator as LaminasTranslator;
 use TrayDigita\Streak\Source\Container;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\i18n\Loader\Json;
 use TrayDigita\Streak\Source\Traits\Containerize;
+use TrayDigita\Streak\Source\Traits\EventsMethods;
 
 class Translator extends LaminasTranslator
 {
-    use Containerize;
+    use Containerize,
+        EventsMethods;
 
     const DEFAULT_LOCALE = 'en';
     const DEFAULT_TEXTDOMAIN = 'default';
@@ -214,7 +216,7 @@ class Translator extends LaminasTranslator
             Ini::class => 'ini',
         ];
 
-        $theTypes = $this->getContainer(Events::class)->dispatch(
+        $theTypes = $this->eventDispatch(
             'Translator:loader:list',
             $types,
             $textDomain,
@@ -276,7 +278,6 @@ class Translator extends LaminasTranslator
         $messagesLoaded = false;
 
         $onlyOne = $this->isLoadFoundOne();
-        $events = $this->getContainer(Events::class);
         foreach ([$locale, '*'] as $currentLocale) {
             if (! isset($this->files[$textDomain][$currentLocale])) {
                 continue;
@@ -305,7 +306,7 @@ class Translator extends LaminasTranslator
                     if ($hasDir) {
                         $this->registeredDirectories[$textDomain][$dirName][$baseName] = true;
                     }
-                    if ($events->dispatch(
+                    if ($this->eventDispatch(
                         'Translator:loader:loadOnce',
                         $onlyOne,
                         $this->messages[$textDomain][$locale],
@@ -335,8 +336,7 @@ class Translator extends LaminasTranslator
     protected function loadMessages($textDomain, $locale)
     {
         parent::loadMessages($textDomain, $locale);
-        $this->getContainer(Events::class)
-            ->dispatch('Translator:loadMessages', $this);
+        $this->eventDispatch('Translator:loadMessages', $this);
     }
 
     public function translate($message, $textDomain = null, $locale = null) : string

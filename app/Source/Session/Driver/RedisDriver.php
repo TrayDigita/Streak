@@ -11,6 +11,10 @@ use TrayDigita\Streak\Source\Session\Abstracts\AbstractSessionDriver;
 class RedisDriver extends AbstractSessionDriver
 {
     protected Redis|false|null $redis = null;
+
+    /**
+     * @var ?string
+     */
     protected ?string $sessionName = null;
 
     public static function isSupported(): bool
@@ -23,10 +27,9 @@ class RedisDriver extends AbstractSessionDriver
         if ($this->redis === null) {
             $this->redis = false;
             if (self::isSupported()) {
-                $events  = $this->getContainer(Events::class);
-                $host    = $events->dispatch('Redis:host', '127.0.0.1');
-                $port    = $events->dispatch('Redis:port', 6379);
-                $timeout = $events->dispatch('Redis:timeout', 0.0);
+                $host    = $this->eventDispatch('Redis:host', '127.0.0.1');
+                $port    = $this->eventDispatch('Redis:port', 6379);
+                $timeout = $this->eventDispatch('Redis:timeout', 0.0);
                 try {
                     $this->redis = new Redis();
                     $this->redis->connect($host, $port, $timeout);

@@ -3,19 +3,24 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source;
 
+use ErrorException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Slim\Exception\HttpSpecializedException;
 use Slim\ResponseEmitter;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Console\Runner;
+use TrayDigita\Streak\Source\Controller\Storage;
 use TrayDigita\Streak\Source\Helper\Util\StreamCreator;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Json\ApiCreator;
+use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\LoggingMethods;
+use TrayDigita\Streak\Source\Views\Html\AbstractRenderer;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
 
 class SystemInitialHandler extends AbstractContainerization
@@ -29,10 +34,28 @@ class SystemInitialHandler extends AbstractContainerization
     private bool $registered = false;
 
     /**
-     * @var ?StreamInterface|false
+     * @var ?StreamInterface
      */
-    private null|StreamInterface|bool $stream = null;
+    private ?StreamInterface $stream = null;
 
+    /**
+     * @var ?StreamInterface
+     */
+    private ?StreamInterface $previousStream = null;
+
+    /**
+     * @var bool
+     */
+    private bool $handled = false;
+
+    /**
+     * @var ?bool
+     */
+    private ?bool $handleBuffer = null;
+
+    /**
+     * Register shutdown
+     */
     public function register()
     {
         if ($this->registered) {
@@ -51,7 +74,7 @@ class SystemInitialHandler extends AbstractContainerization
                 ob_get_level() > 0 && ob_end_flush();
             }
 
-            ob_start([$this, 'handleBuffer'], 4096);
+            ob_start([$this, 'handleBuffer']);
             set_error_handler(fn (...$args) => $this->handleError(...$args));
             register_shutdown_function(fn () => $this->handleShutdown());
             set_exception_handler(fn (...$args) => $this->handleException(...$args));
@@ -63,20 +86,32 @@ class SystemInitialHandler extends AbstractContainerization
         }
     }
 
+    /**
+     * @param string $content
+     *
+     * @return string
+     */
     private function handleBuffer(string $content): string
     {
-        if ($this->stream === null) {
-            try {
-                $this->stream = $this->getContainer(
-                    ResponseFactoryInterface::class
-                )->createResponse()->getBody();
-            } catch (Throwable) {
-                $this->stream = false;
-            }
+        if ($this->handleBuffer === null) {
+            $this->handleBuffer = (bool) $this->eventDispatch('Shutdown:handleBuffer', true);
         }
-
-        $this->stream && $this->stream->write($content);
+        if ($this->handleBuffer) {
+            if ($this->stream === null) {
+                $this->stream = $this->createStream();
+            }
+            $this->stream->write($content);
+        }
         return $content;
+    }
+
+    /**
+     * @return ?StreamInterface
+     * @noinspection PhpUnused
+     */
+    public function getPreviousStream(): ?StreamInterface
+    {
+        return $this->previousStream;
     }
 
     /**
@@ -87,8 +122,41 @@ class SystemInitialHandler extends AbstractContainerization
         return $this->stream;
     }
 
+    /**
+     * @return StreamInterface
+     */
+    public function createStream() : StreamInterface
+    {
+        return $this->eventDispatch('Buffer:memory', false) === true
+            ? StreamCreator::createMemoryStream()
+            : StreamCreator::createTemporaryFileStream();
+    }
+
+    /**
+     * Shutdown Handler
+     */
     private function handleShutdown()
     {
+        $error = error_get_last();
+        $type = $error['type']??null;
+        $this->handled = true;
+        // if contains error
+        if ($type === E_COMPILE_ERROR || $type === E_ERROR) {
+            ob_get_length() && ob_get_level() > 0 && ob_end_clean();
+            $this->previousStream = $this->getStream();
+            // reset stream
+            $this->stream = null;
+            ob_start([$this, 'handleBuffer']);
+            $exception = new ErrorException(
+                $error['message'],
+                $error['type'],
+                1,
+                $error['file'],
+                $error['line']
+            );
+            $this->handleException($exception);
+        }
+
         $this
             ->getContainer(Benchmark::class)
             ->addStop('Application:shutdown');
@@ -114,6 +182,9 @@ class SystemInitialHandler extends AbstractContainerization
             );
     }
 
+    /**
+     * @param Throwable $exception
+     */
     public function handleException(Throwable $exception)
     {
         // handle
@@ -149,18 +220,30 @@ class SystemInitialHandler extends AbstractContainerization
         ServerRequestInterface $request,
         ResponseInterface $response
     ) : ResponseInterface {
-        // log
-        $this->logException(
-            $exception,
-            [
-                'url'        => (string) $request->getUri(),
-                'method'     => $request->getMethod(),
-            ]
-        );
+        if ($exception instanceof HttpSpecializedException) {
+            // log debug if http specialized
+            $this->logDebugException(
+                $exception,
+                [
+                    'url'        => (string) $request->getUri(),
+                    'method'     => $request->getMethod(),
+                ]
+            );
+        } else {
+            // log
+            $this->logException(
+                $exception,
+                [
+                    'url'        => (string) $request->getUri(),
+                    'method'     => $request->getMethod(),
+                ]
+            );
+        }
+
         $defaultResponseType = $this
             ->getContainer(Application::class)
             ->getDefaultCurrentResponseType();
-        $exception = $this->eventDispatch('Handle:exception', $exception);
+        $exception = $this->eventDispatch('Handler:exception', $exception);
         $defaultResponseType = strtolower($defaultResponseType);
         if (preg_match('~[+/]json~', $defaultResponseType)) {
             $apiCreator = $this->getContainer(ApiCreator::class);
@@ -180,9 +263,29 @@ class SystemInitialHandler extends AbstractContainerization
                 ->withBody(StreamCreator::createStreamFromResource($streamOutput->getStream()));
         }
 
-        return $this
+        // if content text html
+        if (!$this->handled && preg_match('~/html~i', $defaultResponseType)) {
+            $activeTheme = $this->getContainer(ThemeReader::class)->getActiveTheme();
+            if ($activeTheme) {
+                $params = $this->getContainer(Storage::class)->getMatchedRouteParameters();
+                $params = (array)$this->eventDispatch('Handler:themeParams', $params);
+                return $activeTheme->renderException(
+                    $exception,
+                    $request,
+                    $response,
+                    $params
+                );
+            }
+        }
+
+        $exceptionView = $this
             ->getContainer(Renderer::class)
-            ->exceptionView($exception)
-            ->render($response);
+            ->createExceptionRenderView($exception);
+        // fallback if error
+        if ($this->handled) {
+            $exceptionView->setArgument(AbstractRenderer::SKIP_THEME, true);
+        }
+
+        return $exceptionView->render($response);
     }
 }

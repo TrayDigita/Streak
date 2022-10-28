@@ -118,7 +118,7 @@ class SafePathMiddlewareDebugHandler extends AbstractMiddleware
         return $data;
     }
 
-    public function handleSafeExceptionResponseHtml(Crawler $content): string|Crawler|HtmlPageCrawler
+    public function handleSafeExceptionResponseHtml(string $content): string
     {
         $event = $this->getContainer(Events::class);
         if (!$this->inException || !$event->inEvent('Html:content')) {
@@ -144,6 +144,6 @@ class SafePathMiddlewareDebugHandler extends AbstractMiddleware
             )
         );
 
-        return $content;
+        return (string) $content;
     }
 }
