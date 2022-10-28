@@ -16,6 +16,7 @@ use TrayDigita\Streak\Source\Controller\Storage;
 use TrayDigita\Streak\Source\Helper\Util\StreamCreator;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Json\ApiCreator;
+use TrayDigita\Streak\Source\Records\Collections;
 use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\LoggingMethods;
@@ -93,7 +94,12 @@ class SystemInitialHandler extends AbstractContainerization
     private function handleBuffer(string $content): string
     {
         if ($this->handleBuffer === null) {
-            $this->handleBuffer = (bool) $this->eventDispatch('Shutdown:handleBuffer', true);
+            $app = $this->getContainer(Configurations::class)->get('application');
+            $handleBuffer = $app instanceof Collections
+                ? $app->get('storeBuffer')
+                : false;
+            $this->handleBuffer = (bool) $this
+                ->eventDispatch('Shutdown:storeBuffer', (bool) $handleBuffer);
         }
         if ($this->handleBuffer) {
             if ($this->stream === null) {

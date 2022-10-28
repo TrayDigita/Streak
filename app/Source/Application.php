@@ -159,6 +159,8 @@ class Application implements ContainerizeInterface
                 'environment' => 'production',
                 'siteUrl' => null,
                 'language' => null,
+                'storeBuffer' => true,
+                'filterHtml' => false,
             ],
             'json' => [
                 'pretty' => null,

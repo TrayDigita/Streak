@@ -13,7 +13,9 @@ return [
         // Language: string(i18n language code)
         'language' => 'id',
         // filtering html with dom document
-        'filterHtml' => true,
+        'filterHtml' => false,
+        // store shutdown handler buffer
+        'storeBuffer' => true,
     ],
     'json' => [
         // Prettify Json: boolean(true|false) -> false
