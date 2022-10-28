@@ -254,7 +254,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 )
             );
         }
-        $this->addBodyAttribute(new Attribute('id', 'el'));
+
         $html_attributes = $this->getHtmlAttributes();
         $body_attributes = $this->getBodyAttributes();
 
