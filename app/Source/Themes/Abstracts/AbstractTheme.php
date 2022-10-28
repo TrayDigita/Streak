@@ -129,7 +129,9 @@ abstract class AbstractTheme extends AbstractContainerization
         $ref = new ReflectionClass($this);
         $this->directory = dirname($ref->getFileName());
         $this->directoryName = basename($this->directory);
-        $this->path = substr($this->directory, strlen(Consolidation::publicDirectory()) + 1);
+        $path = substr($this->directory, strlen(Consolidation::publicDirectory()) + 1);
+        $this->path = str_replace('\\', '/', $path);
+
         if (!$this->name) {
             $this->name = ucwords($this->directoryName);
         }

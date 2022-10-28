@@ -252,7 +252,6 @@ class Storage extends AbstractContainerization implements Startable
             );
         }
 
-        unset($routes_collections, $controllers);
         // events
         $this->eventDispatch('StorageControllers:controllers:registered', $this);
         $timeRecord->stop('StorageControllers:load');

@@ -23,7 +23,7 @@ class DefaultDriver extends AbstractSessionDriver
     protected function afterConstruct()
     {
         $savePath = $this->getContainer(StoragePath::class);
-        $savePath = $savePath->getSessionsPath();
+        $savePath = $savePath->getSessionsDirectory();
         $originalPath = $savePath;
         $savePath = $this->eventDispatch('Session:save_path', $savePath);
         $savePath = !is_string($savePath) || !is_dir(dirname($savePath))

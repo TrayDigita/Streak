@@ -285,7 +285,7 @@ class Instance extends AbstractContainerization
                 ? new FilesystemAdapter(
                     'database',
                     $lifetime,
-                    $this->getContainer(StoragePath::class)->getCachePath(),
+                    $this->getContainer(StoragePath::class)->getCacheDirectory(),
                     $marshaller
                 ) : new ArrayAdapter(
                     $lifetime,

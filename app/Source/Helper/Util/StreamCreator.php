@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\StreamOutput;
 
 class StreamCreator
 {
+    const DEFAULT_MAX_MEMORY = 2097152;
+
     /**
      * Create socket resource
      *
@@ -38,12 +40,23 @@ class StreamCreator
     /**
      * Create resource with temporary file
      *
+     * @param ?int $maxMemoryBytes
+     *
      * @return resource
      * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function createTemporaryFileResource()
+    public static function createTemporaryFileResource(?int $maxMemoryBytes = null)
     {
-        return self::createResource('php://temp', 'wb+');
+        $uri = 'php://temp';
+        if ($maxMemoryBytes !== null && $maxMemoryBytes !== self::DEFAULT_MAX_MEMORY) {
+            $mebibyte = 1048576;
+            if ($maxMemoryBytes !== 0 && $maxMemoryBytes < $mebibyte) {
+                $maxMemoryBytes = $mebibyte;
+            }
+            $uri .= "/maxmemory:$maxMemoryBytes";
+        }
+
+        return self::createResource($uri, 'wb+');
     }
 
     /**
@@ -72,13 +85,15 @@ class StreamCreator
 
     /**
      * Create stream with temporary file
-     * @uses createTemporaryFileResource()
+     *
+     * @param ?int $maxMemoryBytes
      *
      * @return StreamInterface
+     *@uses createTemporaryFileResource()
      */
-    public static function createTemporaryFileStream() : StreamInterface
+    public static function createTemporaryFileStream(?int $maxMemoryBytes = null) : StreamInterface
     {
-        return self::createStreamFromResource(self::createTemporaryFileResource());
+        return self::createStreamFromResource(self::createTemporaryFileResource($maxMemoryBytes));
     }
 
     /**

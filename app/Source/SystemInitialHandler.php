@@ -14,6 +14,7 @@ use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Console\Runner;
 use TrayDigita\Streak\Source\Controller\Storage;
+use TrayDigita\Streak\Source\Helper\Util\NumericConverter;
 use TrayDigita\Streak\Source\Helper\Util\StreamCreator;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Json\ApiCreator;
@@ -109,7 +110,12 @@ class SystemInitialHandler extends AbstractContainerization
         }
         if ($this->handleBuffer) {
             if ($this->stream === null) {
-                $this->stream = $this->createStream();
+                $maxMemoryBuffer = NumericConverter::megaByteToBytes(10);
+                $this->eventDispatch('Buffer:maxmemory:buffer', $maxMemoryBuffer);
+                $maxMemoryBuffer = $maxMemoryBuffer < StreamCreator::DEFAULT_MAX_MEMORY
+                    ? StreamCreator::DEFAULT_MAX_MEMORY
+                    : $maxMemoryBuffer;
+                $this->stream = $this->createStream($maxMemoryBuffer);
             }
             $this->stream->write($content);
         }
@@ -134,13 +140,25 @@ class SystemInitialHandler extends AbstractContainerization
     }
 
     /**
+     * @param ?int $maxMemoryBytes
+     *
      * @return StreamInterface
      */
-    public function createStream() : StreamInterface
+    public function createStream(?int $maxMemoryBytes = null) : StreamInterface
     {
+        if ($maxMemoryBytes !== null) {
+            $maxMemoryBytes = $this->eventDispatch(
+                'Buffer:maxmemory:stream',
+                StreamCreator::DEFAULT_MAX_MEMORY
+            );
+            if (!is_int($maxMemoryBytes)) {
+                $maxMemoryBytes = StreamCreator::DEFAULT_MAX_MEMORY;
+            }
+        }
+
         return $this->eventDispatch('Buffer:memory', false) === true
             ? StreamCreator::createMemoryStream()
-            : StreamCreator::createTemporaryFileStream();
+            : StreamCreator::createTemporaryFileStream($maxMemoryBytes);
     }
 
     /**

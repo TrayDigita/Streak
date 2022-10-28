@@ -19,17 +19,49 @@ class StoragePath extends AbstractContainerization
     const DEFAULT_API_PATH = 'api';
     const DEFAULT_ADMIN_PATH = 'panel';
     const DEFAULT_MEMBER_PATH = 'dashboard';
+    /**
+     * @var string
+     */
+    public readonly string $directorySeparator;
 
+    /**
+     * @var string
+     */
     protected string $rootDirectory = '';
-    protected string $storagePath = '';
+
+    /**
+     * @var string
+     */
+    protected string $storageDirectory = '';
+
+    /**
+     * @var string
+     */
     protected string $adminPath = '';
+
+    /**
+     * @var string
+     */
     protected string $memberPath = '';
+
+    /**
+     * @var string
+     */
     protected string $apiPath = '';
+
+    /**
+     * @var string
+     */
     protected string $appDirectory = '';
+
+    /**
+     * @var bool
+     */
     private bool $initialize = false;
 
     public function __construct(Container $container)
     {
+        $this->directorySeparator = DIRECTORY_SEPARATOR;
         parent::__construct($container);
         $this->initialize();
     }
@@ -46,13 +78,13 @@ class StoragePath extends AbstractContainerization
         }
 
         $this->appDirectory = Consolidation::appDirectory();
+        $this->rootDirectory = Consolidation::rootDirectory();
 
         $defaultStorage      = $this->rootDirectory . DIRECTORY_SEPARATOR . 'storage';
-        $this->rootDirectory = Consolidation::rootDirectory();
         $storage             = ($path['storage']??null)?:null;
         $storage = !is_string($storage) ? null : $storage;
         if ($storage && !Validator::isRelativePath($storage)) {
-            if (str_starts_with($storage, './')) {
+            if (str_starts_with($storage, './') || str_starts_with($storage, '.\\')) {
                 $storage = $this->rootDirectory . substr($storage, 2);
             } else {
                 $storageTmp = realpath($storage) ?: null;
@@ -62,10 +94,10 @@ class StoragePath extends AbstractContainerization
                         $storageTmp = null;
                     }
                 }
-                $storage = $storageTmp ?: $this->rootDirectory . '/' . $storage;
+                $storage = $storageTmp ?: $this->rootDirectory . $this->directorySeparator . $storage;
             }
         } else {
-            $storage = $this->rootDirectory . '/storage';
+            $storage = $this->rootDirectory . $this->directorySeparator . 'storage';
         }
 
         if (!is_dir($storage)) {
@@ -83,8 +115,8 @@ class StoragePath extends AbstractContainerization
             Consolidation::callbackReduceError(fn() => mkdir($storage, 0755, true));
         }
 
-        $this->storagePath = $storage;
-        $apiPath = $path->get('api');
+        $this->storageDirectory = $storage;
+        $apiPath                = $path->get('api');
         $apiPath = !is_string($apiPath) ? '': $apiPath;
         $apiPath = trim($apiPath) === '' ? self::DEFAULT_API_PATH : preg_replace(
             '~[^a-z0-9_\-]~i',
@@ -161,14 +193,14 @@ class StoragePath extends AbstractContainerization
         return $this->initialize()->rootDirectory;
     }
 
-    public function getStoragePath() : string
+    public function getStorageDirectory() : string
     {
-        return $this->initialize()->storagePath;
+        return $this->initialize()->storageDirectory;
     }
 
-    public function getCachePath() : string
+    public function getCacheDirectory() : string
     {
-        $storagePath = $this->getStoragePath();
+        $storagePath = $this->getStorageDirectory();
         $cache = $this->eventDispatch('StoragePath:cache:path', 'cache');
         $cache = is_string($cache) || trim($cache) === '' || str_contains($cache, '..')
             ? 'cache'
@@ -178,7 +210,7 @@ class StoragePath extends AbstractContainerization
 
     public function getLogPath() : string
     {
-        $storagePath = $this->getStoragePath();
+        $storagePath = $this->getStorageDirectory();
         $logs = $this->eventDispatch('StoragePath:cache:path', 'logs');
         $logs = is_string($logs) || trim($logs) === '' || str_contains($logs, '..')
             ? 'logs'
@@ -186,9 +218,9 @@ class StoragePath extends AbstractContainerization
         return "$storagePath/$logs";
     }
 
-    public function getSessionsPath() : string
+    public function getSessionsDirectory() : string
     {
-        $storagePath = $this->getStoragePath();
+        $storagePath = $this->getStorageDirectory();
         $sessions = $this->eventDispatch('StoragePath:cache:path', 'sessions');
         $sessions = is_string($sessions) || trim($sessions) === '' || str_contains($sessions, '..')
             ? 'sessions'

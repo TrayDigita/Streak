@@ -229,7 +229,7 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         $marshaller = $this->eventDispatch('Cache:marshaller', $marshaller);
         $marshaller = $marshaller instanceof MarshallerInterface ? $marshaller : $defaultMarshaller;
 
-        $cachePath = $this->getContainer(StoragePath::class)->getCachePath();
+        $cachePath = $this->getContainer(StoragePath::class)->getCacheDirectory();
 
         $version = $config->get('version');
         $version = !is_string($version) ? null : $version;

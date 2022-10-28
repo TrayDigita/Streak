@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-28 16:06+0700\n"
-"PO-Revision-Date: 2022-10-28 16:06+0700\n"
+"POT-Creation-Date: 2022-10-29 01:24+0700\n"
+"PO-Revision-Date: 2022-10-29 01:28+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -147,7 +147,7 @@ msgstr "Panggil ke properti yang tidak ditentukan %s."
 
 #: Source/Controller/Abstracts/AbstractController.php:218
 msgid "Dispatching route"
-msgstr ""
+msgstr "Mengirim route"
 
 #: Source/Controller/Collector.php:258 Source/Middleware/Collector.php:220
 #: Source/Module/Collector.php:182
@@ -317,7 +317,7 @@ msgstr ""
 "Jenis nama tabel tidak valid. Nama tabel harus berupa string atau array."
 
 #: Source/Database/Instance.php:778
-#: Source/Themes/Abstracts/AbstractTheme.php:420
+#: Source/Themes/Abstracts/AbstractTheme.php:422
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr "Memanggil ke Metode yang tidak ditentukan %s."
@@ -658,26 +658,68 @@ msgstr "403 Terlarang"
 msgid "You are not permitted to perform the requested operation."
 msgstr "Anda tidak diizinkan untuk melakukan operasi yang diminta."
 
-#: Source/Views/ExceptionsRenderView.php:112
+#: Source/Uploads/ChunkResponse.php:72
+msgid "Processing your upload file."
+msgstr "Memproses berkas unggahan anda."
+
+#: Source/Uploads/ChunkResponse.php:109
+msgid "File successfully uploaded but not implemented."
+msgstr "Berkas telah berhasil diunggah akan tetapi tidak diimplementasikan."
+
+#: Source/Uploads/Handler.php:205
+msgid "Cache upload storage does not exist."
+msgstr "Penyimpanan cache unggahan tidak ada."
+
+#: Source/Uploads/Handler.php:214
+msgid "Cache upload storage is not writable."
+msgstr "Penyimpanan cache unggahan tidak dapat ditulisi."
+
+#: Source/Uploads/Handler.php:253
+msgid "Upload cache file is not writable."
+msgstr "Cache unggahan tidak dapat ditulisi."
+
+#: Source/Uploads/Handler.php:274
+msgid "Can not create stream."
+msgstr "Tidak dapat membuat stream."
+
+#: Source/Uploads/Handler.php:347
+msgid "Source uploaded file does not exist."
+msgstr "Sumber berkas unggahan tidak ada."
+
+#: Source/Uploads/Handler.php:366
+#, php-format
+msgid "Upload cache file is not ready to move : (%d)."
+msgstr "Berkas cache unggahan belum siap untuk dipindah: (%d)."
+
+#: Source/Uploads/Handler.php:386
+msgid "Could not determine increment target file."
+msgstr "Tidak dapat menentukan urutan berkas tujuan."
+
+#: Source/Uploads/Handler.php:406 Source/Uploads/Handler.php:423
+#, php-format
+msgid "%s is not writable."
+msgstr "%s tidak dapat ditulisi."
+
+#: Source/Views/ExceptionsRenderView.php:113
 msgid "Type"
 msgstr "Tipe"
 
-#: Source/Views/ExceptionsRenderView.php:119
+#: Source/Views/ExceptionsRenderView.php:120
 msgid "Code"
 msgstr "Kode"
 
-#: Source/Views/ExceptionsRenderView.php:124
+#: Source/Views/ExceptionsRenderView.php:125
 msgid "Message"
 msgstr "Pesan"
 
-#: Source/Views/ExceptionsRenderView.php:129
+#: Source/Views/ExceptionsRenderView.php:130
 msgid "File"
 msgstr "Berkas"
 
-#: Source/Views/ExceptionsRenderView.php:134
+#: Source/Views/ExceptionsRenderView.php:135
 msgid "Line"
 msgstr "Baris"
 
-#: Source/Views/ExceptionsRenderView.php:137
+#: Source/Views/ExceptionsRenderView.php:139
 msgid "Trace"
 msgstr "Rekam Jejak"

@@ -151,6 +151,11 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         return $this->charset;
     }
 
+    /**
+     * @param array $attributes
+     *
+     * @return $this
+     */
     public function setBodyAttributes(array $attributes): static
     {
         $this->bodyAttributes = [];
@@ -162,6 +167,11 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         return $this;
     }
 
+    /**
+     * @param AttributeInterface $attribute
+     *
+     * @return $this
+     */
     public function addBodyAttribute(AttributeInterface $attribute): static
     {
         $this->bodyAttributes[$attribute->getName()] = $attribute;
@@ -286,9 +296,9 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
 
                 $this->setHeaderContent($header);
                 $this->setBodyContent($body);
+                $header = $footer = $body = null;
                 unset($header, $body);
             }
-            unset($activeTheme);
         }
 
         $head    = $this->getHeaderContent();
@@ -493,10 +503,6 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 }
             }
         }
-
-        unset($html, $body, $body_attributes, $html_attributes);
-        unset($charset, $title, $titleH);
-
         return (string) $this->eventDispatch('Html:content', (string) $content, $this);
     }
 

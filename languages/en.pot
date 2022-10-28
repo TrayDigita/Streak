@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-28 16:06+0700\n"
+"POT-Creation-Date: 2022-10-29 01:24+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -308,7 +308,7 @@ msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 
 #: Source/Database/Instance.php:778
-#: Source/Themes/Abstracts/AbstractTheme.php:420
+#: Source/Themes/Abstracts/AbstractTheme.php:422
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr ""
@@ -636,26 +636,68 @@ msgstr ""
 msgid "You are not permitted to perform the requested operation."
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:112
+#: Source/Uploads/ChunkResponse.php:72
+msgid "Processing your upload file."
+msgstr ""
+
+#: Source/Uploads/ChunkResponse.php:109
+msgid "File successfully uploaded but not implemented."
+msgstr ""
+
+#: Source/Uploads/Handler.php:205
+msgid "Cache upload storage does not exist."
+msgstr ""
+
+#: Source/Uploads/Handler.php:214
+msgid "Cache upload storage is not writable."
+msgstr ""
+
+#: Source/Uploads/Handler.php:253
+msgid "Upload cache file is not writable."
+msgstr ""
+
+#: Source/Uploads/Handler.php:274
+msgid "Can not create stream."
+msgstr ""
+
+#: Source/Uploads/Handler.php:347
+msgid "Source uploaded file does not exist."
+msgstr ""
+
+#: Source/Uploads/Handler.php:366
+#, php-format
+msgid "Upload cache file is not ready to move : (%d)."
+msgstr ""
+
+#: Source/Uploads/Handler.php:386
+msgid "Could not determine increment target file."
+msgstr ""
+
+#: Source/Uploads/Handler.php:406 Source/Uploads/Handler.php:423
+#, php-format
+msgid "%s is not writable."
+msgstr ""
+
+#: Source/Views/ExceptionsRenderView.php:113
 msgid "Type"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:119
+#: Source/Views/ExceptionsRenderView.php:120
 msgid "Code"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:124
+#: Source/Views/ExceptionsRenderView.php:125
 msgid "Message"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:129
+#: Source/Views/ExceptionsRenderView.php:130
 msgid "File"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:134
+#: Source/Views/ExceptionsRenderView.php:135
 msgid "Line"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:137
+#: Source/Views/ExceptionsRenderView.php:139
 msgid "Trace"
 msgstr ""

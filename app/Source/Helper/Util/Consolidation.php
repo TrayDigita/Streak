@@ -40,14 +40,15 @@ class Consolidation
             return self::$directories;
         }
 
+        $ds = DIRECTORY_SEPARATOR;
         $appPath = defined('APP_PATH') ? APP_PATH : 'app';
         $publicPath = defined('PUBLIC_PATH') ? PUBLIC_PATH : 'public';
         $appPath = is_string($appPath) ? trim($appPath, '/\\') : $appPath;
         $publicPath = is_string($publicPath) ? trim($publicPath, '/\\') : $publicPath;
         $loader = self::composerClassLoader();
         $app   = dirname(__DIR__, 3);
-        $getPublic = function ($root) use ($publicPath) {
-            $public = "$root/$publicPath";
+        $getPublic = function ($root) use ($publicPath, $ds) {
+            $public = "$root$ds$publicPath";
             if (!Validator::isCli()) {
                 $public = (
                     isset($_SERVER['SCRIPT_FILENAME'])
@@ -63,7 +64,7 @@ class Consolidation
                 $vendor = dirname($loader->getFileName(), 2);
                 $root   = dirname($vendor);
                 if (str_starts_with($app, $vendor)) {
-                    $app = "$root/$appPath";
+                    $app = "$root$ds$appPath";
                 }
                 self::$directories = [
                     'root'   => $root,
@@ -79,25 +80,25 @@ class Consolidation
         $root = dirname(__DIR__, 4);
         self::$directories = [
             'root'   => $root,
-            'vendor' => "$root/vendor",
+            'vendor' => "$root{$ds}vendor",
             'app'    => $app,
             'public' => $getPublic($root),
         ];
-        $composer_json = self::$directories['root'] .'/composer.json';
+        $composer_json = self::$directories['root'] . $ds . 'composer.json';
         if (is_file($composer_json) && is_readable($composer_json)) {
             $composer = (string) file_get_contents($composer_json);
             $composer = (array) json_decode($composer, true);
             $vendor = $composer['config']??[];
             $vendor = $vendor["vendor-dir"]??null;
             if ($vendor) {
-                $vendor = preg_replace('~^[.]?/~', '', $vendor);
-                self::$directories['vendor'] = "$root/$vendor";
+                $vendor = preg_replace('~^[.]?[/\\\]+~', '', $vendor);
+                self::$directories['vendor'] = "$root$ds$vendor";
             }
         }
-        if (file_exists(self::$directories['root'] . '/composer/ClassLoader.php')) {
+        if (file_exists(self::$directories['root'] . "{$ds}composer{$ds}ClassLoader.php")) {
             self::$directories['vendor'] = self::$directories['root'];
             self::$directories['root']   = dirname(self::$directories['vendor']);
-            self::$directories['app']    = self::$directories['root'] . "/$appPath";
+            self::$directories['app']    = self::$directories['root'] . "$ds$appPath";
         }
         return self::$directories;
     }
