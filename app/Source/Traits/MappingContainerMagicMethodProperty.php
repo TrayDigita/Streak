@@ -28,6 +28,11 @@ trait MappingContainerMagicMethodProperty
 {
     private ?bool $traitIsInContainer = null;
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function __get(string $name)
     {
         if ($this->traitIsInContainer === null) {

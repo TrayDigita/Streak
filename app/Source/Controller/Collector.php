@@ -231,7 +231,7 @@ class Collector extends AbstractContainerization implements Scannable
                 }
             }
         } catch (Throwable $e) {
-            $this->logException($e);
+            $this->logErrorException($e);
         }
     }
 

@@ -30,6 +30,7 @@ use Throwable;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Database\Instance;
 use TrayDigita\Streak\Source\Database\ResultCollection;
+use TrayDigita\Streak\Source\Database\Traits\ModelSchema;
 use TrayDigita\Streak\Source\Helper\Generator\RandomString;
 use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
@@ -47,6 +48,12 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
     use TranslationMethods,
         Containerize,
         EventsMethods;
+    use ModelSchema;
+
+    /**
+     * @var bool
+     */
+    protected bool $autoPrefix = true;
 
     /**
      * @var Container
@@ -62,25 +69,6 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
      * @var bool
      */
     protected bool $unserialize = true;
-
-    /**
-     * @var array
-     * @reference
-     * @uses \Doctrine\DBAL\Types\Types::TEXT
-     *
-     *     TINYTEXT   : 2 ^  8 - 1 = 255
-     *     TEXT       : 2 ^ 16 - 1 = 65535
-     *     MEDIUMTEXT : 2 ^ 24 - 1 = 16777215
-     *     LONGTEXT   : 2 ^ 32 - 1 = 4294967295
-     */
-    protected array $tableStructureData = [];
-
-    /**
-     * Indexes on table
-     *
-     * @var array
-     */
-    protected array $tableStructureIndexes = [];
 
     /**
      * @var string
@@ -117,6 +105,7 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
      * @var array<string, mixed>
      */
     private array $dataSet = [];
+
     /**
      * @var array<string, mixed>
      */
@@ -142,6 +131,9 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
      */
     public QueryBuilder $queryBuilder;
 
+    /**
+     * @var bool
+     */
     private bool $useForeign = true;
 
     /**
@@ -231,10 +223,10 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         if ($this->checkedTable) {
             return $this;
         }
-
+        $database = $this->getDatabaseInstance();
         $this->checkedTable = true;
         try {
-            $databaseName = $this->getDatabaseInstance()->getDatabase();
+            $databaseName = $database->getDatabase();
         } catch (Throwable) {
             $databaseName = '';
         }
@@ -250,17 +242,38 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
             }
         }
 
+        $prefix = strtolower($database->prefix);
         $tables = self::$recordDatabaseTables[$databaseName];
         $table_name        = trim($this->tableName);
         $this->tableName   = $table_name;
         $originalClassName = get_class($this);
         if ($table_name !== '') {
             $table_lower = strtolower($table_name);
-            $this->tableName = $tables[$table_lower]??$this->tableName;
+            if ($this->autoPrefix) {
+                $this->tableName = $tables[$prefix.$table_lower]??($tables[$table_lower]??$this->tableName);
+            } else {
+                $this->tableName = $tables[$table_lower]??$this->tableName;
+            }
         } else {
             if (!isset(self::$recordDatabaseTableModel[$originalClassName])) {
                 $className        = Consolidation::getBaseClassName($originalClassName);
                 $lower_class_name = strtolower($className);
+                $table_lower_class = $prefix.$lower_class_name;
+
+                if (isset($tables[$table_lower_class])) {
+                    $lower_class_name = $table_lower_class;
+                } else {
+                    $lower_class = preg_replace('~([A-Z])~', '_$1', $className);
+                    $lower_class = strtolower(trim($lower_class, '_'));
+                    $lower_class = $prefix . $lower_class;
+                    if (!isset($tables[$lower_class])) {
+                        $lower_class = preg_replace('~[_]+~', '_', $lower_class_name);
+                    }
+                    if (isset($tables[$lower_class])) {
+                        $lower_class_name = $lower_class;
+                    }
+                }
+
                 if (!isset($tables[$lower_class_name])) {
                     $lower_class_name = preg_replace('~([A-Z])~', '_$1', $className);
                     $lower_class_name = strtolower(trim($lower_class_name, '_'));
@@ -282,7 +295,7 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         }
 
         $this->primaryKeys = [];
-        $tables = $this->getDatabaseInstance()->getTableDetails($this->tableName);
+        $tables = $database->getTableDetails($this->tableName);
         $this->columns = [];
         foreach ($tables->getColumns() as $column) {
             $columnName = $column->getName();
@@ -316,6 +329,7 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
                 'target' => $foreignKey->getForeignColumns()[0]??null
             ];
         }
+
         return $this;
     }
 
@@ -1139,265 +1153,5 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
     public function __get(string $name)
     {
         return $this->getValueData($name);
-    }
-
-    /**
-     * @return Table
-     * @throws Exception
-     * @throws SchemaException
-     */
-    public function getTableStructuredData() : Table
-    {
-        if (empty($this->tableStructureData)) {
-            return $this->getDatabaseInstance()->getTableDetails($this->getTableName());
-        }
-
-        // determine columns method set
-        static $columnsMethods = null;
-        if (!is_array($columnsMethods)) {
-            $columnsMethods = (new ReflectionClass(Column::class))->getMethods(ReflectionMethod::IS_PUBLIC);
-            $columnsMethods = array_filter(
-                $columnsMethods,
-                fn ($e) => ($name = strtolower($e->getName()))
-                           && !str_contains($name, 'option')
-                           && str_starts_with($name, 'set')
-            );
-            $columnsMethods = array_map(fn ($e) => strtolower(substr($e->getName(), 3)), $columnsMethods);
-            $columnsMethods = array_flip($columnsMethods);
-        }
-        $table = new Table($this->getTableName());
-        $modes = [];
-        $primary = [];
-        $foreign = [];
-        $platform = $this->getDatabasePlatform();
-        $isMysql = is_a($platform, MySQLPlatform::class);
-        $supportComment = $platform->supportsInlineColumnComments();
-        foreach ($this->tableStructureData as $columnName => $definitions) {
-            $type = $definitions['type']??null;
-            if (!$type || !is_string($type)) {
-                continue;
-            }
-            if (!Type::hasType($type)) {
-                if (!is_a($type, Type::class, true)) {
-                    continue;
-                }
-                $type = array_search($type, Type::getTypesMap());
-                if (!$type) {
-                    continue;
-                }
-            }
-
-            $options = $definitions['options']??[];
-            $onUpdate = null;
-            // filter
-            foreach ($options as $opt => $item) {
-                $lower = strtolower($opt);
-                if ($lower === 'onupdate') {
-                    $onUpdate = $item;
-                    unset($options[$opt]);
-                    continue;
-                }
-                if (!$supportComment && $lower === 'comment' || !isset($columnsMethods[$lower])) {
-                    unset($options[$opt]);
-                }
-            }
-
-            if (isset($options['default']) && is_string($options['default'])) {
-                $options['default'] = match (strtolower($options['default'])) {
-                    'current_timestamp' => $platform->getCurrentTimestampSQL(),
-                    'current_date' => $platform->getCurrentDateSQL(),
-                    'current_time' => $platform->getCurrentTimeSQL(),
-                    default => $options['default']
-                };
-            }
-
-            $column = $table->addColumn($columnName, $type, $options);
-            $onUpdate = is_string($onUpdate) ? match (strtolower(trim($onUpdate))) {
-                'current_timestamp' => $platform->getCurrentTimestampSQL(),
-                'current_date' => $platform->getCurrentDateSQL(),
-                'current_time' => $platform->getCurrentTimeSQL(),
-                default => null
-            } : null;
-            if ($isMysql && $onUpdate !== null) {
-                $declaration = $column->getType()->getSQLDeclaration($column->toArray(), $platform);
-                $definition = $declaration;
-                $default = $column->getDefault();
-                if ($default !== null) {
-                    $definition .= " DEFAULT '$default'";
-                }
-
-                $notNull = $column->getNotnull();
-                if ($notNull) {
-                    $definition .= " NOT NULL";
-                }
-                $definition .=  " ON UPDATE $onUpdate";
-                $comment    =  $column->getComment();
-                if ($comment && $supportComment) {
-                    $comment    = $platform->quoteStringLiteral($comment);
-                    $definition .= " COMMENT $comment";
-                }
-
-                $column->setColumnDefinition($definition);
-            }
-
-            $detect = [
-                'unique' => 'addUniqueIndex',
-                'index' => 'addIndex'
-            ];
-            if (!empty($definitions['primary'])) {
-                $primary[$columnName] = $columnName;
-            }
-            if (!empty($definitions['foreign']) && is_array($definitions['foreign'])) {
-                $foreigner = $definitions['foreign'];
-                $tableForeign = $foreigner['table']??null;
-                $columnForeign = $foreigner['column']??null;
-                $foreignName = $foreigner['name']??null;
-                $foreignOptions = $foreigner['options']??null;
-                if ($tableForeign && $columnForeign) {
-                    $foreign[$columnName] = [
-                        'table' => $tableForeign,
-                        'column' => $columnForeign,
-                        'name' => is_string($foreignName) ? $foreignName : null,
-                        'options' => is_array($foreignOptions) ? $foreignOptions : [],
-                    ];
-                }
-            }
-            foreach ($detect as $mode => $method) {
-                if (!isset($definitions[$mode])) {
-                    continue;
-                }
-                if (isset($modes[$columnName])) {
-                    continue;
-                }
-                $indexes_name = $definitions[$mode];
-                if (!is_array($indexes_name)) {
-                    $modes[$columnName] = [
-                        'method' => $method,
-                        'name' => is_string($indexes_name) ? $indexes_name : null,
-                        'columns' => [$columnName]
-                    ];
-                    continue;
-                }
-                $column = $indexes_name['columns']??null;
-                $column = is_string($column) ? [$column] : (
-                is_array($column) ? $column : null
-                );
-                if ($columnName === null) {
-                    $column = [$columnName];
-                } else {
-                    $column = array_merge([$columnName], $column);
-                }
-                $column = array_values(array_filter(array_unique($column)));
-                $name  = $indexes_name['name']??null;
-                $modes[$columnName] = [
-                    'method' => $method,
-                    'name' => $name,
-                    'columns' => $column
-                ];
-            }
-        }
-
-        $columnsName = array_keys($table->getColumns());
-        foreach ($modes as $columnName => $options) {
-            $method = $options['method'];
-            if (isset($primary[$columnName]) && $options['method'] === 'addUniqueIndex') {
-                continue;
-            }
-            $diff = array_diff($options['columns'], $columnsName);
-            if (!empty($diff)) {
-                throw new RuntimeException(
-                    sprintf(
-                        $this->translate('Columns %s is not exists on index %s column %s'),
-                        implode(', ', $diff),
-                        $options['name'],
-                        $columnName
-                    )
-                );
-            }
-            $table->$method($options['columns'], $options['name']);
-        }
-        if (!empty($primary)) {
-            $table->setPrimaryKey($primary);
-        }
-        $indexes = $this->tableStructureIndexes;
-        foreach ($indexes as $item) {
-            if (!is_array($item)
-                || !isset($item['type'], $item['columns'])
-                || !in_array($item['type'], ['unique', 'index'])
-            ) {
-                continue;
-            }
-            $oldColumn = $item['columns'];
-            $oldColumn = is_string($oldColumn) ? [$oldColumn] : $oldColumn;
-            if (!is_array($oldColumn)) {
-                continue;
-            }
-            $columns = array_filter($oldColumn, 'is_string');
-            $continue = true;
-            foreach ($columns as $col) {
-                if (!$table->hasColumn($col)) {
-                    $continue = false;
-                    break;
-                }
-            }
-
-            if (!$continue || count($columns) < count($oldColumn)) {
-                continue;
-            }
-            $name = $item['name']??null;
-            if ($name !== null && !is_string($name)) {
-                continue;
-            }
-            if ($name !== null && $table->hasIndex($name)) {
-                continue;
-            }
-            $type = $item['type'];
-            $method = $type === 'index' ? 'addIndex' : 'addUniqueIndex';
-            $table->$method($columns, $name);
-        }
-
-        $database = $this->getDatabaseInstance();
-        if (!empty($foreign)) {
-            foreach ($foreign as $columnName => $item) {
-                $currentTable = $database->isTableExists($item['table'])
-                    ? $database->getTableDetails($item['table'])->getName()
-                    : $item['table'];
-                /*
-                if (!$database->isTableExists($item['table'])
-                    && $item['table'] !== $table->getName()
-                ) {
-                    throw new RuntimeException(
-                        sprintf(
-                            $this->translate('Foreign table %s is not exists on for foreign %s'),
-                            $item['table'],
-                            $columnName
-                        )
-                    );
-                }
-                if (!$currentTable->hasColumn($item['column'])) {
-                    throw new RuntimeException(
-                        sprintf(
-                            $this->translate(
-                                'Foreign table column %s.%s is not exists on for foreign %s'
-                            ),
-                            $item['table'],
-                            $item['column'],
-                            $columnName
-                        )
-                    );
-                }
-                */
-
-                $table->addForeignKeyConstraint(
-                    $currentTable,
-                    [$columnName],
-                    [$item['column']],
-                    $item['options'],
-                    $item['name']
-                );
-            }
-        }
-
-        return $table;
     }
 }

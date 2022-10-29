@@ -12,6 +12,8 @@ use Doctrine\DBAL\Driver\Middleware;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Exception as DoctrineException;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Comparator;
@@ -22,6 +24,7 @@ use Doctrine\DBAL\Schema\SchemaDiff;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Schema\Table;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\ArrayShape;
 use PDO;
 use Psr\Cache\CacheItemPoolInterface;
 use ReflectionClass;
@@ -29,9 +32,13 @@ use ReflectionException;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Marshaller\MarshallerInterface;
+use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Database\Abstracts\Model;
-use TrayDigita\Streak\Source\Events;
+use TrayDigita\Streak\Source\Models\ActionSchedulers;
+use TrayDigita\Streak\Source\Models\ActionSchedulersLog;
+use TrayDigita\Streak\Source\Models\Factory\UserMeta;
+use TrayDigita\Streak\Source\Models\Factory\Users;
 use TrayDigita\Streak\Source\Records\Collections;
 use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Container;
@@ -73,6 +80,16 @@ class Instance extends AbstractContainerization
     protected ?Configuration $configuration = null;
 
     /**
+     * @var string
+     */
+    public readonly string $prefix;
+
+    /**
+     * @var array
+     */
+    private static array $collations = [];
+
+    /**
      * @param Container $container
      */
     public function __construct(Container $container)
@@ -89,6 +106,7 @@ class Instance extends AbstractContainerization
             'password' => $collections['password'],
             'dbname' => $collections['dbname'],
             'port' => $collections['port'],
+            'prefix' => ''
         ];
 
         /* ------------------------------------
@@ -130,6 +148,16 @@ class Instance extends AbstractContainerization
         } elseif (isset($collections['dbpath'])) {
             $args['path'] = $collections['dbpath'];
         }
+        if (isset($collections['prefix'])) {
+            $args['prefix'] = $collections['prefix'];
+        } elseif (isset($collections['dbprefix'])) {
+            $args['prefix'] = $collections['prefix'];
+        }
+        if (!is_string($args['prefix'])) {
+            $args['prefix'] = '';
+        }
+        $args['prefix'] = trim($args['prefix']);
+        $this->prefix = $args['prefix'];
 
         if (isset($collections['driverOptions'])) {
             $args['driverOptions'] = $collections['driverOptions'];
@@ -148,7 +176,7 @@ class Instance extends AbstractContainerization
         $driver = $collections->get('driver');
         $driver = is_string($driver) ? strtolower(trim($driver)) : null;
         $driver = $driver?:null;
-        if (!$driver || !is_string($driver) || !isset(DriverManager::getAvailableDrivers()[$driver])) {
+        if (!$driver || !is_string($driver)) {
             $driver = 'pdo_mysql';
         }
 
@@ -162,6 +190,100 @@ class Instance extends AbstractContainerization
 
         $this->configuration = $this->createInternalConfiguration($collections);
         $this->params = $args;
+    }
+
+    /**
+     * @param string $collation
+     *
+     * @return ?array
+     */
+    #[ArrayShape([
+        'name' => 'string',
+        'charset' => 'string',
+        'collate' => 'string'
+    ])] public function getCollationByName(string $collation) : ?array
+    {
+        return $this->getAvailableCollations()[strtolower($collation)]??null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAvailableCollations() : array
+    {
+        $name = null;
+        try {
+            $platform = $this->getDatabasePlatform();
+            if ($platform instanceof AbstractMySQLPlatform) {
+                $name = 'mysql';
+            } elseif ($platform instanceof PostgreSQLPlatform) {
+                $name = 'postgresql';
+            }
+            if (isset(self::$collations[$name])) {
+                return self::$collations[$name];
+            }
+
+            self::$collations[$name] = [];
+            switch ($name) {
+                case 'postgresql':
+                    /** @noinspection SqlResolve */
+                    $result = $this->executeQuery(
+                        'SELECT
+                            collcollate as collate_name,
+                            collname as name,
+                            collctype as charset
+                        FROM pg_collation'
+                    );
+                    self::$collations[$name]['utf-8'] = [
+                        'name' => 'UTF-8',
+                        'charset' => 'utf-8',
+                        'collate' => 'en_US.UTF-8',
+                    ];
+                    while ($row = $result->fetchAssociative()) {
+                        $collation = strtolower($row['collate_name']);
+                        if (!$collation) {
+                            // is default
+                            continue;
+                        }
+                        $charset = str_contains($collation, '.')
+                            ? substr(strrchr($collation, '.'), 1)
+                            : 'utf-8'; // default charset
+                        self::$collations[$name][$collation] = [
+                            'name' => $row['name'],
+                            'charset' => $charset,
+                            'collate' => $collation,
+                        ];
+                    }
+                    break;
+                case 'mysql':
+                    $result = $this->executeQuery('SHOW COLLATION');
+                    while ($row = $result->fetchAssociative()) {
+                        $collation = $row['Collation'] ??($row['collation'] ?? null);
+                        $charset = $row['Charset'] ?? ($row['charset'] ?? null);
+                        if (!$collation) {
+                            continue;
+                        }
+                        self::$collations[$name][strtolower($collation)] = [
+                            'name' => $collation,
+                            'charset' => $charset,
+                            'collate' => $collation,
+                        ];
+                    }
+                    break;
+            }
+
+            return self::$collations[$name];
+        } catch (Throwable) {
+            return [];
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefix(): string
+    {
+        return $this->prefix;
     }
 
     /**
@@ -313,11 +435,20 @@ class Instance extends AbstractContainerization
             $query = null;
             // set utc timezone
             if (str_contains($driver, 'mysql')) {
-                $query = "SET NAMES UTF8, time_zone = '+00:00';";
+                $query = "SET NAMES UTF8,";
+                // $query .= "CHARACTER_SET_DATABASE = UTF8MB4,";
+                // $query .= "CHARACTER_SET_SERVER = UTF8MB4,";
+                // $query .= "CHARACTER_SET_RESULTS = UTF8MB4,";
+                // $query .= "CHARACTER_SET_CONNECTION = UTF8MB4,";
+                // $query .= "CHARACTER_SET_CLIENT = UTF8MB4,";
+                $query .= "TIME_ZONE = '+00:00'";
+                $query .= ";";
             } elseif (str_contains($driver, 'postgre')) {
                 $query = "SET NAMES 'UTF8'; SET TIME ZONE '+00:00';";
             } elseif (str_contains($driver, 'oci')) {
                 $query = "ALTER DATABASE SET TIME_ZONE='+00:00';";
+            } elseif (str_contains($driver, 'ibm')) {
+                $query = "SET SESSION TIME_ZONE='+00:00';";
             }
             $query && $this->connection->executeQuery($query);
         }
@@ -812,6 +943,24 @@ class Instance extends AbstractContainerization
         );
     }
 
+    /**
+     * @throws DoctrineException
+     * @throws SchemaException
+     */
+    public function compareSchemaFromRegisteredModel(): SchemaDiff
+    {
+        $tables = [];
+        foreach ($this->getRegisteredModelsName() as $model) {
+            $model = $this->createModel($model);
+            if (!$model) {
+                continue;
+            }
+            $table                     = $model->getTableFromSchemaData();
+            $tables[$table->getName()] = $table;
+        }
+        return $this->compareSchemaFromTables($tables);
+    }
+
     public function registerModel(string|Model $model): bool
     {
         if ($this->hasModel($model)) {
@@ -835,6 +984,24 @@ class Instance extends AbstractContainerization
             $model = (new ReflectionClass($model))->getName();
             $lowerModel = strtolower($model);
             $this->registeredModels[$lowerModel] = $model;
+            /**
+             * (When) UserMeta or Users || ActionSchedulers or ActionSchedulersLog (registered)
+             * It will also register to another, because relationship
+             */
+            switch ($model) {
+                case UserMeta::class:
+                    $this->registeredModels[strtolower(Users::class)] = Users::class;
+                    break;
+                case Users::class:
+                    $this->registeredModels[strtolower(UserMeta::class)] = UserMeta::class;
+                    break;
+                case ActionSchedulers::class:
+                    $this->registeredModels[strtolower(ActionSchedulersLog::class)] = ActionSchedulersLog::class;
+                    break;
+                case ActionSchedulersLog::class:
+                    $this->registeredModels[strtolower(ActionSchedulers::class)] = ActionSchedulers::class;
+                    break;
+            }
         } catch (ReflectionException) {
             return false;
         }
@@ -908,7 +1075,7 @@ class Instance extends AbstractContainerization
     /**
      * @return string[]
      */
-    public function getRegisteredModels(): array
+    public function getRegisteredModelsName(): array
     {
         return array_values($this->registeredModels);
     }

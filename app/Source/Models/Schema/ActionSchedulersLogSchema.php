@@ -1,24 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace TrayDigita\Streak\Source\Scheduler\Model;
+namespace TrayDigita\Streak\Source\Models\Schema;
 
-use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\BigIntType;
 use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\DBAL\Types\FloatType;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Types\TextType;
-use TrayDigita\Streak\Source\Database\Abstracts\Model;
+use TrayDigita\Streak\Source\Database\Traits\ModelSchema;
 
-class ActionSchedulersLog extends Model
+trait ActionSchedulersLogSchema
 {
-    protected string $tableName = 'action_schedulers_log';
+    use ModelSchema;
+
+    protected ?string $tableSchemaCollation = 'utf8mb4_unicode_ci';
 
     /**
      * @var array|array[]
      */
-    protected array $tableStructureData = [
+    protected array $tableSchemaData = [
         'id' => [
             'type' => BigIntType::class,
             'options' => [
@@ -35,9 +36,10 @@ class ActionSchedulersLog extends Model
             'options' => [
                 'length' => 512,
                 'notnull' => true,
+                'collation' => 'utf8mb4_unicode_ci',
                 'comment' => 'Scheduler callback'
             ],
-            'index' => 'callback'
+            'index' => 'scheduler_log_index_callback'
         ],
         'status' => [
             'type' => StringType::class,
@@ -46,7 +48,7 @@ class ActionSchedulersLog extends Model
                 'notnull' => true,
                 'comment' => 'Scheduler status fail or success'
             ],
-            'index' => 'status'
+            'index' => 'scheduler_log_index_status'
         ],
         'message' => [
             'type' => TextType::class,
@@ -63,7 +65,7 @@ class ActionSchedulersLog extends Model
                 'default' => 'CURRENT_TIMESTAMP',
                 'comment' => 'created_at time'
             ],
-            'index' => 'created_at'
+            'index' => 'scheduler_log_index_created_at'
         ],
         'processed_time' => [
             'type' => FloatType::class,
@@ -72,7 +74,7 @@ class ActionSchedulersLog extends Model
                 'default' => null,
                 'comment' => 'processed_time float'
             ],
-            'index' => 'processed_time'
+            'index' => 'scheduler_log_index_processed_time'
         ],
         'last_execute' => [
             'type' => DateTimeType::class,
@@ -80,30 +82,7 @@ class ActionSchedulersLog extends Model
                 'notnull' => true,
                 'comment' => 'last_execute time'
             ],
-            'index' => 'last_execute'
+            'index' => 'scheduler_log_index_last_execute'
         ],
     ];
-
-    /**
-     * @param ActionSchedulers $actionSchedulers
-     *
-     * @return bool|int
-     * @throws Exception
-     */
-    public static function insertFromActionScheduler(ActionSchedulers $actionSchedulers): bool|int
-    {
-        if (!$actionSchedulers->isFetched()) {
-            return false;
-        }
-        $obj = new static($actionSchedulers->getContainer());
-        $params = [
-            'callback' => $actionSchedulers->callback,
-            'status' => $actionSchedulers->status,
-            'message' => $actionSchedulers->message,
-            'processed_time' => $actionSchedulers->processed_time,
-            'last_execute'  => $actionSchedulers->last_execute,
-            'created_at' => $obj->nowDateTime(),
-        ];
-        return $obj->insert($params);
-    }
 }

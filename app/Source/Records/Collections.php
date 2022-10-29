@@ -6,7 +6,6 @@ namespace TrayDigita\Streak\Source\Records;
 
 use ArrayAccess;
 use JetBrains\PhpStorm\Pure;
-use ReturnTypeWillChange;
 use TrayDigita\Streak\Source\Interfaces\Collections\DataLists;
 use TrayDigita\Streak\Source\Interfaces\Collections\GetterSetter;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Removable;
@@ -52,7 +51,7 @@ class Collections implements
             : $default;
     }
 
-    #[ReturnTypeWillChange] public function set(float|int|string $name, mixed $value)
+    public function set(float|int|string $name, mixed $value)
     {
         $this->collections[$name] = $value;
     }
@@ -62,12 +61,12 @@ class Collections implements
         return array_key_exists($name, $this->collections);
     }
 
-    #[ReturnTypeWillChange] public function replace(float|int|string $name, mixed $value)
+    public function replace(float|int|string $name, mixed $value)
     {
         $this->set($name, $value);
     }
 
-    #[ReturnTypeWillChange] public function remove(float|int|string $name)
+    public function remove(float|int|string $name)
     {
         unset($this->collections[$name]);
     }
@@ -133,17 +132,17 @@ class Collections implements
         return $this->has($offset);
     }
 
-    #[Pure] #[ReturnTypeWillChange] public function offsetGet($offset)
+    #[Pure] public function offsetGet($offset) : mixed
     {
         return $this->get($offset);
     }
 
-    #[ReturnTypeWillChange] public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         $this->set($offset, $value);
     }
 
-    #[ReturnTypeWillChange] public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         $this->remove($offset);
     }

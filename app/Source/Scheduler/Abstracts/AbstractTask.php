@@ -10,8 +10,8 @@ use Stringable;
 use Throwable;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
-use TrayDigita\Streak\Source\Scheduler\Model\ActionSchedulers;
-use TrayDigita\Streak\Source\Scheduler\Model\ActionSchedulersLog;
+use TrayDigita\Streak\Source\Models\ActionSchedulers;
+use TrayDigita\Streak\Source\Models\ActionSchedulersLog;
 use TrayDigita\Streak\Source\Scheduler\TaskStatus;
 use TrayDigita\Streak\Source\Time;
 use TrayDigita\Streak\Source\Traits\Containerize;
@@ -69,6 +69,9 @@ abstract class AbstractTask implements Startable
      */
     private ?float $processedTime = null;
 
+    /**
+     * @param Container $container
+     */
     final public function __construct(Container $container)
     {
         $this->container = $container;
@@ -107,7 +110,7 @@ abstract class AbstractTask implements Startable
                 'callback' => $this->className,
                 'status' => ActionSchedulers::PROGRESS,
                 'created_at' => $nowTime,
-                'updated_at' => '0000-00-00 00:00:00',
+                'updated_at' => '1970-01-01 00:00:00',
                 'processed_time' => null
             ]);
             $this->schedulers = ActionSchedulers::find(['callback' => $this->className])->fetch();

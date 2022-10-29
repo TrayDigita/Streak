@@ -440,7 +440,7 @@ class Route implements JsonSerializable, AnnotationRequirementsInterface
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return $this->toArray();
     }

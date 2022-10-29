@@ -61,6 +61,11 @@ class SystemInitialHandler extends AbstractContainerization
     private ?Throwable $exception = null;
 
     /**
+     * @var array
+     */
+    private array $errors = [];
+
+    /**
      * Register shutdown
      */
     public function register()
@@ -200,13 +205,53 @@ class SystemInitialHandler extends AbstractContainerization
         $this->eventDispatch('Shutdown:handler', $this);
     }
 
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param int $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param int $errline
+     */
     private function handleError(
         int $errno,
         string $errstr,
         string $errfile,
-        int $errline,
-        ?array $errcontext = null
+        int $errline
     ) {
+        $err = [
+            'type' => $errno,
+            'message' => $errstr,
+            'file' => $errfile,
+            'line'  => $errline
+        ];
+        $this->errors[] = $err;
+        switch ($errno) {
+            case E_WARNING:
+            case E_USER_WARNING:
+                $this->logWarning($errstr, $err);
+                break;
+            case E_NOTICE:
+            case E_USER_NOTICE:
+                $this->logNotice($errstr, $err);
+                break;
+            case E_DEPRECATED:
+            case E_USER_DEPRECATED:
+                $this->logInfo($errstr, $err);
+                break;
+            case E_COMPILE_ERROR:
+            case E_PARSE:
+                $this->logCritical($errstr, $err);
+                break;
+            default:
+                $this->logError($errstr, $err);
+        }
         $this
             ->eventDispatch(
                 'Error:handleError',
@@ -214,7 +259,6 @@ class SystemInitialHandler extends AbstractContainerization
                 $errstr,
                 $errfile,
                 $errline,
-                $errcontext,
                 $this
             );
     }
@@ -269,7 +313,7 @@ class SystemInitialHandler extends AbstractContainerization
     ) : ResponseInterface {
         if ($exception instanceof HttpSpecializedException) {
             // log debug if http specialized
-            $this->logDebugException(
+            $this->logInfoException(
                 $exception,
                 [
                     'url'        => (string) $request->getUri(),
@@ -278,7 +322,7 @@ class SystemInitialHandler extends AbstractContainerization
             );
         } else {
             // log
-            $this->logException(
+            $this->logErrorException(
                 $exception,
                 [
                     'url'        => (string) $request->getUri(),

@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Session;
 
-use ReturnTypeWillChange;
 use SessionHandlerInterface;
 use SessionUpdateTimestampHandlerInterface;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
@@ -103,7 +102,7 @@ class Sessions extends AbstractContainerization implements
         return $this->handler->destroy($id);
     }
 
-    #[ReturnTypeWillChange] public function gc($max_lifetime): bool
+    public function gc($max_lifetime): int|false
     {
         return $this->handler->gc($max_lifetime);
     }

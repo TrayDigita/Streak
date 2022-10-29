@@ -13,7 +13,7 @@ use TrayDigita\Streak\Source\Scheduler\Abstracts\AbstractTask;
 use TrayDigita\Streak\Source\Scheduler\Exceptions\TaskAlreadyRun;
 use TrayDigita\Streak\Source\Scheduler\Exceptions\TaskException;
 use TrayDigita\Streak\Source\Scheduler\Exceptions\TaskInProgress;
-use TrayDigita\Streak\Source\Scheduler\Model\ActionSchedulers;
+use TrayDigita\Streak\Source\Models\ActionSchedulers;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\LoggingMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;

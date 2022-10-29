@@ -6,8 +6,8 @@ namespace TrayDigita\Streak\Source\Scheduler;
 use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Stringable;
+use TrayDigita\Streak\Source\Models\ActionSchedulers;
 use TrayDigita\Streak\Source\Scheduler\Abstracts\AbstractTask;
-use TrayDigita\Streak\Source\Scheduler\Model\ActionSchedulers;
 
 final class TaskStatus
 {

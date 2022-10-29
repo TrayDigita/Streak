@@ -24,7 +24,7 @@ Copy [Example.Config.php](Example.Config.php) to project root.
 
 - [Routing & Controller](docs-md/ROUTES.md)
 - [Directory & File Structures](docs-md/STRUCTURES.md)
-
+- [Users & User Meta Model Files](app/Source/Models/Factory)
 
 Please create `Config.php` from `Example.Config.php` to make sure application working properly
 even though it will run without config file.

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\ACL;
 
 use JetBrains\PhpStorm\ArrayShape;
-use ReturnTypeWillChange;
 use TrayDigita\Streak\Source\ACL\Interfaces\IdentityInterface;
 use TrayDigita\Streak\Source\Traits\PasswordHashed;
 
@@ -48,13 +47,13 @@ class UserControl
         if (!$userPassword) {
             return false;
         }
-        return self::verifyPassword($password, $userPassword);
+        return $this->verifyPassword($password, $userPassword);
     }
 
     /**
      * @return float|int|string
      */
-    #[ReturnTypeWillChange] public function getId(): float|int|string
+    public function getId(): float|int|string
     {
         return $this->id;
     }
@@ -62,7 +61,7 @@ class UserControl
     /**
      * @return ?string
      */
-    #[ReturnTypeWillChange] public function getUsername() : ?string
+    public function getUsername() : ?string
     {
         return $this->username;
     }
@@ -70,7 +69,7 @@ class UserControl
     /**
      * @return ?string
      */
-    #[ReturnTypeWillChange] public function getEmail(): ?string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -78,17 +77,27 @@ class UserControl
     /**
      * @return ?string
      */
-    #[ReturnTypeWillChange] public function getPassword(): ?string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
+    /**
+     * @param IdentityInterface $identity
+     *
+     * @return $this
+     */
     public function addControl(IdentityInterface $identity) : static
     {
         $this->identities[$identity->getId()] = $identity;
         return $this;
     }
 
+    /**
+     * @param IdentityInterface|string $identity
+     *
+     * @return $this
+     */
     public function removeControl(IdentityInterface|string $identity) : static
     {
         $identity = is_string($identity) ? $identity : $identity->getId();

@@ -13,8 +13,8 @@ use TrayDigita\Streak\Source\Console\Abstracts\RunCommand;
 use TrayDigita\Streak\Source\Database\Instance;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Scheduler\Abstracts\AbstractTask;
-use TrayDigita\Streak\Source\Scheduler\Model\ActionSchedulers;
-use TrayDigita\Streak\Source\Scheduler\Model\ActionSchedulersLog;
+use TrayDigita\Streak\Source\Models\ActionSchedulers;
+use TrayDigita\Streak\Source\Models\ActionSchedulersLog;
 use TrayDigita\Streak\Source\Scheduler\Scheduler;
 
 class RunScheduler extends RunCommand
@@ -66,8 +66,8 @@ EOT
             )
         );
         $tables = [
-            $database->createModel(ActionSchedulers::class)->getTableStructuredData(),
-            $database->createModel(ActionSchedulersLog::class)->getTableStructuredData(),
+            $database->createModel(ActionSchedulers::class)->getTableFromSchemaData(),
+            $database->createModel(ActionSchedulersLog::class)->getTableFromSchemaData(),
         ];
         $compared = $database->compareSchemaFromTables($tables);
         $tables = $compared->newTables;

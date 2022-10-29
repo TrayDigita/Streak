@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\Records;
 
 use JetBrains\PhpStorm\Pure;
-use ReturnTypeWillChange;
 
 class DeepArrayCollections extends Collections
 {
@@ -18,7 +17,7 @@ class DeepArrayCollections extends Collections
         parent::__construct($collections);
     }
 
-    #[ReturnTypeWillChange] public function set(float|int|string $name, mixed $value): void
+    public function set(float|int|string $name, mixed $value): void
     {
         $this->collections[$name] = is_iterable($value)
             ? new static($value)

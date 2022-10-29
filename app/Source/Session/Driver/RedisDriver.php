@@ -74,10 +74,9 @@ class RedisDriver extends AbstractSessionDriver
         return true;
     }
 
-    public function gc($max_lifetime) : bool
+    public function gc($max_lifetime) : int|false
     {
-        // no op on redis, lifetime handled by redis
-        return true;
+        return 1;
     }
 
     public function open(string $path, string $name) : bool

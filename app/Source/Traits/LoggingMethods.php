@@ -19,21 +19,6 @@ trait LoggingMethods
         $this?->getContainer(LoggerInterface::class)->error($message, $context);
     }
 
-    public function logException(Throwable $exception, array $context = [])
-    {
-        $this->logError($exception->getMessage(), ['exception' => $exception, ...$context]);
-    }
-
-    public function logWarningException(Throwable $exception, array $context = [])
-    {
-        $this->logWarning($exception->getMessage(), ['exception' => $exception, ...$context]);
-    }
-
-    public function logDebugException(Throwable $exception, array $context = [])
-    {
-        $this->logDebug($exception->getMessage(), ['exception' => $exception, ...$context]);
-    }
-
     public function logEmergency(string|Stringable $message, array $context = [])
     {
         $this?->getContainer(LoggerInterface::class)->emergency($message, $context);
@@ -67,5 +52,25 @@ trait LoggingMethods
     public function log($level, string|Stringable $message, array $context = [])
     {
         $this?->getContainer(LoggerInterface::class)->log($level, $message, $context);
+    }
+
+    public function logErrorException(Throwable $exception, array $context = [])
+    {
+        $this->logError($exception->getMessage(), ['exception' => $exception, ...$context]);
+    }
+
+    public function logWarningException(Throwable $exception, array $context = [])
+    {
+        $this->logWarning($exception->getMessage(), ['exception' => $exception, ...$context]);
+    }
+
+    public function logDebugException(Throwable $exception, array $context = [])
+    {
+        $this->logDebug($exception->getMessage(), ['exception' => $exception, ...$context]);
+    }
+
+    public function logInfoException(Throwable $exception, array $context = [])
+    {
+        $this->logInfo($exception->getMessage(), ['exception' => $exception, ...$context]);
     }
 }

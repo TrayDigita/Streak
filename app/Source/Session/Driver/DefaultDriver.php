@@ -80,13 +80,14 @@ class DefaultDriver extends AbstractSessionDriver
         return true;
     }
 
-    public function gc(int $max_lifetime) : bool
+    public function gc(int $max_lifetime) : int|false
     {
         $dir = "$this->savePath/$this->sessionName/";
         $openDir = opendir($dir);
         $time = time();
         $ext = strlen($this->extension);
         $ttl = $this->getTTL();
+        $counted = 0;
         while ($openDir && $file = readdir($openDir)) {
             if ($file === '.'
                 || $file === '..'
@@ -97,11 +98,12 @@ class DefaultDriver extends AbstractSessionDriver
             }
             $f = "$dir/$file.$this->extension";
             if ((filemtime($f) + $ttl) < $time) {
+                $counted++;
                 unlink($f);
             }
         }
         $openDir && closedir($openDir);
-        return true;
+        return $counted?:1;
     }
 
     public function open(string $path, string $name) : bool

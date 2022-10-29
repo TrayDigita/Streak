@@ -3,7 +3,6 @@
 namespace TrayDigita\Streak\Source\Session;
 
 use ArrayAccess;
-use ReturnTypeWillChange;
 use SessionHandler;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Helper\Generator\RandomString;
@@ -252,9 +251,9 @@ class Handler extends SessionHandler implements ContainerizeInterface, ArrayAcce
     /**
      * @param int $max_lifetime
      *
-     * @return bool
+     * @return int|false
      */
-    #[ReturnTypeWillChange] public function gc($max_lifetime): bool
+    public function gc($max_lifetime): int|false
     {
         return $this->sessionDriver->gc($max_lifetime);
     }

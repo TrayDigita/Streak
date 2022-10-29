@@ -36,9 +36,9 @@ class CacheDriver extends AbstractSessionDriver
         return $this->cache->deleteCache($this->generateId($id));
     }
 
-    public function gc(int $max_lifetime): bool
+    public function gc(int $max_lifetime): int|false
     {
-        return true;
+        return 1;
     }
 
     public function open(string $path, string $name): bool

@@ -103,7 +103,7 @@ class DatabaseDriver extends AbstractSessionDriver
         }
     }
 
-    public function gc(int $max_lifetime) : bool
+    public function gc(int $max_lifetime) : int|false
     {
         $database = $this->getContainer(Instance::class);
         $exp = $database->createExpressionBuilder();
@@ -126,8 +126,8 @@ class DatabaseDriver extends AbstractSessionDriver
                 )
             );
         try {
-            $qb->executeQuery();
-            return true;
+            $result = $qb->executeQuery();
+            return $result->rowCount()?:1;
         } catch (Throwable) {
             return false;
         }
@@ -148,6 +148,7 @@ class DatabaseDriver extends AbstractSessionDriver
         if (self::$exists) {
             return true;
         }
+
         $database = $this->getContainer(Instance::class);
         if (!$database->isTableExists($this->getSessionTable())) {
             $table   = new Table($this->getSessionTable());

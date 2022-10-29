@@ -851,22 +851,21 @@ class Container implements ContainerInterface, ArrayAccess
         return $this->has($offset);
     }
 
-    #[ReturnTypeWillChange] public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return $this->get($offset);
     }
 
-    #[ReturnTypeWillChange] public function offsetSet($offset, $value) : static
+    public function offsetSet($offset, $value)
     {
-        return $this->set($offset, $value);
+        $this->set($offset, $value);
     }
 
-    #[ReturnTypeWillChange] public function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
-        if (isset($this->protectedContainers[$offset])) {
-            return $this;
+        if (!isset($this->protectedContainers[$offset])) {
+            $this->remove($offset);
         }
-        return $this->remove($offset);
     }
 
     /**

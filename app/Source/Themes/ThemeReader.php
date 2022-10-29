@@ -182,21 +182,25 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
         );
     }
 
+    /**
+     * Scan the themes
+     */
     public function scan()
     {
         if ($this->scanned()) {
             return;
         }
+
+        $this->scanned = true;
         $themeDirectory = $this->getThemesDirectory();
         if (!is_dir($themeDirectory)) {
             return;
         }
 
         $this->headerFilePath = $this->eventDispatch('ThemeReader:headerFile', $this->headerFilePath);
-        $this->bodyFilePath   = $this->eventDispatch('ThemeReader:headerFile', $this->bodyFilePath);
-        $this->footerFilePath = $this->eventDispatch('ThemeReader:headerFile', $this->footerFilePath);
+        $this->bodyFilePath   = $this->eventDispatch('ThemeReader:bodyFile', $this->bodyFilePath);
+        $this->footerFilePath = $this->eventDispatch('ThemeReader:footerFile', $this->footerFilePath);
 
-        $this->scanned = true;
         $cache = $this->getContainer(Cache::class);
         foreach (new DirectoryIterator($this->getThemesDirectory()) as $theme) {
             if (!$theme->isDir() || $theme->isDot()) {
@@ -314,8 +318,7 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                     $this->invalidThemes[$themeDir] = self::ERROR;
                     continue;
                 }
-
-                $this->themes[$baseName] = new $className($this->getContainer());
+                $this->set(new $className($this->getContainer()));
             }
         }
 
@@ -365,12 +368,39 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
     }
 
     /**
-     * @param string $activeTheme
+     * Add theme if not exists
+     *
+     * @param AbstractTheme $theme
      *
      * @return bool
      */
-    public function setActiveTheme(string $activeTheme) : bool
+    public function add(AbstractTheme $theme): bool
     {
+        if (isset($this->themes[$theme->directoryName])) {
+            return false;
+        }
+        $this->themes[$theme->directoryName] = $theme;
+        return true;
+    }
+
+    /**
+     * @param AbstractTheme $theme
+     */
+    public function set(AbstractTheme $theme)
+    {
+        $this->themes[$theme->directoryName] = $theme;
+    }
+
+    /**
+     * @param string|AbstractTheme $activeTheme
+     *
+     * @return bool
+     */
+    public function setActiveTheme(string|AbstractTheme $activeTheme) : bool
+    {
+        $activeTheme = is_string($activeTheme)
+            ? $activeTheme
+            : $activeTheme->directoryName;
         $exist = isset($this->themes[$activeTheme]);
         if ($exist) {
             $this->activeTheme = $activeTheme;
