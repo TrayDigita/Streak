@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Monolog\Level;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
