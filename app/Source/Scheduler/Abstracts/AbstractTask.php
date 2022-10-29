@@ -46,13 +46,17 @@ abstract class AbstractTask implements Startable
      */
     private ?TaskStatus $status = null;
 
-    protected int|float $interval = 0;
+    /**
+     * Interval in seconds
+     *
+     * @var int
+     */
+    protected int $interval = 0;
 
     /**
      * @var ?int
      */
     private ?int $runStatus = null;
-
 
     /**
      * @var bool
@@ -173,6 +177,7 @@ abstract class AbstractTask implements Startable
         if ($startTime < self::MINIMUM_EXECUTION_TIME) {
             $processed_time = 0;
         }
+
         $this->processedTime = $processed_time;
         $this->schedulers->update([
             'status' => $this->status->getStatusString(),
@@ -213,6 +218,7 @@ abstract class AbstractTask implements Startable
             $last_execute = $this->schedulers->last_execute?->getTimestamp();
             $status = $this->schedulers->status;
         }
+
         $current = $nowTime->getTimestamp();
         if ($interval < 1) {
             $this->runStatus = TaskStatus::SKIPPED;
@@ -225,8 +231,7 @@ abstract class AbstractTask implements Startable
 
         $fifteen_minutes = 15 * 60; // 15 minutes
         // convert to seconds
-        $intervalSecond = $interval * 60;
-        $interval_since = ($current - $last_execute);
+        $interval_since  = ($current - $last_execute);
         $minimumCronTime = self::MINIMUM_CRON_TIME;
         $minimumCronTime = $this->eventDispatch(
             "Runner:minimum_time:$this->className",
@@ -240,7 +245,7 @@ abstract class AbstractTask implements Startable
         $rangeOfTime = $this->eventDispatch(
             "Runner:force_time:$this->className",
             $fifteen_minutes,
-            $intervalSecond,
+            $interval,
             $need,
             $this
         );
