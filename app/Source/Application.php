@@ -442,8 +442,14 @@ class Application implements ContainerizeInterface
                         }
                     }
 
-                    $metadata = new TableMetadataStorageConfiguration();
-                    $tableName = $obj->eventDispatch('Migrations:table', $metadata->getTableName());
+                    $metadata  = new TableMetadataStorageConfiguration();
+                    $tableName = $this
+                         ->getContainer(Instance::class)
+                         ->prefix . $metadata->getTableName();
+                    $tableName = $obj->eventDispatch(
+                        'Migrations:table',
+                        $tableName
+                    );
                     if (!$tableName || !preg_match('~^[a-zA-Z0-9_]+$~', $tableName)) {
                         $tableName = $metadata->getTableName();
                     }
