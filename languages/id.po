@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-29 01:24+0700\n"
-"PO-Revision-Date: 2022-10-29 01:28+0700\n"
+"POT-Creation-Date: 2022-10-29 21:18+0700\n"
+"PO-Revision-Date: 2022-10-29 21:21+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -140,7 +140,7 @@ msgstr ""
 msgid "Class name %s contain required parameters."
 msgstr "Nama kelas %s berisi parameter yang diperlukan."
 
-#: Source/Container.php:901
+#: Source/Container.php:900
 #, php-format
 msgid "Call to undefined property %s."
 msgstr "Panggil ke properti yang tidak ditentukan %s."
@@ -171,6 +171,7 @@ msgstr "Kedalaman maksimum nama kelas adalah %d, Anda memiliki kedalaman %d."
 #: Source/Controller/Commands/MakeController.php:68
 #: Source/Database/Commands/MakeModel.php:50
 #: Source/Middleware/Commands/MakeMiddleware.php:56
+#: Source/Scheduler/Commands/MakeScheduler.php:63
 #, php-format
 msgid "File %s already exists."
 msgstr "Berkas %s sudah ada."
@@ -179,6 +180,7 @@ msgstr "Berkas %s sudah ada."
 #: Source/Database/Commands/MakeModel.php:70
 #: Source/Middleware/Commands/MakeMiddleware.php:76
 #: Source/Module/Commands/MakeModule.php:204
+#: Source/Scheduler/Commands/MakeScheduler.php:90
 msgid "Namespace"
 msgstr "Namespace"
 
@@ -186,6 +188,7 @@ msgstr "Namespace"
 #: Source/Database/Commands/MakeModel.php:71
 #: Source/Middleware/Commands/MakeMiddleware.php:77
 #: Source/Module/Commands/MakeModule.php:205
+#: Source/Scheduler/Commands/MakeScheduler.php:91
 msgid "Base class name"
 msgstr "Nama basis kelas"
 
@@ -193,6 +196,7 @@ msgstr "Nama basis kelas"
 #: Source/Database/Commands/MakeModel.php:72
 #: Source/Middleware/Commands/MakeMiddleware.php:78
 #: Source/Module/Commands/MakeModule.php:206
+#: Source/Scheduler/Commands/MakeScheduler.php:92
 msgid "Class name"
 msgstr "Name kelas"
 
@@ -208,6 +212,7 @@ msgstr "Berkas controller"
 #: Source/Database/Commands/MakeModel.php:89
 #: Source/Middleware/Commands/MakeMiddleware.php:95
 #: Source/Module/Commands/MakeModule.php:224
+#: Source/Scheduler/Commands/MakeScheduler.php:109
 msgid "Are you sure [Y/n]"
 msgstr "Apa anda yakin [Y/n]"
 
@@ -215,6 +220,7 @@ msgstr "Apa anda yakin [Y/n]"
 #: Source/Database/Commands/MakeModel.php:174
 #: Source/Middleware/Commands/MakeMiddleware.php:166
 #: Source/Module/Commands/MakeModule.php:321
+#: Source/Scheduler/Commands/MakeScheduler.php:181
 #, php-format
 msgid "Directory %s is not writable."
 msgstr "Direktori %s tidak dapat ditulis."
@@ -223,6 +229,7 @@ msgstr "Direktori %s tidak dapat ditulis."
 #: Source/Database/Commands/MakeModel.php:185
 #: Source/Middleware/Commands/MakeMiddleware.php:177
 #: Source/Module/Commands/MakeModule.php:332
+#: Source/Scheduler/Commands/MakeScheduler.php:192
 #, php-format
 msgid "File %s is exists."
 msgstr "Berkas %s tidak ada."
@@ -247,34 +254,29 @@ msgstr "Route controller %s tidak memiliki metode kembalian %s."
 msgid "Route controller method does not returning %s."
 msgstr "Route controller method tidak mengembalikan %s."
 
-#: Source/Database/Abstracts/Model.php:278
+#: Source/Database/Abstracts/Model.php:291
 #, php-format
 msgid "Table for model %s is not exist."
 msgstr "Tabel untuk model %s tidak ada."
 
-#: Source/Database/Abstracts/Model.php:561
+#: Source/Database/Abstracts/Model.php:575
 #, php-format
 msgid "Argument parameters key index must be as a string, %s given."
 msgstr "Parameter argumen indeks kunci harus sebagai string, %s diberikan."
 
-#: Source/Database/Abstracts/Model.php:575
+#: Source/Database/Abstracts/Model.php:589
 #, php-format
 msgid "Table %s does not have primary key"
 msgstr "Tabel %s tidak memiliki kunci utama"
 
-#: Source/Database/Abstracts/Model.php:739
+#: Source/Database/Abstracts/Model.php:753
 msgid "Update method does not where statement"
 msgstr "Metode pembaruan tidak ada pernyataan where"
 
-#: Source/Database/Abstracts/Model.php:892
+#: Source/Database/Abstracts/Model.php:906
 #, php-format
 msgid "Column (%s) must be set."
 msgstr "Kolom (%s) harus deklarasikan."
-
-#: Source/Database/Abstracts/Model.php:1310
-#, php-format
-msgid "Columns %s is not exists on index %s column %s"
-msgstr "Kolom %s tidak ada pada indeks %s kolom %s"
 
 #: Source/Database/Commands/MakeModel.php:38
 msgid "Model directory is not exist."
@@ -288,7 +290,7 @@ msgstr "Direktori model"
 msgid "Model file"
 msgstr "Berkas model"
 
-#: Source/Database/Instance.php:389 Source/Database/Instance.php:434
+#: Source/Database/Instance.php:526 Source/Database/Instance.php:571
 msgid ""
 "Invalid value to be quote, quote value could not be instance of `Closure` or "
 "as a `Resource`."
@@ -296,41 +298,53 @@ msgstr ""
 "Nilai kutipan tidak valid, nilai kutipan tidak boleh berupa instance "
 "`Closure` atau sebagai `Resource`."
 
-#: Source/Database/Instance.php:411
+#: Source/Database/Instance.php:548
 msgid "Invalid value to be quote, quote value must be as a string."
 msgstr ""
 "Nilai tidak valid untuk dijadikan kutipan, nilai kutipan harus berupa string."
 
-#: Source/Database/Instance.php:528
+#: Source/Database/Instance.php:665
 #, php-format
 msgid "Invalid statement binding count with sql query : %s."
 msgstr "Jumlah pengikatan pernyataan tidak valid dengan kueri sql : %s."
 
-#: Source/Database/Instance.php:615 Source/Database/Instance.php:641
-#: Source/Database/Instance.php:722 Source/Database/Instance.php:747
+#: Source/Database/Instance.php:752 Source/Database/Instance.php:778
+#: Source/Database/Instance.php:859 Source/Database/Instance.php:884
 msgid "Invalid parameter table name. Table name could not be empty."
 msgstr "Nama parameter tabel tidak valid. Nama tabel wajib diisi."
 
-#: Source/Database/Instance.php:667
+#: Source/Database/Instance.php:804
 msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 "Jenis nama tabel tidak valid. Nama tabel harus berupa string atau array."
 
-#: Source/Database/Instance.php:778
+#: Source/Database/Instance.php:915
 #: Source/Themes/Abstracts/AbstractTheme.php:422
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr "Memanggil ke Metode yang tidak ditentukan %s."
 
-#: Source/Database/Instance.php:871
+#: Source/Database/Instance.php:1044
 msgid "Argument must be subclass of %s, % given."
 msgstr "Argument kelas turunan dari %s, diberikan %s."
 
-#: Source/Database/Instance.php:883
+#: Source/Database/Instance.php:1056
 #: Source/RouteAnnotations/RoutesAnnotations.php:113
 #, php-format
 msgid "Class name %s is not valid."
 msgstr "Nama kelas %s tidak sah."
+
+#: Source/Database/Traits/ModelSchema.php:120
+#: Source/Database/Traits/ModelSchema.php:131
+#: Source/Database/Traits/ModelSchema.php:143
+#, php-format
+msgid "Database type %s is not exist."
+msgstr "Jenis basis data %s tidak ada."
+
+#: Source/Database/Traits/ModelSchema.php:357
+#, php-format
+msgid "Columns %s is not exists on index %s column %s"
+msgstr "Kolom %s tidak ada pada indeks %s kolom %s"
 
 #: Source/Helper/Util/ObjectFileReader.php:39
 #, php-format
@@ -366,7 +380,7 @@ msgstr "Direktori middleware %s tidak ada."
 
 #: Source/Middleware/Commands/MakeMiddleware.php:48
 msgid "Middleware could not contain nested class."
-msgstr "Middleware tidak dapat berisi kelas bersarang."
+msgstr "Middleware tidak dapat berisi kelas turunan."
 
 #: Source/Middleware/Commands/MakeMiddleware.php:79
 msgid "Middleware directory"
@@ -375,6 +389,10 @@ msgstr "Direktori middleware"
 #: Source/Middleware/Commands/MakeMiddleware.php:80
 msgid "Middleware file"
 msgstr "Berkas middleware"
+
+#: Source/Models/Factory/Users.php:94
+msgid "Users model has not been fetched yet."
+msgstr "Model pengguna belum diambil."
 
 #: Source/Module/Abstracts/AbstractModule.php:126
 #, php-format
@@ -391,7 +409,7 @@ msgstr "Direktori modul %s tidak ada."
 
 #: Source/Module/Commands/MakeModule.php:175
 msgid "Module could not contain nested class."
-msgstr "Modul tidak boleh berisi kelas bersarang."
+msgstr "Modul tidak boleh berisi kelas turunan."
 
 #: Source/Module/Commands/MakeModule.php:182
 #, php-format
@@ -464,22 +482,43 @@ msgstr "Tidak meneukan kelas %s pada berkas %s."
 msgid "Class %s is not instance of %s."
 msgstr "Kelas %s bukan merupakan instance dari %s."
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:128
+#: Source/Scheduler/Abstracts/AbstractTask.php:135
 msgid "Processing task."
 msgstr "Memproses tugas."
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:136
+#: Source/Scheduler/Abstracts/AbstractTask.php:143
 msgid "Task done."
 msgstr "Tugas selesai."
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:144
+#: Source/Scheduler/Abstracts/AbstractTask.php:151
 msgid "Task error."
 msgstr "Tugas bermasalah."
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:161
+#: Source/Scheduler/Abstracts/AbstractTask.php:168
 #: Source/Scheduler/Commands/RunScheduler.php:163
 msgid "Unknown"
 msgstr "Tidak diketahui"
+
+#: Source/Scheduler/Commands/MakeScheduler.php:49
+msgid "Scheduler directory is not exist."
+msgstr "Direktori penjadwal tidak ada."
+
+#: Source/Scheduler/Commands/MakeScheduler.php:55
+msgid "Scheduler could not contain nested class."
+msgstr "Penjadwal tidak dapat berisi kelas turunan."
+
+#: Source/Scheduler/Commands/MakeScheduler.php:93
+msgid "Scheduler directory"
+msgstr "Direktori penjadwal"
+
+#: Source/Scheduler/Commands/MakeScheduler.php:94
+msgid "Scheduler file"
+msgstr "Berkas penjadwal"
+
+#: Source/Scheduler/Commands/MakeScheduler.php:129
+#, php-format
+msgid "Fill with response result of task of %s"
+msgstr "Isi dengan hasil respon tugas %s"
 
 #: Source/Scheduler/Commands/RunScheduler.php:28
 #, php-format
@@ -702,7 +741,7 @@ msgstr "%s tidak dapat ditulisi."
 
 #: Source/Views/ExceptionsRenderView.php:113
 msgid "Type"
-msgstr "Tipe"
+msgstr "Jenis"
 
 #: Source/Views/ExceptionsRenderView.php:120
 msgid "Code"
