@@ -16,6 +16,7 @@ use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Middleware\Commands\MakeMiddleware;
 use TrayDigita\Streak\Source\Module\Commands\MakeModule;
+use TrayDigita\Streak\Source\Scheduler\Commands\MakeScheduler;
 use TrayDigita\Streak\Source\Scheduler\Commands\RunScheduler;
 
 return (function () {
@@ -76,7 +77,8 @@ return (function () {
             new MakeModule($container),
             new MakeMiddleware($container),
             new MakeModel($container),
-            new RunScheduler($container)
+            new MakeScheduler($container),
+            new RunScheduler($container),
         ]);
     }
 
