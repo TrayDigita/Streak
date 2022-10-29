@@ -263,5 +263,14 @@ EOT
         return true;
     }
 
+    /**
+     * Do command generation
+     *
+     * @param string $namespace
+     * @param string $name
+     * @param SymfonyStyle $symfonyStyle
+     *
+     * @return int
+     */
     abstract protected function doGeneration(string $namespace, string $name, SymfonyStyle $symfonyStyle): int;
 }
