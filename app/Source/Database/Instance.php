@@ -328,7 +328,12 @@ class Instance extends AbstractContainerization
         return false;
     }
 
-    private function createInternalConfiguration(Collections $collections)
+    /**
+     * @param Collections $collections
+     *
+     * @return Configuration
+     */
+    private function createInternalConfiguration(Collections $collections) : Configuration
     {
         $config = $collections['configuration']??(
             $collections['configuration'] instanceof Collections
@@ -339,6 +344,7 @@ class Instance extends AbstractContainerization
         $middlewares = null;
         // build configuration
         if (!$config instanceof Configuration) {
+            $config= $config instanceof Collections ? $config->toArray() : $config;
             $config = !is_array($config) ? [$config] : $config;
             $configuration = new Configuration();
             $config = array_change_key_case($config, CASE_LOWER);
