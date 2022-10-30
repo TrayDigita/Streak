@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-29 21:18+0700\n"
-"PO-Revision-Date: 2022-10-29 21:21+0700\n"
+"POT-Creation-Date: 2022-10-30 13:44+0700\n"
+"PO-Revision-Date: 2022-10-30 13:47+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -290,7 +290,7 @@ msgstr "Direktori model"
 msgid "Model file"
 msgstr "Berkas model"
 
-#: Source/Database/Instance.php:526 Source/Database/Instance.php:571
+#: Source/Database/Instance.php:542 Source/Database/Instance.php:587
 msgid ""
 "Invalid value to be quote, quote value could not be instance of `Closure` or "
 "as a `Resource`."
@@ -298,37 +298,37 @@ msgstr ""
 "Nilai kutipan tidak valid, nilai kutipan tidak boleh berupa instance "
 "`Closure` atau sebagai `Resource`."
 
-#: Source/Database/Instance.php:548
+#: Source/Database/Instance.php:564
 msgid "Invalid value to be quote, quote value must be as a string."
 msgstr ""
 "Nilai tidak valid untuk dijadikan kutipan, nilai kutipan harus berupa string."
 
-#: Source/Database/Instance.php:665
+#: Source/Database/Instance.php:681
 #, php-format
 msgid "Invalid statement binding count with sql query : %s."
 msgstr "Jumlah pengikatan pernyataan tidak valid dengan kueri sql : %s."
 
-#: Source/Database/Instance.php:752 Source/Database/Instance.php:778
-#: Source/Database/Instance.php:859 Source/Database/Instance.php:884
+#: Source/Database/Instance.php:768 Source/Database/Instance.php:794
+#: Source/Database/Instance.php:875 Source/Database/Instance.php:900
 msgid "Invalid parameter table name. Table name could not be empty."
 msgstr "Nama parameter tabel tidak valid. Nama tabel wajib diisi."
 
-#: Source/Database/Instance.php:804
+#: Source/Database/Instance.php:820
 msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 "Jenis nama tabel tidak valid. Nama tabel harus berupa string atau array."
 
-#: Source/Database/Instance.php:915
+#: Source/Database/Instance.php:931
 #: Source/Themes/Abstracts/AbstractTheme.php:422
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr "Memanggil ke Metode yang tidak ditentukan %s."
 
-#: Source/Database/Instance.php:1044
+#: Source/Database/Instance.php:1060
 msgid "Argument must be subclass of %s, % given."
 msgstr "Argument kelas turunan dari %s, diberikan %s."
 
-#: Source/Database/Instance.php:1056
+#: Source/Database/Instance.php:1072
 #: Source/RouteAnnotations/RoutesAnnotations.php:113
 #, php-format
 msgid "Class name %s is not valid."
@@ -365,7 +365,7 @@ msgstr "Berkas %s berisi data kosong."
 msgid "Argument is empty data or whitespace only."
 msgstr "Argument berupa data kosong atau hanya whitespace."
 
-#: Source/Json/ApiCreator.php:130 Source/Traits/HttpThrowableException.php:164
+#: Source/Json/ApiCreator.php:129 Source/Traits/HttpThrowableException.php:164
 #: Source/Views/ExceptionsRenderView.php:26
 msgid "500 Internal Server Error"
 msgstr "500 Kesalahan Internal Server"
@@ -697,44 +697,84 @@ msgstr "403 Terlarang"
 msgid "You are not permitted to perform the requested operation."
 msgstr "Anda tidak diizinkan untuk melakukan operasi yang diminta."
 
-#: Source/Uploads/ChunkResponse.php:72
-msgid "Processing your upload file."
-msgstr "Memproses berkas unggahan anda."
+#: Source/Uploads/ChunkResponse.php:98
+msgid "Content-Range header is not fulfilled."
+msgstr "Header Content-Range tidak terpenuhi."
 
-#: Source/Uploads/ChunkResponse.php:109
-msgid "File successfully uploaded but not implemented."
-msgstr "Berkas telah berhasil diunggah akan tetapi tidak diimplementasikan."
+#: Source/Uploads/ChunkResponse.php:155
+msgid "Server only accept bytes unit."
+msgstr "Server hanya menerima unit byte."
 
-#: Source/Uploads/Handler.php:205
+#: Source/Uploads/ChunkResponse.php:170
+msgid "Content-Range start bytes must be zero without Request-Id."
+msgstr "Byte awal Content-Range harus nol tanpa Request-Id."
+
+#: Source/Uploads/ChunkResponse.php:188
+msgid "Invalid uploaded file name."
+msgstr "Nama berkas unggahan tidak valid."
+
+#: Source/Uploads/ChunkResponse.php:210
+msgid "Invalid Request-Id header."
+msgstr "Request-Id header tidak valid."
+
+#: Source/Uploads/ChunkResponse.php:228
+msgid "Range bytes is out of range."
+msgstr "Rentang byte berada di luar jangkauan."
+
+#: Source/Uploads/ChunkResponse.php:243
+msgid "There was an error with uploaded file."
+msgstr "Terdapat kesalahan dengan berkas unggahan."
+
+#: Source/Uploads/ChunkResponse.php:260
+msgid "Range size is bigger than file size."
+msgstr "Ukuran rentang lebih besar dari ukuran berkas."
+
+#: Source/Uploads/ChunkResponse.php:275
+msgid "Uploaded file size is bigger than ending size."
+msgstr "Ukuran berkas unggahan lebih besar dari ukuran akhir."
+
+#: Source/Uploads/ChunkResponse.php:317
+msgid "Could not save uploaded file."
+msgstr "Tidak dapat menyimpan berkas unggahan."
+
+#: Source/Uploads/Handler.php:187
 msgid "Cache upload storage does not exist."
 msgstr "Penyimpanan cache unggahan tidak ada."
 
-#: Source/Uploads/Handler.php:214
+#: Source/Uploads/Handler.php:196
 msgid "Cache upload storage is not writable."
 msgstr "Penyimpanan cache unggahan tidak dapat ditulisi."
 
-#: Source/Uploads/Handler.php:253
+#: Source/Uploads/Handler.php:239
 msgid "Upload cache file is not writable."
 msgstr "Cache unggahan tidak dapat ditulisi."
 
-#: Source/Uploads/Handler.php:274
-msgid "Can not create stream."
-msgstr "Tidak dapat membuat stream."
+#: Source/Uploads/Handler.php:252
+msgid "Can not create cached stream."
+msgstr "Tidak dapat membuat stream cache."
 
-#: Source/Uploads/Handler.php:347
+#: Source/Uploads/Handler.php:261
+msgid "Cache file has been locked."
+msgstr "Berkas cache telah dikunci."
+
+#: Source/Uploads/Handler.php:304
+msgid "Offset upload position is invalid"
+msgstr "Offset posisi unggahan tidak valid."
+
+#: Source/Uploads/Handler.php:329
 msgid "Source uploaded file does not exist."
 msgstr "Sumber berkas unggahan tidak ada."
 
-#: Source/Uploads/Handler.php:366
+#: Source/Uploads/Handler.php:348
 #, php-format
 msgid "Upload cache file is not ready to move : (%d)."
 msgstr "Berkas cache unggahan belum siap untuk dipindah: (%d)."
 
-#: Source/Uploads/Handler.php:386
+#: Source/Uploads/Handler.php:368
 msgid "Could not determine increment target file."
 msgstr "Tidak dapat menentukan urutan berkas tujuan."
 
-#: Source/Uploads/Handler.php:406 Source/Uploads/Handler.php:423
+#: Source/Uploads/Handler.php:389 Source/Uploads/Handler.php:408
 #, php-format
 msgid "%s is not writable."
 msgstr "%s tidak dapat ditulisi."
@@ -762,3 +802,6 @@ msgstr "Baris"
 #: Source/Views/ExceptionsRenderView.php:139
 msgid "Trace"
 msgstr "Rekam Jejak"
+
+#~ msgid "File successfully uploaded but not implemented."
+#~ msgstr "Berkas telah berhasil diunggah akan tetapi tidak diimplementasikan."
