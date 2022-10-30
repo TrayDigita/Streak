@@ -11,7 +11,7 @@ use Slim\Exception\HttpSpecializedException;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Application;
-use TrayDigita\Streak\Source\i18n\Translator;
+use TrayDigita\Streak\Source\Json\Schema\ErrorSource;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 use WoohooLabs\Yang\JsonApi\Request\ResourceObject;
@@ -21,7 +21,6 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 use WoohooLabs\Yin\JsonApi\Schema\Document\ErrorDocument;
 use WoohooLabs\Yin\JsonApi\Schema\Error\Error;
 use WoohooLabs\Yin\JsonApi\JsonApi;
-use WoohooLabs\Yin\JsonApi\Schema\Error\ErrorSource;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
 
 class ApiCreator extends AbstractContainerization

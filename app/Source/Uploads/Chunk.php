@@ -10,6 +10,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\StoragePath;
+use TrayDigita\Streak\Source\SystemInitialHandler;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 
@@ -76,23 +77,17 @@ class Chunk extends AbstractContainerization
      */
     public function serverWithResponseHeader(ResponseInterface $response) : ResponseInterface
     {
-        return $response
-            ->withoutHeader('Cache-Control')
-            ->withHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
-            ->withHeader('Last-Modified', gmdate('D, d M Y H:i:s \G\M\T'))
-            ->withAddedHeader(
-                'Cache-Control',
-                'no-store, no-cache, must-revalidate'
-            )->withAddedHeader(
-                'Cache-Control',
-                'post-check=0, pre-check=0',
-            )->withHeader('Pragma', 'no-cache');
+        return $this->getContainer(SystemInitialHandler::class)
+            ->noCacheResponse(
+                $response->withHeader('Accept-Ranges', 'bytes')
+            );
     }
 
     /**
      * @param UploadedFileInterface $uploadedFile
      * @param string $identity
      * @param int $maxAge
+     * @param int $sizeLimit
      *
      * @return Handler
      */

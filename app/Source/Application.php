@@ -148,6 +148,11 @@ class Application implements ContainerizeInterface
     private ?ResponseInterface $response = null;
 
     /**
+     * @var bool
+     */
+    private bool $emit = false;
+
+    /**
      * @param ?Container $container will create factory container
      */
     public function __construct(Container $container = null)
@@ -359,6 +364,11 @@ class Application implements ContainerizeInterface
              * Time
              */
             Time::class => null,
+
+            /* ---------------------------------------------------------
+             * Hash
+             */
+            Hash::class => null,
 
             /* ---------------------------------------------------------
              * Logger
@@ -810,8 +820,8 @@ class Application implements ContainerizeInterface
 
         /* ADD STOP */
         $this->addStop('Application:dispatch');
-
         if ($dispatchHandle && $emit) {
+            $this->emit = true;
             $this->getContainer(ResponseEmitter::class)->emit($this->response);
             $this->response = $this->eventDispatch(
                 'Dispatch:emit',

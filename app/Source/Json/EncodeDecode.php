@@ -194,6 +194,9 @@ class EncodeDecode extends AbstractContainerization implements SerializerInterfa
 
     public function getBodyAsString(ResponseInterface $response): string
     {
+        if ($response->getBody()->isSeekable()) {
+            $response->getBody()->rewind();
+        }
         return $response->getBody()->__toString();
     }
 }

@@ -9,6 +9,12 @@ use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use SplFileInfo;
 use TrayDigita\Streak\Source\Helper\Util\Consolidation;
+use TrayDigita\Streak\Source\Uploads\Exceptions\DirectoryUnWritAbleException;
+use TrayDigita\Streak\Source\Uploads\Exceptions\FileLockedException;
+use TrayDigita\Streak\Source\Uploads\Exceptions\FileResourceFailException;
+use TrayDigita\Streak\Source\Uploads\Exceptions\FileUnWritAbleException;
+use TrayDigita\Streak\Source\Uploads\Exceptions\InvalidOffsetPosition;
+use TrayDigita\Streak\Source\Uploads\Exceptions\SourceFileInvalid;
 
 class Handler
 {
@@ -29,11 +35,6 @@ class Handler
      * @var int
      */
     private int $maxAge;
-
-    /**
-     * @var int
-     */
-    private int $sizeLimit;
 
     /**
      * @var string
@@ -75,17 +76,14 @@ class Handler
      * @param UploadedFileInterface $uploadedFile
      * @param string $identity
      * @param int $maxAge
-     * @param int $sizeLimit 0 mean unlimited
      */
     #[Pure] public function __construct(
         private Chunk $chunk,
         private UploadedFileInterface $uploadedFile,
         private string $identity,
-        int $maxAge = self::DEFAULT_MAX_AGE,
-        int $sizeLimit = 0
+        int $maxAge = self::DEFAULT_MAX_AGE
     ) {
         $this->maxAge = $maxAge;
-        $this->sizeLimit = $sizeLimit;
         $this->targetCacheFile = sprintf(
             '%1$s%2$s%3$s.%4$s',
             $this->chunk->getUploadCacheStorageDirectory(),
@@ -117,22 +115,6 @@ class Handler
     public function getTargetCacheFile(): string
     {
         return $this->targetCacheFile;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSizeLimit(): int
-    {
-        return $this->sizeLimit;
-    }
-
-    /**
-     * @param int $sizeLimit
-     */
-    public function setSizeLimit(int $sizeLimit): void
-    {
-        $this->sizeLimit = $sizeLimit;
     }
 
     /**
@@ -220,6 +202,9 @@ class Handler
             $this
         );
         $this->status = self::STATUS_READY;
+        $this->size = is_file($this->targetCacheFile)
+            ? filesize($this->targetCacheFile)
+            : 0;
         return $this->status;
     }
 
@@ -248,19 +233,12 @@ class Handler
     {
         if (file_exists($this->targetCacheFile) && !is_writable($this->targetCacheFile)) {
             $this->status = self::STATUS_FAIL;
-            throw new RuntimeException(
+            throw new FileUnWritAbleException(
+                $this->targetCacheFile,
                 $this->chunk->translate(
                     'Upload cache file is not writable.'
                 )
             );
-        }
-
-        $size = is_file($this->targetCacheFile)
-            ? filesize($this->targetCacheFile)
-            : 0;
-        if ($this->sizeLimit > 0 && $size > $this->sizeLimit) {
-            $this->size = $size;
-            return $this->written;
         }
 
         $this->cacheResource = Consolidation::callbackReduceError(
@@ -269,12 +247,21 @@ class Handler
 
         if (!is_resource($this->cacheResource)) {
             $this->status = self::STATUS_FAIL;
-            throw new RuntimeException(
+            throw new FileResourceFailException(
                 $this->chunk->translate(
-                    'Can not create stream.'
+                    'Can not create cached stream.'
                 )
             );
         }
+
+        flock($this->cacheResource, LOCK_EX|LOCK_NB, $wouldBlock);
+        if ($wouldBlock) {
+            throw new FileLockedException(
+                $this->targetCacheFile,
+                $this->chunk->translate('Cache file has been locked.')
+            );
+        }
+
         $uploadedStream      = $this->uploadedFile->getStream();
         if ($uploadedStream->isSeekable()) {
             $uploadedStream->rewind();
@@ -285,16 +272,18 @@ class Handler
             $this->written += (int) fwrite($this->cacheResource, $uploadedStream->read(2048));
         }
 
-        $size = (@fstat($this->cacheResource)['size']??null);
-        $this->size = !is_int($size) ? filesize($this->targetCacheFile) : $size;
+        $stat = @fstat($this->cacheResource);
+        $this->size = $stat ? (int) ($stat['size']??$this->written) : $this->written;
         flock($this->cacheResource, LOCK_EX);
         return $this->written;
     }
 
     /**
+     * @param int $position
+     *
      * @return int
      */
-    public function begin(): int
+    public function start(int $position = 0): int
     {
         if ($this->status === self::STATUS_WAITING) {
             $this->check();
@@ -304,29 +293,21 @@ class Handler
             return $this->written;
         }
 
-        $this->status = self::STATUS_BEGIN;
-        return $this->writeResource('wb+');
-    }
-
-    /**
-     * @return int
-     */
-    public function resume(): int
-    {
-        if ($this->status === self::STATUS_WAITING) {
-            $this->check();
-        }
-
-        if ($this->status !== self::STATUS_READY) {
-            return $this->written;
-        }
-
-        if (!file_exists($this->targetCacheFile)) {
-            return $this->begin();
+        $mode = 'ab+';
+        if ($position === 0) {
+            $mode = 'wb+';
+        } elseif ($position <> $this->size) {
+            throw new InvalidOffsetPosition(
+                $position,
+                $this->size,
+                $this->chunk->translate(
+                    'Offset upload position is invalid'
+                )
+            );
         }
 
         $this->status = self::STATUS_RESUME;
-        return $this->writeResource('ab+');
+        return $this->writeResource($mode);
     }
 
     /**
@@ -334,15 +315,16 @@ class Handler
      * @param bool $overrideIfExists
      * @param bool $increment
      *
-     * @return bool
+     * @return bool|string
      */
     public function put(
         string $target,
         bool $overrideIfExists = false,
         bool $increment = true
-    ): bool {
+    ): false|string {
         if (!is_file($this->movedFile?:$this->targetCacheFile)) {
-            throw new RuntimeException(
+            throw new SourceFileInvalid(
+                $this->movedFile?:$this->targetCacheFile,
                 $this->chunk->translate(
                     'Source uploaded file does not exist.'
                 )
@@ -400,7 +382,8 @@ class Handler
                 }
             } else {
                 if (!is_writable($target)) {
-                    throw new RuntimeException(
+                    throw new FileUnWritAbleException(
+                        $target,
                         sprintf(
                             $this->chunk->translate(
                                 '%s is not writable.'
@@ -416,8 +399,10 @@ class Handler
         if (!is_dir($targetDirectory)) {
             mkdir($target, 0755, true);
         }
+
         if (!is_writable($targetDirectory)) {
-            throw new RuntimeException(
+            throw new DirectoryUnWritAbleException(
+                $targetDirectory,
                 sprintf(
                     $this->chunk->translate(
                         '%s is not writable.'
@@ -430,15 +415,17 @@ class Handler
         if ($this->movedFile) {
             $result = Consolidation::callbackReduceError(fn () => copy($this->movedFile, $target));
         } else {
-            $result = Consolidation::callbackReduceError(fn() => rename($this->movedFile, $target));
+            $result = Consolidation::callbackReduceError(fn() => rename($this->targetCacheFile, $target));
         }
+        $this->lastTarget = null;
         if ($result) {
             $this->lastTarget = realpath($target) ?: $target;
-            if ($this->movedFile) {
+            if (!$this->movedFile) {
                 $this->movedFile = $this->lastTarget;
             }
         }
-        return $result;
+
+        return $this->lastTarget?:false;
     }
 
     public function close()

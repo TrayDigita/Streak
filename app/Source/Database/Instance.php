@@ -219,6 +219,9 @@ class Instance extends AbstractContainerization
             } elseif ($platform instanceof PostgreSQLPlatform) {
                 $name = 'postgresql';
             }
+            // elseif ($platform instanceof OraclePlatform) {
+            //    $name = 'oracle';
+            // }
             if (isset(self::$collations[$name])) {
                 return self::$collations[$name];
             }
@@ -270,6 +273,19 @@ class Instance extends AbstractContainerization
                         ];
                     }
                     break;
+                // case 'oci':
+                    /** @noinspection SqlResolve */
+                    /*$result = $this->executeQuery(
+                        "SELECT
+                            parameter as parameter,
+                            value as value
+                        FROM
+                             nls_database_parameters
+                        where
+                              parameter
+                                  in ('NLS_COMP', 'NLS_CHARACTERSET')"
+                    );*/
+                // break;
             }
 
             return self::$collations[$name];

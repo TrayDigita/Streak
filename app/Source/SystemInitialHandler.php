@@ -287,7 +287,8 @@ class SystemInitialHandler extends AbstractContainerization
                 $this->stream = null;
                 ob_start([$this, 'handleBuffer']);
             }
-            $response =  $exceptionView->render($response);
+
+            $response = $this->noCacheResponse($exceptionView->render($response));
             $this->getContainer(ResponseEmitter::class)->emit($response);
         }
 
@@ -378,6 +379,24 @@ class SystemInitialHandler extends AbstractContainerization
         }
 
         return $exceptionView->render($response);
+    }
+
+    /**
+     * Add no cache
+     *
+     * @param ResponseInterface $response
+     *
+     * @return ResponseInterface
+     */
+    public function noCacheResponse(ResponseInterface $response) : ResponseInterface
+    {
+        return $response
+            ->withoutHeader('Cache-Control')
+            ->withHeader('Expires', 'Mon, 01 Jul 1970 00:00:00 GMT')
+            ->withHeader('Last-Modified', gmdate('D, d M Y H:i:s \G\M\T'))
+            ->withAddedHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+            ->withAddedHeader('Cache-Control', 'post-check=0, pre-check=0')
+            ->withHeader('Pragma', 'no-cache');
     }
 
     public function __destruct()

@@ -232,6 +232,8 @@ abstract class AbstractController extends AbstractResponse implements PriorityCa
 
         // stop
         $timer->stop($timerName);
+        // delete reference
+        unset($response);
         // dispatch event
         $response = $this->eventDispatch(
             'Controller:response',
