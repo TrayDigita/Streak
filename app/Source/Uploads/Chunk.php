@@ -54,12 +54,9 @@ class Chunk extends AbstractContainerization
         parent::__construct($container);
 
         $this->partialExtension = 'part';
-        $this->uploadCacheStorageDirectory = sprintf(
-            '%s%s%s',
-            $this->getContainer(StoragePath::class)->getCacheDirectory(),
-            DIRECTORY_SEPARATOR,
-            'uploads'
-        );
+        $this->uploadCacheStorageDirectory = $container
+            ->get(StoragePath::class)
+            ->getCacheUploadDirectory();
     }
 
     /**

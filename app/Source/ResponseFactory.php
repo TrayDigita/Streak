@@ -13,9 +13,23 @@ class ResponseFactory extends AbstractContainerization implements ResponseFactor
 {
     use EventsMethods;
 
+    /**
+     * The last response
+     *
+     * @var ?ResponseInterface
+     */
+    public ?ResponseInterface $lastResponse = null;
+
+    /**
+     * @param int $code
+     * @param string $reasonPhrase
+     *
+     * @return ResponseInterface
+     */
     public function createResponse(int $code = 200, string $reasonPhrase = '') : ResponseInterface
     {
         $stream = $this->getContainer(SystemInitialHandler::class)->createStream();
-        return new Response($code, [], $stream, '1.1', $reasonPhrase);
+        $this->lastResponse = new Response($code, [], $stream, '1.1', $reasonPhrase);
+        return $this->lastResponse;
     }
 }

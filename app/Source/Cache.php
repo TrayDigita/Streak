@@ -1,5 +1,8 @@
 <?php
 /**
+ * @noinspection PhpUndefinedNamespaceInspection
+ * @noinspection PhpUndefinedClassInspection
+ * @noinspection PhpInternalEntityUsedInspection
  * @noinspection PhpComposerExtensionStubsInspection
  * @noinspection PhpUnused
  */
@@ -13,9 +16,13 @@ use DateTimeInterface;
 use Doctrine\DBAL\Exception;
 use Memcached;
 use PDO;
+use Predis\ClientInterface;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface as PSRCache;
+use Redis;
+use RedisArray;
+use RedisCluster;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -28,7 +35,10 @@ use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\PdoAdapter;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Adapter\Psr16Adapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Marshaller\MarshallerInterface;
+use Symfony\Component\Cache\Traits\RedisClusterProxy;
+use Symfony\Component\Cache\Traits\RedisProxy;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Database\Instance;
@@ -135,6 +145,12 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         }
     }
 
+    /**
+     * @param string|CacheItemInterface $key
+     * @param null $error
+     *
+     * @return ?CacheItemInterface
+     */
     public function getCache(string|CacheItemInterface $key, &$error = null) : ?CacheItemInterface
     {
         if ($key instanceof CacheItemInterface) {
@@ -148,6 +164,14 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         }
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @param int|DateInterval|null $expiredAfter
+     * @param DateTimeInterface|null $expiration
+     *
+     * @return bool
+     */
     public function saveCache(
         string $key,
         mixed $value,
@@ -169,6 +193,11 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         return $this->save($cacheItem);
     }
 
+    /**
+     * @param CacheItemInterface $item
+     *
+     * @return bool
+     */
     public function saveItem(CacheItemInterface $item) : bool
     {
         return $this->save($item);
@@ -187,8 +216,12 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         $this->init = true;
         $config = $this->getContainer(Configurations::class);
         $cache = $config->get('cache');
-        if ($cache instanceof Collections) {
-            $cache = new Configurations();
+        if (!$cache instanceof Configurations) {
+            $cache = new Configurations(
+                $cache instanceof Collections
+                    ? $cache->toArray()
+                    : []
+            );
             $config->set('cache', $cache);
         }
 
@@ -201,37 +234,46 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
             return $adapter;
         }
 
-        $namespace = $config->get('namespace');
-        $defaultNamespace = !is_string($namespace) ? '' : $namespace;
+        $namespace = $cache->get('namespace');
+        $defaultNamespace = !is_string($namespace)
+            || trim($namespace) === ''
+            || preg_match('~[^-+_.A-Za-z0-9]~', trim($namespace))
+            ? 'caches'
+            : trim($namespace);
         $namespace = $this->eventDispatch('Cache:namespace', $defaultNamespace);
-        $namespace = !is_int($namespace) ? $defaultNamespace : $namespace;
-        $lifetime = $config->get('lifetime');
+        $namespace = !is_string($namespace)
+            || trim($namespace) === ''
+            || preg_match('~[^-+_.A-Za-z0-9]~', trim($namespace))
+            ? $defaultNamespace : trim($namespace);
+
+        $lifetime = $cache->get('lifetime');
         $defaultLifetime = !is_int($lifetime) ? 0 : $lifetime;
         $lifetime = $this->eventDispatch('Cache:lifetime', $lifetime);
         $lifetime = !is_int($lifetime) ? $defaultLifetime : $lifetime;
 
-        $options = $config->get('options');
+        $options = $cache->get('options');
         $optionDefault = $options instanceof Collections ? $options->toArray() : [];
         $options = $this->eventDispatch('Cache:options', $optionDefault);
         $options = !is_int($options) ? $optionDefault : $options;
 
-        $marshaller = $config->get('marshaller');
-        $marshaller = is_string($marshaller) && !is_a($marshaller, MarshallerInterface::class, true)
-            ? $this->getContainer(MarshallerInterface::class)
-            : ($marshaller instanceof MarshallerInterface
-                ? $marshaller
-                : (
-                is_string($marshaller)
-                    ? new $marshaller
-                    : $this->getContainer(MarshallerInterface::class))
-            );
-        $defaultMarshaller = is_string($marshaller) ? new $marshaller() : $marshaller;
+        $marshaller = $cache->get('marshaller');
+        if (is_string($marshaller)) {
+            if (!is_a($marshaller, MarshallerInterface::class, true)) {
+                $marshaller = $this->getContainer(MarshallerInterface::class);
+            } else {
+                $marshaller = new $marshaller();
+            }
+        } elseif (!$marshaller instanceof MarshallerInterface) {
+            $marshaller = $this->getContainer(MarshallerInterface::class);
+        }
+
+        $defaultMarshaller = $marshaller;
         $marshaller = $this->eventDispatch('Cache:marshaller', $marshaller);
         $marshaller = $marshaller instanceof MarshallerInterface ? $marshaller : $defaultMarshaller;
 
         $cachePath = $this->getContainer(StoragePath::class)->getCacheDirectory();
 
-        $version = $config->get('version');
+        $version = $cache->get('version');
         $version = !is_string($version) ? null : $version;
         $maxItems = (int) $this->eventDispatch('Cache:maxItems', 100);
         $maxItems = $maxItems < 10 ? 10 : (
@@ -298,9 +340,23 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
                 $cachePath
             ]
         ];
-
+        if (class_exists(Redis::class)) {
+            if ($adapter === RedisAdapter::class) {
+                $redis = $this->trygetRedis($config);
+                if ($redis) {
+                    $adapterArgs[RedisAdapter::class] = [
+                        $redis,
+                        $namespace,
+                        $lifetime,
+                        $marshaller
+                    ];
+                } else {
+                    $adapter = FilesystemAdapter::class;
+                }
+            }
+        }
         if (interface_exists(PSRCache::class)) {
-            $pool = $config->get('Cache:pool');
+            $pool = $cache->get('pool');
             $pool = $pool instanceof PSRCache ? $pool : null;
             $pool = $this->eventDispatch('Cache:pool', $pool);
             if ($pool instanceof PSRCache) {
@@ -344,6 +400,69 @@ final class Cache extends AbstractContainerization implements Clearable, CacheIt
         // $this->driverArguments = $adapterArgs;
 
         return new $adapter(...$adapterArgs);
+    }
+
+    /**
+     * @param Collections $config
+     *
+     * @return RedisClusterProxy|Redis|RedisArray|RedisCluster|ClientInterface|RedisProxy|null
+     */
+    public function tryGetRedis(
+        Collections $config
+    ): RedisClusterProxy|Redis|RedisArray|RedisCluster|ClientInterface|null|RedisProxy {
+        $redis = $config->get('redis')??null;
+        if (! $redis instanceof Redis &&
+            ! $redis instanceof RedisArray &&
+            ! $redis instanceof RedisCluster
+        ) {
+            $dsn = $config->get('dsn')??null;
+            $dsn = !is_string($dsn) ? null : $dsn;
+            $options = $config->get('options')??[];
+            $options = !is_array($options) ? [] : $options;
+            if ($dsn && !preg_match('~^rediss?://~', $dsn)) {
+                $socket = $config->get('socket') ?? null;
+                $dsn = $socket && file_exists($socket)
+                       && filetype($socket) === 'socket'
+                    ? "redis://$socket"
+                    : null;
+            }
+            if (!$dsn) {
+                $host = $config->get('host');
+                $host = is_string($host) ? $host : '127.0.0.1';
+                $port = $config->get('port');
+                $port = !is_numeric($port) ? (int) $port : 6379;
+                $dsn = "redis://$host:$port";
+            }
+            $timeout = $config->get('timeout');
+            $timeout = is_numeric($timeout) ? (float) $timeout : 0.0;
+            $persistent_id = $config->get('persistent_id');
+            $persistent_id = !is_string($persistent_id) ? $persistent_id : '';
+            $retry_interval = $config->get('retry_interval');
+            $retry_interval = !is_numeric($retry_interval) ? (int) $retry_interval : 0;
+            $read_timeout = $config->get('read_timeout');
+            $read_timeout = !is_numeric($read_timeout) ? (int) $read_timeout : 0;
+            $options['timeout'] = !is_numeric($options['timeout']??null)
+                ? $timeout
+                : (float) $options['timeout'];
+            $options['persistent_id'] = !is_string($options['persistent_id']??null)
+                ? $persistent_id
+                : (string) $options['persistent_id'];
+            $options['retry_interval'] = !is_numeric($options['retry_interval']??null)
+                ? $retry_interval
+                : (int) $options['retry_interval'];
+            $options['read_timeout'] = !is_numeric($options['read_timeout']??null)
+                ? $read_timeout
+                : (int) $options['read_timeout'];
+            try {
+                return RedisAdapter::createConnection(
+                    $dsn,
+                    $options
+                );
+            } catch (Throwable) {
+            }
+        }
+
+        return null;
     }
 
     /**

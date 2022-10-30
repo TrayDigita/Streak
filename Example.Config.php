@@ -17,6 +17,10 @@ return [
         'filterHtml' => false,
         // store shutdown handler buffer
         'storeBuffer' => true,
+        // buffer mode (storage|memory|tempfile)
+        // using 'storage' will use storage/cache/streams/uuid-v4/sock_xxxxxx
+        // end will clean on each request done
+        'bufferMode' => 'storage'
     ],
     'json' => [
         // Prettify Json: boolean(true|false) -> false
@@ -27,19 +31,29 @@ return [
     'logging' => [
         // Logging: boolean(true|false) -> false
         'enable' => null,
-        'level'   => Level::Warning
+        // log level
+        'level'   => Level::Warning,
+        // max files using rotate
+        'maxFiles' => 10
     ],
     'error' => [
+        // hide root path on error
         'hidePath' => true,
     ],
     'security' => [
+        // salt key -> fill with random string
         'salt' => 'random string',
+        // security key -> fill with random string
         'secret' => 'random string',
     ],
     'path' => [
+        // api endpoint
         'api'    => 'api',
+        // admin endpoint
         'admin'  => 'admin',
+        // member endpoint
         'member' => 'member',
+        // storage directory from root
         'storage' => 'storage',
     ],
     'database' => [

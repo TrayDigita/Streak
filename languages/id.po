@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-30 19:02+0700\n"
-"PO-Revision-Date: 2022-10-30 19:02+0700\n"
+"POT-Creation-Date: 2022-10-31 02:17+0700\n"
+"PO-Revision-Date: 2022-10-31 02:18+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -88,45 +88,45 @@ msgstr "Anda harus mengganti metode %s di kelas perintah konkret."
 msgid "Enable Debug"
 msgstr "Aktifkan Debug"
 
-#: Source/Container.php:215
+#: Source/Container.php:217
 msgid "Parameters value contains invalid key name."
 msgstr "Nilai parameter berisi nama kunci yang tidak valid."
 
-#: Source/Container.php:237
+#: Source/Container.php:239
 #, php-format
 msgid "Parameter %s is not exists."
 msgstr "Parameter %s tidak ada."
 
-#: Source/Container.php:451
+#: Source/Container.php:453
 #, php-format
 msgid "Cannot override frozen service \"%s\"."
 msgstr "Tidak dapat mengganti layanan yang dibekukan \"%s\"."
 
-#: Source/Container.php:501
+#: Source/Container.php:503
 #, php-format
 msgid "Identifier \"%s\" is not defined."
 msgstr "Pengenal \"%s\" tidak ditentukan."
 
-#: Source/Container.php:559
+#: Source/Container.php:561
 msgid "Argument object closure is not allowed."
 msgstr "Objek argumen closure tidak diijinkan."
 
-#: Source/Container.php:583
+#: Source/Container.php:585
 #, php-format
 msgid "Class name %s is not exists."
 msgstr "Nama kelas %s tidak ada."
 
-#: Source/Container.php:607
+#: Source/Container.php:609
 #, php-format
 msgid "Class name %s is not instantiable."
 msgstr "Nama kelas %s tidak dapat dipakai."
 
-#: Source/Container.php:689
+#: Source/Container.php:691
 #, php-format
 msgid "Class name %s contain required parameters (%s)."
 msgstr "Nama kelas %s berisi parameter yang diperlukan (%s)."
 
-#: Source/Container.php:802
+#: Source/Container.php:804
 #, php-format
 msgid ""
 "Class name %s contain required parameter type: (%s) that could not to be "
@@ -135,12 +135,12 @@ msgstr ""
 "Nama kelas %s berisi jenis parameter yang diperlukan: (%s) yang tidak dapat "
 "diselesaikan."
 
-#: Source/Container.php:821
+#: Source/Container.php:823
 #, php-format
 msgid "Class name %s contain required parameters."
 msgstr "Nama kelas %s berisi parameter yang diperlukan."
 
-#: Source/Container.php:899
+#: Source/Container.php:901
 #, php-format
 msgid "Call to undefined property %s."
 msgstr "Panggil ke properti yang tidak ditentukan %s."
@@ -697,43 +697,43 @@ msgstr "403 Terlarang"
 msgid "You are not permitted to perform the requested operation."
 msgstr "Anda tidak diizinkan untuk melakukan operasi yang diminta."
 
-#: Source/Uploads/ChunkResponse.php:98
+#: Source/Uploads/ChunkResponse.php:101
 msgid "Content-Range header is not fulfilled."
 msgstr "Header Content-Range tidak terpenuhi."
 
-#: Source/Uploads/ChunkResponse.php:155
+#: Source/Uploads/ChunkResponse.php:158
 msgid "Server only accept bytes unit."
 msgstr "Server hanya menerima unit byte."
 
-#: Source/Uploads/ChunkResponse.php:170
+#: Source/Uploads/ChunkResponse.php:173
 msgid "Content-Range start bytes must be zero without Request-Id."
 msgstr "Byte awal Content-Range harus nol tanpa Request-Id."
 
-#: Source/Uploads/ChunkResponse.php:188
+#: Source/Uploads/ChunkResponse.php:191
 msgid "Invalid uploaded file name."
 msgstr "Nama berkas unggahan tidak valid."
 
-#: Source/Uploads/ChunkResponse.php:210
+#: Source/Uploads/ChunkResponse.php:213
 msgid "Invalid Request-Id header."
 msgstr "Request-Id header tidak valid."
 
-#: Source/Uploads/ChunkResponse.php:228
+#: Source/Uploads/ChunkResponse.php:231
 msgid "Range bytes is out of range."
 msgstr "Rentang byte berada di luar jangkauan."
 
-#: Source/Uploads/ChunkResponse.php:243
+#: Source/Uploads/ChunkResponse.php:246
 msgid "There was an error with uploaded file."
 msgstr "Terdapat kesalahan dengan berkas unggahan."
 
-#: Source/Uploads/ChunkResponse.php:260
+#: Source/Uploads/ChunkResponse.php:263
 msgid "Range size is bigger than file size."
 msgstr "Ukuran rentang lebih besar dari ukuran berkas."
 
-#: Source/Uploads/ChunkResponse.php:275
+#: Source/Uploads/ChunkResponse.php:278
 msgid "Uploaded file size is bigger than ending size."
 msgstr "Ukuran berkas unggahan lebih besar dari ukuran akhir."
 
-#: Source/Uploads/ChunkResponse.php:317
+#: Source/Uploads/ChunkResponse.php:320
 msgid "Could not save uploaded file."
 msgstr "Tidak dapat menyimpan berkas unggahan."
 

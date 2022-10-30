@@ -13,6 +13,13 @@ use TrayDigita\Streak\Source\Middleware\Abstracts\AbstractMiddleware;
 
 class ErrorMiddlewareHandler extends AbstractMiddleware
 {
+    /**
+     * @inheritDoc
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     *
+     * @return ResponseInterface
+     */
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
@@ -25,22 +32,21 @@ class ErrorMiddlewareHandler extends AbstractMiddleware
                 // try to converting data
                 $exception = $this->convertTranslationException($exception);
             }
-            $response = $this
-                ->getRouteCollectorProxy()
-                ->getResponseFactory()
-                ->createResponse(
-                    $exception->getCode()
-                );
+            $code = $exception->getCode();
         } catch (Throwable $exception) {
-            $response = $this
-                ->getRouteCollectorProxy()
-                ->getResponseFactory()
-                ->createResponse(500);
+            $code = 500;
         }
 
+        $response = $this
+            ->getContainer(SystemInitialHandler::class)
+            ->getCreateLastResponseStream()
+            ->withStatus($code);
         return $this->renderError($exception, $request, $response);
     }
 
+    /**
+     * @inheritDoc
+     */
     public static function thePriority(): int
     {
         return PHP_INT_MIN+1;

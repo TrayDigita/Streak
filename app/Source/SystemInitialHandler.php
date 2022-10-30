@@ -67,6 +67,11 @@ class SystemInitialHandler extends AbstractContainerization
     private array $errors = [];
 
     /**
+     * @var ?string
+     */
+    private ?string $defaultBufferMode = null;
+
+    /**
      * Register shutdown
      */
     public function register()
@@ -114,14 +119,10 @@ class SystemInitialHandler extends AbstractContainerization
             $this->handleBuffer = (bool) $this
                 ->eventDispatch('Shutdown:storeBuffer', (bool) $handleBuffer);
         }
+
         if ($this->handleBuffer) {
             if ($this->stream === null) {
-                $maxMemoryBuffer = NumericConverter::megaByteToBytes(10);
-                $this->eventDispatch('Buffer:maxmemory:buffer', $maxMemoryBuffer);
-                $maxMemoryBuffer = $maxMemoryBuffer < StreamCreator::DEFAULT_MAX_MEMORY
-                    ? StreamCreator::DEFAULT_MAX_MEMORY
-                    : $maxMemoryBuffer;
-                $this->stream = $this->createStream($maxMemoryBuffer);
+                $this->stream = $this->createStream();
             }
             $this->stream->write($content);
         }
@@ -146,25 +147,43 @@ class SystemInitialHandler extends AbstractContainerization
     }
 
     /**
-     * @param ?int $maxMemoryBytes
+     * @param ?int $maxMemoryBytes only affected when using temporary
      *
      * @return StreamInterface
      */
     public function createStream(?int $maxMemoryBytes = null) : StreamInterface
     {
-        if ($maxMemoryBytes !== null) {
-            $maxMemoryBytes = $this->eventDispatch(
-                'Buffer:maxmemory:stream',
-                StreamCreator::DEFAULT_MAX_MEMORY
-            );
-            if (!is_int($maxMemoryBytes)) {
-                $maxMemoryBytes = StreamCreator::DEFAULT_MAX_MEMORY;
-            }
+        if (!$this->defaultBufferMode) {
+            $mode = $this->getContainer(Configurations::class)->get('application');
+            $mode = $mode instanceof Collections ? $mode->get('bufferMode') : 'storage';
+            $mode = !is_string($mode) || trim($mode) === '' ? 'storage' : strtolower($mode);
+            $mode = match ($mode) {
+                'memory', 'mem' => 'memory',
+                'temp', 'temporary', 'tempfile' => 'temporary',
+                default => 'storage'
+            };
+            $this->defaultBufferMode = $mode;
         }
 
-        return $this->eventDispatch('Buffer:memory', false) === true
-            ? StreamCreator::createMemoryStream()
-            : StreamCreator::createTemporaryFileStream($maxMemoryBytes);
+        // createStorageFileResource
+        if ($this->eventDispatch('Buffer:memory', $this->defaultBufferMode === 'memory') === true) {
+            return StreamCreator::createMemoryStream();
+        }
+
+        if ($this->eventDispatch('Buffer:temp', $this->defaultBufferMode === 'temporary') === true) {
+            if ($maxMemoryBytes !== null) {
+                $maxMemoryBytes = $this->eventDispatch(
+                    'Buffer:maxmemory:stream',
+                    StreamCreator::DEFAULT_MAX_MEMORY
+                );
+                if (!is_int($maxMemoryBytes)) {
+                    $maxMemoryBytes = StreamCreator::DEFAULT_MAX_MEMORY;
+                }
+            }
+            return StreamCreator::createTemporaryFileStream($maxMemoryBytes);
+        }
+
+        return StreamCreator::createStorageFileStream($this->container);
     }
 
     /**
@@ -176,45 +195,96 @@ class SystemInitialHandler extends AbstractContainerization
     }
 
     /**
+     * @param string $path
+     *
+     * @return bool
+     * @internal
+     */
+    private function recursiveRemoveDirectoryStorage(string $path, $first = true): bool
+    {
+        if (is_dir($path)) {
+            $dir = @opendir($path);
+            $succeed = null;
+            if ($dir) {
+                while ($file = readdir($dir)) {
+                    if ($file === '.' || $file === '..') {
+                        continue;
+                    }
+                    if (!$this->recursiveRemoveDirectoryStorage("$path/$file", false)) {
+                        $succeed = (bool)$first;
+                    } elseif ($succeed !== false) {
+                        $succeed  = true;
+                    }
+                }
+                closedir($dir);
+            }
+
+            // safe
+            if (!$first && $succeed !== false) {
+                @rmdir($path);
+            }
+            return true;
+        }
+        if (is_file($path) || is_link($path)) {
+            @unlink($path);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Shutdown Handler
      */
     private function handleShutdown()
     {
-        $error = error_get_last();
-        $type = $error['type']??null;
-        $this->handled = true;
+        try {
+            $error         = error_get_last();
+            $type          = $error['type'] ?? null;
+            $this->handled = true;
             // if contains error
-        if ($type === E_COMPILE_ERROR || $type === E_ERROR) {
-            ob_get_length() && ob_get_level() > 0 && ob_end_clean();
-            $this->previousStream = $this->getStream();
-            // reset stream
-            $this->stream = null;
-            ob_start([$this, 'handleBuffer']);
-            $exception = $this->exception??new ErrorException(
-                $error['message'],
-                $error['type'],
-                1,
-                $error['file'],
-                $error['line']
-            );
-            try {
-                $this->handleException($exception);
-            } catch (Throwable $e) {
-                $this->exception = $e;
-                $exceptionView = new ExceptionsRenderView($e, $this->getContainer());
-                $response = $this
-                    ->getContainer(ResponseFactoryInterface::class)
-                    ->createResponse(500);
-                $this
-                    ->getContainer(ResponseEmitter::class)
-                    ->emit($exceptionView->render($response, 500));
+            if ($type === E_COMPILE_ERROR || $type === E_ERROR) {
+                ob_get_length() && ob_get_level() > 0 && ob_end_clean();
+                $this->previousStream = $this->getStream();
+                // reset stream
+                $this->stream = null;
+                ob_start([$this, 'handleBuffer']);
+                $exception = $this->exception ?? new ErrorException(
+                    $error['message'],
+                    $error['type'],
+                    1,
+                    $error['file'],
+                    $error['line']
+                );
+                try {
+                    $this->handleException($exception);
+                } catch (Throwable $e) {
+                    $this->exception = $e;
+                    $exceptionView   = new ExceptionsRenderView($e, $this->getContainer());
+                    $response        = $this
+                        ->getContainer(ResponseFactoryInterface::class)
+                        ->createResponse(500);
+                    $this
+                        ->getContainer(ResponseEmitter::class)
+                        ->emit($exceptionView->render($response, 500));
+                }
+            }
+
+            $this
+                ->getContainer(Benchmark::class)
+                ->addStop('Application:shutdown');
+            $this->eventDispatch('Shutdown:handler', $this);
+        } finally {
+            // remove directory stream cache
+            $resourceDir = StreamCreator::getStreamResourceDirectory();
+            if (is_string($resourceDir) && is_dir($resourceDir)) {
+                // randomize 0 - 5
+                $random = rand(0, 5);
+                // possible to random 0-5 and when use 1 it will remove
+                if ($random === 1) {
+                    $this->recursiveRemoveDirectoryStorage(dirname($resourceDir));
+                }
             }
         }
-
-        $this
-            ->getContainer(Benchmark::class)
-            ->addStop('Application:shutdown');
-        $this->eventDispatch('Shutdown:handler', $this);
     }
 
     /**
@@ -263,6 +333,7 @@ class SystemInitialHandler extends AbstractContainerization
                 break;
             default:
                 $this->logError($errstr, $err);
+                break;
         }
         $this
             ->eventDispatch(
@@ -273,6 +344,27 @@ class SystemInitialHandler extends AbstractContainerization
                 $errline,
                 $this
             );
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getCreateLastResponseStream() : ResponseInterface
+    {
+        $responseFactory = $this
+            ->getContainer(ResponseFactoryInterface::class);
+        if (property_exists($responseFactory, 'lastResponse')
+            && $responseFactory->lastResponse instanceof ResponseInterface
+        ) {
+            if ($responseFactory->lastResponse->getBody()->getSize() === 0) {
+                $response = $responseFactory->lastResponse;
+            }
+        }
+
+        // reuse that do not use too many resource
+        return $response??$this
+                ->getContainer(ResponseFactoryInterface::class)
+                ->createResponse();
     }
 
     /**

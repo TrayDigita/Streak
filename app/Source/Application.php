@@ -18,7 +18,9 @@ use GuzzleHttp\Psr7\ServerRequest;
 use JetBrains\PhpStorm\Pure;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\PsrHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Level;
+use Monolog\Logger as Monolog;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -41,9 +43,11 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Throwable;
 use TrayDigita\Streak\Source\ACL\Lists;
 use TrayDigita\Streak\Source\Console\Runner;
 use TrayDigita\Streak\Source\Database\Instance;
+use TrayDigita\Streak\Source\Helper\Generator\UUID;
 use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 use TrayDigita\Streak\Source\Helper\Util\ObjectFileReader;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
@@ -57,6 +61,7 @@ use TrayDigita\Streak\Source\Module\Collector as ModuleCollector;
 use TrayDigita\Streak\Source\Module\Storage as ModuleStorage;
 use TrayDigita\Streak\Source\Middleware\Collector as MiddlewareCollector;
 use TrayDigita\Streak\Source\Middleware\Storage as MiddlewareStorage;
+use TrayDigita\Streak\Source\Records\Collections;
 use TrayDigita\Streak\Source\RouteAnnotations\Collector as AnnotationCollector;
 use TrayDigita\Streak\Source\Session\Driver\DefaultDriver;
 use TrayDigita\Streak\Source\Session\Sessions;
@@ -152,10 +157,16 @@ class Application implements ContainerizeInterface
     private bool $emit = false;
 
     /**
+     * @var string
+     */
+    public readonly string $uuid;
+
+    /**
      * @param ?Container $container will create factory container
      */
     public function __construct(Container $container = null)
     {
+        $this->uuid = UUID::v4();
         $this->version = self::VERSION;
         $this->name    = 'Streak!';
         $this->defaultConfigurations = [
@@ -254,8 +265,6 @@ class Application implements ContainerizeInterface
         $container = $container??new Container();
         // add application
         $container->setProtect(Application::class, $this);
-        // register handler
-        $container->get(SystemInitialHandler::class)->register();
 
         /* ---------------------------------------------------------
          * Configurations
@@ -323,7 +332,7 @@ class Application implements ContainerizeInterface
             ),
             'themesDirectoryName'   => fn () => (bool) $this->eventDispatch('Theme:directoryName', 'themes'),
 
-            'logName'            => fn () => $this->eventDispatch('Logger:name', $this->getName()),
+            'logName'            => fn () => $this->eventDispatch('Logger:name', $this->uuid),
             'logTimezone'        => fn () => $container->get(Time::class)->getCurrentUTCTime()->getTimezone(),
             'logHandlers'           => function (Container $container) use ($obj) : array {
                 $defaultHandlers = [];
@@ -332,6 +341,31 @@ class Application implements ContainerizeInterface
                         new ConsoleLogger($container->get(ConsoleOutput::class))
                     );
                 }
+
+                $logging = $container->get(Configurations::class)->get('logging');
+                $log     = $logging?->get('enable');
+                if ($log === true) {
+                    $level = $logging?->get('level') ?: Level::Warning;
+                    if (!$level instanceof Level) {
+                        if (is_string($level) || is_int($level)) {
+                            try {
+                                $level = Monolog::toMonologLevel($level);
+                            } catch (Throwable) {
+                                $level = Level::Warning;
+                            }
+                        }
+                    }
+
+                    $maxFiles = $logging?->get('maxFiles');
+                    $maxFiles = is_numeric($maxFiles) ? (int) $maxFiles : 10;
+                    $maxFiles = $maxFiles < 1 ? 1 : $maxFiles;
+                    // convert to lower
+                    $name      = strtolower($level->getName());
+                    $directory = $container->get(StoragePath::class)->getLogDirectory();
+                    $fileName = "$directory/$name/$name.log";
+                    $defaultHandlers[] = new RotatingFileHandler($fileName, $maxFiles, $level);
+                }
+
                 $handlers = $obj->eventDispatch('Logger:handlers', $defaultHandlers);
                 foreach ($handlers as $key => $handler) {
                     if (!$handler instanceof HandlerInterface) {
@@ -373,14 +407,8 @@ class Application implements ContainerizeInterface
              * Logger
              */
             Logger::class => [
-                \Monolog\Logger::class,
+                Monolog::class,
                 LoggerInterface::class,
-            ],
-            PsrHandler::class => [
-                'callback' => fn () => $container->get(Logger::class)->getPsrHandler(),
-                'alias' => [
-                    HandlerInterface::class
-                ]
             ],
 
             /* ---------------------------------------------------------

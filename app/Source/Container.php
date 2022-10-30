@@ -188,6 +188,8 @@ class Container implements ContainerInterface, ArrayAccess
             ->setGlobalAliases('Slim')
             ->setGlobalAliases('RouteCollectorProxy')
             ->setGlobalAliases('RouteCollectorProxyInterface');
+        // register handler
+        $this->get(SystemInitialHandler::class)->register();
     }
 
     /**
@@ -855,12 +857,12 @@ class Container implements ContainerInterface, ArrayAccess
         return $this->get($offset);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         $this->set($offset, $value);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         if (!isset($this->protectedContainers[$offset])) {
             $this->remove($offset);

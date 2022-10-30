@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Uploads;
 
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -76,7 +75,10 @@ class ChunkResponse extends AbstractContainerization
             // reset content
             $body->write('');
         } else {
-            $body = $chunkObject->getContainer(ResponseFactoryInterface::class)->createResponse();
+            $body = $this
+                ->getContainer(SystemInitialHandler::class)
+                ->getCreateLastResponseStream()
+                ->getBody();
         }
         $response = $response->withBody($body);
 

@@ -7,10 +7,18 @@ use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+use TrayDigita\Streak\Source\Application;
+use TrayDigita\Streak\Source\Container;
+use TrayDigita\Streak\Source\StoragePath;
 
-class StreamCreator
+final class StreamCreator
 {
     const DEFAULT_MAX_MEMORY = 2097152;
+
+    /**
+     * @var ?string|false|null
+     */
+    private static string|false|null $streamResourceDirectory = null;
 
     /**
      * Create socket resource
@@ -38,11 +46,70 @@ class StreamCreator
     }
 
     /**
-     * Create resource with temporary file
+     * @return ?string
+     */
+    public static function getStreamResourceDirectory() : ?string
+    {
+        return self::$streamResourceDirectory?:null;
+    }
+
+    /**
+     * Create resource with storage file
      *
-     * @param ?int $maxMemoryBytes
+     * @return resource|false
+     * @noinspection PhpMissingReturnTypeInspection
+     */
+    public static function createStorageFileResource(
+        Container $container
+    ) {
+        if (self::$streamResourceDirectory === null) {
+            if (!$container->has(StoragePath::class)
+                ||!$container->get(Application::class)
+            ) {
+                return self::createTemporaryFileResource();
+            }
+
+            $streamPath    = $container->get(StoragePath::class)->getCacheStreamDirectory();
+            // using application uuid as identifier
+            $uuid          = $container->get(Application::class)->uuid;
+            $fileDirectory = "$streamPath/$uuid";
+            self::$streamResourceDirectory = is_dir($fileDirectory) ? $fileDirectory : false;
+            if (!self::$streamResourceDirectory) {
+                self::$streamResourceDirectory = @mkdir($fileDirectory, 0755, true)
+                    ? $fileDirectory
+                    : false;
+            } else {
+                self::$streamResourceDirectory = is_writable(self::$streamResourceDirectory)
+                    ? self::$streamResourceDirectory
+                    : false;
+            }
+            $name = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5)[3];
+            if (self::$streamResourceDirectory) {
+                $parentDir = dirname(self::$streamResourceDirectory, 2);
+                // add empty index file
+                !file_exists("$parentDir/index.php")
+                    && @file_put_contents("$parentDir/index.php", "<?php\n");
+                // add .htaccess file
+                !file_exists("$parentDir/.htaccess")
+                    && @file_put_contents("$parentDir/.htaccess", "deny from all\n");
+            }
+        }
+
+        if (!self::$streamResourceDirectory) {
+            return self::createTemporaryFileResource();
+        }
+
+        $streamResourceDirectory = self::$streamResourceDirectory;
+        return self::createResource(
+            tempnam("$streamResourceDirectory/", 'socket_'),
+            'wb+'
+        );
+    }
+
+    /**
+     * @param int|null $maxMemoryBytes
      *
-     * @return resource
+     * @return false|resource
      * @noinspection PhpMissingReturnTypeInspection
      */
     public static function createTemporaryFileResource(?int $maxMemoryBytes = null)
@@ -94,6 +161,16 @@ class StreamCreator
     public static function createTemporaryFileStream(?int $maxMemoryBytes = null) : StreamInterface
     {
         return self::createStreamFromResource(self::createTemporaryFileResource($maxMemoryBytes));
+    }
+
+    /**
+     * @param Container $container
+     *
+     * @return StreamInterface
+     */
+    public static function createStorageFileStream(Container $container) : StreamInterface
+    {
+        return self::createStreamFromResource(self::createStorageFileResource($container));
     }
 
     /**

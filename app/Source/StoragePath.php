@@ -57,6 +57,9 @@ class StoragePath extends AbstractContainerization
      */
     private bool $initialize = false;
 
+    /**
+     * @param Container $container
+     */
     public function __construct(Container $container)
     {
         $this->directorySeparator = DIRECTORY_SEPARATOR;
@@ -78,7 +81,7 @@ class StoragePath extends AbstractContainerization
         $this->appDirectory = Consolidation::appDirectory();
         $this->rootDirectory = Consolidation::rootDirectory();
 
-        $defaultStorage      = $this->rootDirectory . DIRECTORY_SEPARATOR . 'storage';
+        $defaultStorage      = "$this->rootDirectory{$this->directorySeparator}storage";
         $storage             = ($path['storage']??null)?:null;
         $storage = !is_string($storage) ? null : $storage;
         if ($storage && !Validator::isRelativePath($storage)) {
@@ -191,11 +194,21 @@ class StoragePath extends AbstractContainerization
         return $this->initialize()->rootDirectory;
     }
 
+    /**
+     * Storage directory
+     *
+     * @return string
+     */
     public function getStorageDirectory() : string
     {
         return $this->initialize()->storageDirectory;
     }
 
+    /**
+     * Cache directory
+     *
+     * @return string
+     */
     public function getCacheDirectory() : string
     {
         $storagePath = $this->getStorageDirectory();
@@ -203,26 +216,62 @@ class StoragePath extends AbstractContainerization
         $cache = is_string($cache) || trim($cache) === '' || str_contains($cache, '..')
             ? 'cache'
             : $cache;
-        return "$storagePath/$cache";
+        return "$storagePath{$this->directorySeparator}$cache";
     }
 
-    public function getLogPath() : string
+    /**
+     * @return string
+     */
+    public function getCacheStreamDirectory() : string
+    {
+        $cacheDirectory = $this->getCacheDirectory();
+        $stream = $this->eventDispatch('StoragePath:streams:path', 'streams');
+        $stream = is_string($stream) || trim($stream) === '' || str_contains($stream, '..')
+            ? 'streams'
+            : $stream;
+        return "$cacheDirectory{$this->directorySeparator}$stream";
+    }
+
+    /**
+     * @return string
+     */
+    public function getCacheUploadDirectory() : string
+    {
+        $cacheDirectory = $this->getCacheDirectory();
+        $uploads = $this->eventDispatch('StoragePath:uploads:path', 'uploads');
+        $uploads = is_string($uploads) || trim($uploads) === '' || str_contains($uploads, '..')
+            ? 'stream'
+            : $uploads;
+        return "$cacheDirectory{$this->directorySeparator}$uploads";
+    }
+
+    /**
+     * Logs directory
+     *
+     * @return string
+     */
+    public function getLogDirectory() : string
     {
         $storagePath = $this->getStorageDirectory();
-        $logs = $this->eventDispatch('StoragePath:cache:path', 'logs');
+        $logs = $this->eventDispatch('StoragePath:logs:path', 'logs');
         $logs = is_string($logs) || trim($logs) === '' || str_contains($logs, '..')
             ? 'logs'
             : $logs;
-        return "$storagePath/$logs";
+        return "$storagePath{$this->directorySeparator}$logs";
     }
 
+    /**
+     * Sessions directory
+     *
+     * @return string
+     */
     public function getSessionsDirectory() : string
     {
         $storagePath = $this->getStorageDirectory();
-        $sessions = $this->eventDispatch('StoragePath:cache:path', 'sessions');
+        $sessions = $this->eventDispatch('StoragePath:sessions:path', 'sessions');
         $sessions = is_string($sessions) || trim($sessions) === '' || str_contains($sessions, '..')
             ? 'sessions'
             : $sessions;
-        return "$storagePath/$sessions";
+        return "$storagePath{$this->directorySeparator}$sessions";
     }
 }
