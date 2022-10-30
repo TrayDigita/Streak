@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Views;
 
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpSpecializedException;
@@ -16,21 +17,55 @@ class ExceptionsRenderView extends AbstractRenderer
 {
     use TranslationMethods;
 
+    /**
+     * @var Throwable|HttpSpecializedException
+     */
     protected Throwable|HttpSpecializedException $exceptions;
-    protected string $title = '500 Internal Server Error';
+
+    /**
+     * @var string
+     */
+    protected string $title;
+
+    /**
+     * @var int
+     */
     protected int $code = 500;
 
+    /**
+     * @param Throwable|HttpSpecializedException $exception
+     * @param Container $container
+     */
     public function __construct(Throwable|HttpSpecializedException $exception, Container $container)
     {
-        parent::__construct($container);
         $this->title = $this->translate('500 Internal Server Error');
         $this->exceptions = $exception;
         if ($exception instanceof HttpSpecializedException) {
             $this->code = $exception->getCode();
             $this->setTitle($exception->getTitle());
         }
+        parent::__construct($container);
     }
 
+    /**
+     * @return HttpSpecializedException|Throwable
+     */
+    public function getExceptions(): Throwable|HttpSpecializedException
+    {
+        return $this->exceptions;
+    }
+
+    /**
+     * @param HttpSpecializedException|Throwable $exceptions
+     */
+    public function setExceptions(Throwable|HttpSpecializedException $exceptions): void
+    {
+        $this->exceptions = $exceptions;
+    }
+
+    /**
+     * @return string
+     */
     protected function buildStructure(): string
     {
         $application = $this->getContainer(Application::class);
@@ -106,6 +141,11 @@ HTML
         return parent::buildStructure();
     }
 
+    /**
+     * @param Throwable $exception
+     *
+     * @return string
+     */
     private function renderExceptionFragment(Throwable $exception): string
     {
         $html = sprintf(
@@ -151,5 +191,21 @@ HTML
     {
         $httpCode = $httpCode??$this->code;
         return parent::render($response->withStatus($httpCode));
+    }
+
+    #[Pure] #[ArrayShape([
+        'exceptions' => 'Throwable|\Slim\Exception\HttpSpecializedException',
+        'title' => "string",
+        'charset' => "string",
+        'headerContent' => "string",
+        'bodyContent' => "string",
+        'htmlAttributes' => "\TrayDigita\Streak\Source\Interfaces\Html\AttributeInterface[]",
+        'bodyAttributes' => "\TrayDigita\Streak\Source\Interfaces\Html\AttributeInterface[]",
+        'arguments' => "array"
+    ])] public function toArray(): array
+    {
+        return [
+            'exceptions' => $this->getExceptions()
+        ] + parent::toArray();
     }
 }

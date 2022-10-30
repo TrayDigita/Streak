@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\Views\Html;
 
 use DOMAttr;
-use JetBrains\PhpStorm\Pure;
+use JetBrains\PhpStorm\ArrayShape;
 use Laminas\I18n\Translator\Translator;
 use Psr\Http\Message\ResponseInterface;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Container;
-use TrayDigita\Streak\Source\Helper\Util\Normalizer;
 use TrayDigita\Streak\Source\Helper\Html\Attribute;
 use TrayDigita\Streak\Source\Helper\Http\Code;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Clearable;
@@ -27,6 +26,8 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
     use EventsMethods;
 
     final const SKIP_THEME = 'skipTheme';
+    final const SKIP_HTML_ATTRIBUTES = 'skipHTMLAttribute';
+    final const SKIP_BODY_ATTRIBUTES = 'skipBodyAttribute';
 
     /**
      * @var string
@@ -71,13 +72,13 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
     /**
      * @param Container $container
      */
-    #[Pure] public function __construct(Container $container)
+    public function __construct(Container $container)
     {
-        parent::__construct($container);
         $this->reset = [
-            'title' => $this->getTitle(),
+            'title'   => $this->getTitle(),
             'charset' => $this->getCharset(),
         ];
+        parent::__construct($container);
     }
 
     /**
@@ -246,6 +247,9 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getHeaderContent(): string
     {
         return $this->headerContent;
@@ -402,6 +406,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
             } else {
                 $charsetH->setAttribute('charset', $charset);
             }
+
             if (!$titleH->count() && $head->getDOMDocument()) {
                 $titleH = $head->getDOMDocument()->createElement('title');
                 $titleH->append($title);
@@ -409,6 +414,10 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
             } else {
                 $titleH->setInnerHtml($title);
             }
+            $head->prepend("\n");
+            $charsetH->before("    ");
+            $titleH->before("    ");
+            $charsetH->after("\n");
         } else {
             $content = preg_replace_callback(
                 '~<(head)>(.*)</\1>~ims',
@@ -418,6 +427,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                     $title = html_entity_decode($title);
                     $title = (string)$this->eventDispatch('head:title', $title, $this);
                     $charset = (string)$this->eventDispatch('head:charset', $charset, $this);
+                    $head   = trim($head, "\n");
                     $header = HtmlPageCrawler::create($head);
                     $domTitle = $header->filter('title');
                     if ($domTitle->count()) {
@@ -426,33 +436,36 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                                 "~$skipFailComments|<title>\s*</title>~",
                                 function () use ($title) {
                                     $title = htmlentities($title);
-                                    return "<title>$title</title>";
+                                    return "    <title>$title</title>";
                                 },
                                 $head
                             );
                         }
                     } else {
                         $head = sprintf(
-                            "<title>%s</title>\n%s",
+                            "    <title>%s</title>\n%s",
                             htmlentities($title),
                             $head
                         );
                     }
                     if (!preg_match("~$skipFailComments|<meta\s+charset=[^>]+>~i", $head)) {
                         $head = sprintf(
-                            "<meta charset=\"%s\">\n%s",
+                            "    <meta charset=\"%s\">\n%s",
                             htmlspecialchars($charset),
                             $head
                         );
                     }
-                    return sprintf("<head>\n%s\n</head>", trim($head));
+
+                    return sprintf("<head>\n%s\n</head>", $head);
                 },
                 $content
             );
 
             $html = HtmlPageCrawler::create($content)->filter('html');
             if ($html->count()) {
-                if (!empty($html_attributes)) {
+                if (!empty($html_attributes)
+                    && $this->getArgument(self::SKIP_HTML_ATTRIBUTES) !== true
+                ) {
                     foreach ((array)$html_attributes as $v) {
                         if (!$v instanceof AttributeInterface || $v->getName() === '') {
                             continue;
@@ -477,7 +490,10 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                     );
                 }
                 $body = $html->filter('body');
-                if ($body->count() && !empty($body_attributes)) {
+                if ($body->count()
+                    && !empty($body_attributes)
+                    && $this->getArgument(self::SKIP_BODY_ATTRIBUTES) !== true
+                ) {
                     foreach ((array)$body_attributes as $v) {
                         if (!$v instanceof AttributeInterface || $v->getName() === '') {
                             continue;
@@ -503,6 +519,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 }
             }
         }
+
         return (string) $this->eventDispatch('Html:content', (string) $content, $this);
     }
 
@@ -532,8 +549,17 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         return $this->buildStructure();
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @param int|null $httpCode
+     *
+     * @return ResponseInterface
+     */
     public function render(ResponseInterface $response, int $httpCode = null): ResponseInterface
     {
+        if ($response->getBody()->isSeekable()) {
+            $response->getBody()->rewind();
+        }
         $response->getBody()->write((string) $this);
         $charset = $this->getCharset();
         if ($httpCode !== null) {
@@ -542,6 +568,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 $response = $response->withStatus($httpCode, $statusMessage);
             }
         }
+
         return $response
             ->withHeader(
                 'Content-Type',
@@ -561,6 +588,43 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         $this->htmlAttributes = [];
         $this->bodyAttributes = [];
         $this->arguments = [];
+    }
+
+    #[ArrayShape([
+        'title' => "string",
+        'charset' => "string",
+        'headerContent' => "string",
+        'bodyContent' => "string",
+        'htmlAttributes' => "\TrayDigita\Streak\Source\Interfaces\Html\AttributeInterface[]",
+        'bodyAttributes' => "\TrayDigita\Streak\Source\Interfaces\Html\AttributeInterface[]",
+        'arguments' => "array"
+    ])] public function toArray() : array
+    {
+        return [
+            'title' => $this->getTitle(),
+            'charset' => $this->getCharset(),
+            'headerContent' => $this->getHeaderContent(),
+            'bodyContent' => $this->getBodyContent(),
+            'htmlAttributes' => $this->getHtmlAttributes(),
+            'bodyAttributes' => $this->getBodyAttributes(),
+            'arguments' => $this->getArguments(),
+        ];
+    }
+
+    /**
+     * @param array $array
+     * @param ...$constructorArgument
+     * @return static
+     */
+    public static function fromArray(array $array = [], ...$constructorArgument): static
+    {
+        $object = new static(...$constructorArgument);
+        foreach ($array as $key => $v) {
+            if (method_exists($object, "set$key")) {
+                $object->{"set$key"}($v, "");
+            }
+        }
+        return $object;
     }
 
     public function __destruct()

@@ -28,6 +28,7 @@ use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 use TrayDigita\Streak\Source\Views\Html\AbstractRenderer;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
+use TrayDigita\Streak\Source\Views\MultiRenderView;
 
 /**
  * @mixin AbstractRenderer
@@ -116,9 +117,9 @@ abstract class AbstractTheme extends AbstractContainerization
     private bool $rendered = false;
 
     /**
-     * @var ?AbstractRenderer
+     * @var AbstractRenderer|MultiRenderView
      */
-    protected ?AbstractRenderer $renderView = null;
+    public readonly AbstractRenderer|MultiRenderView $renderView;
 
     /**
      * @param Container $container
@@ -135,6 +136,8 @@ abstract class AbstractTheme extends AbstractContainerization
         if (!$this->name) {
             $this->name = ucwords($this->directoryName);
         }
+
+        $this->renderView = $this->getContainer(Renderer::class)->createMultiRenderView();
     }
 
     /**
@@ -142,9 +145,6 @@ abstract class AbstractTheme extends AbstractContainerization
      */
     public function getRenderView(): AbstractRenderer
     {
-        if (!$this->renderView) {
-            $this->renderView = $this->getContainer(Renderer::class)->createRenderView();
-        }
         return $this->renderView;
     }
 
@@ -348,8 +348,8 @@ abstract class AbstractTheme extends AbstractContainerization
         if ($this->rendered) {
             return $response;
         }
-
-        $this->renderView = $this->getContainer(Renderer::class)->createRenderView();
+        // switch to standard
+        $this->renderView->toStandardRenderView();
         $this->request    = $request;
         $this->response   =& $response;
         $this->rendered   = true;
@@ -397,9 +397,7 @@ abstract class AbstractTheme extends AbstractContainerization
         $this->request   = $request;
         $this->response  =& $response;
         $this->exception = $exception;
-        $this->renderView = $this
-            ->getContainer(Renderer::class)
-            ->createExceptionRenderView($this->exception);
+        $this->renderView->toExceptionRenderView($this->exception);
 
         $this->rendered = true;
         $controller = $this->getContainer(Storage::class)->getCurrentController();
@@ -414,6 +412,12 @@ abstract class AbstractTheme extends AbstractContainerization
         return $this->doRenderException($exception, $request, $response, $params, $controller);
     }
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return mixed
+     */
     final public function __call(string $name, array $arguments)
     {
         if (!method_exists($this->getRenderView(), $name)) {
@@ -432,6 +436,9 @@ abstract class AbstractTheme extends AbstractContainerization
         ], $arguments);
     }
 
+    /**
+     * Destructor
+     */
     public function __destruct()
     {
         $this->headerStream && $this->headerStream->close();

@@ -113,6 +113,11 @@ final class Benchmark extends AbstractContainerization implements JsonSerializab
         return $this->records;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return ?TimeStorage[]
+     */
     public function get(string $name) : ?array
     {
         return $this->records[$name]??null;

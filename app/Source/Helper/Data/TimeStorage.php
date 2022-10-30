@@ -80,11 +80,23 @@ class TimeStorage implements JsonSerializable, Stringable
         ]
     )] public function jsonSerialize() : array
     {
+        return $this->toArray();
+    }
+
+    #[Pure] #[ArrayShape(
+        [
+            'start' => "float",
+            'end' => "float",
+            'estimated' => "float",
+            'memory' => "int"
+        ]
+    )] public function toArray() : array
+    {
         return [
             'start' => $this->getStart(),
             'end' => $this->getEnd(),
             'estimated' => $this->getEstimated(),
-            'memory' =>$this->getMemory(),
+            'memory' => $this->getMemory(),
         ];
     }
 

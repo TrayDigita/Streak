@@ -22,6 +22,7 @@ use TrayDigita\Streak\Source\Records\Collections;
 use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\LoggingMethods;
+use TrayDigita\Streak\Source\Views\ExceptionsRenderView;
 use TrayDigita\Streak\Source\Views\Html\AbstractRenderer;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
 
@@ -196,7 +197,18 @@ class SystemInitialHandler extends AbstractContainerization
                 $error['file'],
                 $error['line']
             );
-            $this->handleException($exception);
+            try {
+                $this->handleException($exception);
+            } catch (Throwable $e) {
+                $this->exception = $e;
+                $exceptionView = new ExceptionsRenderView($e, $this->getContainer());
+                $response = $this
+                    ->getContainer(ResponseFactoryInterface::class)
+                    ->createResponse(500);
+                $this
+                    ->getContainer(ResponseEmitter::class)
+                    ->emit($exceptionView->render($response, 500));
+            }
         }
 
         $this

@@ -9,6 +9,7 @@ use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Views\DefaultRenderView;
 use TrayDigita\Streak\Source\Views\ExceptionsRenderView;
+use TrayDigita\Streak\Source\Views\MultiRenderView;
 
 class Renderer extends AbstractContainerization
 {
@@ -31,11 +32,22 @@ class Renderer extends AbstractContainerization
     /**
      * @return DefaultRenderView
      */
-    public function createRenderView(): DefaultRenderView
+    public function createDefaultRenderView(): DefaultRenderView
+    {
+        return $this->eventDispatch(
+            'Renderer:default',
+            new DefaultRenderView($this->getContainer())
+        );
+    }
+
+    /**
+     * @return MultiRenderView
+     */
+    public function createMultiRenderView() : MultiRenderView
     {
         return $this->eventDispatch(
             'Renderer:view',
-            new DefaultRenderView($this->getContainer())
+            new MultiRenderView($this->getContainer())
         );
     }
 }
