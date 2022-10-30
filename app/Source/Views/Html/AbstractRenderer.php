@@ -296,7 +296,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
 
                 $this->setHeaderContent($header);
                 $this->setBodyContent($body);
-                $header = $footer = $body = null;
+                $header = $body = null;
                 unset($header, $body);
             }
         }
@@ -330,8 +330,8 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 : "$head\n<body>\n";
         }
 
-        if (!preg_match("$skipFailComments|<body[^>]*>~i", $head.$content)) {
-            $content = "<body>\n".ltrim($content);
+        if (!preg_match("~$skipFailComments|</body[^>]*>~i", $head.$content)) {
+            $content = "</body>\n".ltrim($content);
         }
 
         if (!preg_match("~$skipFailComments|</html>~", $content)) {

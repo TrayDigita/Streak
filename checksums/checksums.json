@@ -110,9 +110,9 @@
         "sha256": "d513c1bf60f144823c19e761db1892807776ea42b8e776daa3354a84b05a30c6"
     },
     "app/Source/Themes/Abstracts/AbstractTheme.php": {
-        "md5": "53ef858ea4466ee3c0c488412f2dfc7b",
-        "sha1": "9da08ad8b6539ed7cebac02c2e81655e50999fb7",
-        "sha256": "1130441991b2b48e8cb2640f6d12305069b8b5f3e5ab62d6e997ae551849faf7"
+        "md5": "520857b9686c8efee120ae25d899e338",
+        "sha1": "2ef45731261e27a7dc350b745802458d11c0506f",
+        "sha256": "bb6a5be7104c9a0f5de6b47e2438bb6759991238866112626c2d8b47d817c328"
     },
     "app/Source/Themes/ThemeReader.php": {
         "md5": "d1e1e8aa2fdc8664c7d29cb5108fecad",
@@ -535,9 +535,9 @@
         "sha256": "7aa5bb2a321ca9891861b8bdaca65ac832ccf420184088ae5085fa38600a371e"
     },
     "app/Source/Views/Html/AbstractRenderer.php": {
-        "md5": "0824576f3046b677a5b111ac4f39df40",
-        "sha1": "fdc98da42f3e15d79abcb26f0f15ef8e56599d34",
-        "sha256": "03125876b22f86ba40f111d0d13fe52fc18db91e3464d23f857bd31f657f4329"
+        "md5": "944433dece47e96a813de5a2da7c8ab1",
+        "sha1": "14b9afc0aafd46a98883ffcf7ba1db4d0259724d",
+        "sha256": "a919060cb2f06c887fac46951831fc623ef2a2102af32c8c5838b8c5600050d4"
     },
     "app/Source/Views/DefaultRenderView.php": {
         "md5": "31b8e20bbf4c7fbab2bfc1cab7807b94",

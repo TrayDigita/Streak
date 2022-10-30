@@ -204,7 +204,7 @@ abstract class AbstractTheme extends AbstractContainerization
         (function () {
             include $this->getContainer(ThemeReader::class)->getHeaderFile();
         })();
-        $this->headerStream->write(ob_get_clean()??'');
+        $this->headerStream->write(ob_get_clean()?:'');
         return $this->headerStream;
     }
 
@@ -222,7 +222,7 @@ abstract class AbstractTheme extends AbstractContainerization
         (function () {
             include $this->getContainer(ThemeReader::class)->getBodyFile();
         })();
-        $this->bodyStream->write(ob_get_clean()??'');
+        $this->bodyStream->write(ob_get_clean()?:'');
         return $this->bodyStream;
     }
 
@@ -238,9 +238,9 @@ abstract class AbstractTheme extends AbstractContainerization
         $this->footerStream = $this->getContainer(SystemInitialHandler::class)->createStream();
         ob_start();
         (function () {
-            include $this->getContainer(ThemeReader::class)->getFooterFilePath();
+            include $this->getContainer(ThemeReader::class)->getFooterFile();
         })();
-        $this->footerStream->write(ob_get_clean()??'');
+        $this->footerStream->write(ob_get_clean()?:'');
         return $this->footerStream;
     }
 
