@@ -395,7 +395,7 @@ abstract class AbstractTheme extends AbstractContainerization
         }
 
         $this->request   = $request;
-        $this->response =& $response;
+        $this->response  =& $response;
         $this->exception = $exception;
         $this->renderView = $this
             ->getContainer(Renderer::class)
@@ -430,6 +430,16 @@ abstract class AbstractTheme extends AbstractContainerization
             $this->getRenderView(),
             $name
         ], $arguments);
+    }
+
+    public function __destruct()
+    {
+        $this->headerStream && $this->headerStream->close();
+        $this->bodyStream && $this->bodyStream->close();
+        $this->footerStream && $this->footerStream->close();
+        $this->headerStream = null;
+        $this->bodyStream = null;
+        $this->footerStream = null;
     }
 
     /**
