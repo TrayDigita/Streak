@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Helper\Util;
 
-use LogicException;
-
 class Validator
 {
     public static function isValidNamespace(string $nameSpace) : bool
@@ -287,10 +285,14 @@ class Validator
         return $data;
     }
 
+    /**
+     * @param string $regexP
+     *
+     * @return bool
+     */
     public static function isValidRegExP(string $regexP) : bool
     {
         if (@preg_match($regexP, '') === false) {
-            $last = error_get_last();
             error_clear_last();
             return false;
         }

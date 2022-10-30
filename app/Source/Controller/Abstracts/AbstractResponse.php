@@ -9,7 +9,6 @@ use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Json\ApiCreator;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\HttpThrowableException;
-use TrayDigita\Streak\Source\Traits\LoggingMethods;
 use TrayDigita\Streak\Source\Traits\SimpleDocumentCreator;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
 use WoohooLabs\Yin\JsonApi\JsonApi;

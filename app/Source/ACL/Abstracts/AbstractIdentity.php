@@ -5,6 +5,7 @@ namespace TrayDigita\Streak\Source\ACL\Abstracts;
 
 use JetBrains\PhpStorm\Pure;
 use SplObjectStorage;
+use TrayDigita\Streak\Source\ACL\Interfaces\AccessInterface;
 use TrayDigita\Streak\Source\ACL\Interfaces\IdentityInterface;
 
 abstract class AbstractIdentity implements IdentityInterface

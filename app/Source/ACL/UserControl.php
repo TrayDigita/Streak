@@ -109,7 +109,7 @@ class UserControl
      * @return array<string, IdentityInterface>
      */
     #[ArrayShape([
-        'string' => 'array<IdentityInterface>'
+        'string' => 'array<\TrayDigita\Streak\Source\ACL\Interfaces\IdentityInterface>'
     ])] public function getIdentities(): array
     {
         return $this->identities;

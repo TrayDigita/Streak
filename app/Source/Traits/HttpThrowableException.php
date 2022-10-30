@@ -73,6 +73,8 @@ trait HttpThrowableException
             $message??$this->translate('Method not allowed.'),
             $previous
         );
+
+        $exception->setAllowedMethods($allowedMethods);
         $exception->setTitle($this->translate('405 Method Not Allowed'));
         $exception->setDescription(
             $this

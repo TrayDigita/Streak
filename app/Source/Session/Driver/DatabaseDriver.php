@@ -12,7 +12,6 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 use Throwable;
 use TrayDigita\Streak\Source\Database\Instance;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Session\Abstracts\AbstractSessionDriver;
 
 class DatabaseDriver extends AbstractSessionDriver
@@ -231,6 +230,9 @@ class DatabaseDriver extends AbstractSessionDriver
         return true;
     }
 
+    /**
+     * @throws Exception
+     */
     public function read(string $id) : string
     {
         if (!$this->sessionName || !is_string($this->sessionName)) {
@@ -263,6 +265,9 @@ class DatabaseDriver extends AbstractSessionDriver
         return (string) $data['session_data'];
     }
 
+    /**
+     * @throws Exception
+     */
     public function write(string $id, string $data): bool
     {
         if (!$this->sessionName || !is_string($this->sessionName)) {
@@ -322,6 +327,9 @@ class DatabaseDriver extends AbstractSessionDriver
         return true;
     }
 
+    /**
+     * @throws Exception
+     */
     public function updateTimeStamp(string $id, string $data): bool
     {
         return $this->write($id, $data);

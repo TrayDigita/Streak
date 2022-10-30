@@ -193,7 +193,7 @@ HTML
         return parent::render($response->withStatus($httpCode));
     }
 
-    #[Pure] #[ArrayShape([
+    #[ArrayShape([
         'exceptions' => 'Throwable|\Slim\Exception\HttpSpecializedException',
         'title' => "string",
         'charset' => "string",

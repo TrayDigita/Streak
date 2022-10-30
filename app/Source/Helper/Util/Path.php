@@ -77,6 +77,12 @@ class Path
         ];
     }
 
+    /**
+     * @param Application|App $app
+     * @param ServerRequestInterface $request
+     *
+     * @return UriInterface
+     */
     public static function getBaseUri(
         Application|App $app,
         ServerRequestInterface $request

@@ -206,17 +206,14 @@ class MultiRenderView extends AbstractRenderer
 
     /**
      * @param array $array
-     *
-     * @return AbstractRenderer
      */
-    private function appendRenderArray(array $array): AbstractRenderer
+    private function appendRenderArray(array $array)
     {
         foreach ($array as $key => $v) {
             if (method_exists($this->renderer, "set$key")) {
                 $this->renderer->{"set$key"}($v, "");
             }
         }
-        return $this->renderer;
     }
 
     /**

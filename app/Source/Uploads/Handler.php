@@ -301,7 +301,7 @@ class Handler
                 $position,
                 $this->size,
                 $this->chunk->translate(
-                    'Offset upload position is invalid'
+                    'Offset upload position is invalid.'
                 )
             );
         }

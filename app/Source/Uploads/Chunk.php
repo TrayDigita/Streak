@@ -87,22 +87,19 @@ class Chunk extends AbstractContainerization
      * @param UploadedFileInterface $uploadedFile
      * @param string $identity
      * @param int $maxAge
-     * @param int $sizeLimit
      *
      * @return Handler
      */
     #[Pure] public function createHandler(
         UploadedFileInterface $uploadedFile,
         string $identity,
-        int $maxAge = Handler::DEFAULT_MAX_AGE,
-        int $sizeLimit = 0
+        int $maxAge = Handler::DEFAULT_MAX_AGE
     ) : Handler {
         return new Handler(
             $this,
             $uploadedFile,
             $identity,
-            $maxAge,
-            $sizeLimit
+            $maxAge
         );
     }
 

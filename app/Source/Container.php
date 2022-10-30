@@ -19,7 +19,6 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionUnionType;
-use ReturnTypeWillChange;
 use RuntimeException;
 use Slim\App;
 use Slim\Factory\AppFactory;

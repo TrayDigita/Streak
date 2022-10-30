@@ -65,7 +65,6 @@ use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\ComposerLoaderObject;
 use TrayDigita\Streak\Source\Traits\Containerize;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
-use TrayDigita\Streak\Source\Views\Html\AbstractRenderer;
 use TrayDigita\Streak\Source\Views\Html\Renderer;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;

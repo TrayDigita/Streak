@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Uploads\Exceptions;
 
+use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 use Throwable;
 
 class InvalidOffsetPosition extends RuntimeException
 {
-    public function __construct(
+    #[Pure] public function __construct(
         private int $requestPosition,
         private int $currentPosition,
         $message = "",

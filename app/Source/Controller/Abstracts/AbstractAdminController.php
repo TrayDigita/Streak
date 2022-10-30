@@ -7,6 +7,9 @@ use TrayDigita\Streak\Source\StoragePath;
 
 abstract class AbstractAdminController extends AbstractController
 {
+    /**
+     * @return string
+     */
     public function getGroupRoutePattern(): string
     {
         $path = $this->getContainer(StoragePath::class)->getAdminPath();

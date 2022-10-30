@@ -43,7 +43,7 @@ class DynamicController extends AbstractController
         return self::$priority;
     }
 
-    public function getRouteMethods(): array
+    #[Pure] public function getRouteMethods(): array
     {
         return $this->routeAnnotation->getMethods();
     }

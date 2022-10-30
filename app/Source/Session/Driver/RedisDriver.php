@@ -1,11 +1,11 @@
 <?php
 /** @noinspection PhpComposerExtensionStubsInspection */
 declare(strict_types=1);
+
 namespace TrayDigita\Streak\Source\Session\Driver;
 
 use Redis;
 use Throwable;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\Session\Abstracts\AbstractSessionDriver;
 
 class RedisDriver extends AbstractSessionDriver

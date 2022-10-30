@@ -9,7 +9,6 @@ use RuntimeException;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TrayDigita\Streak\Source\Console\Abstracts\MakeClassCommand;
-use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
 use TrayDigita\Streak\Source\Controller\Collector;
 use TrayDigita\Streak\Source\Time;
 
@@ -21,6 +20,9 @@ class MakeController extends MakeClassCommand
     protected string $controllerNamespace = 'TrayDigita\\Streak\\Controller';
     protected int $maxDepth = 1;
 
+    /**
+     * @inheritDoc
+     */
     protected function configure()
     {
         parent::configure();
@@ -32,6 +34,14 @@ class MakeController extends MakeClassCommand
         $this->controllerDirectory = $collector->getControllerDirectory();
     }
 
+    /**
+     * @param string $namespace
+     * @param string $name
+     * @param string $fullClassName
+     * @param SymfonyStyle $symfonyStyle
+     *
+     * @return bool|string
+     */
     protected function isReadyForWriting(
         string $namespace,
         string $name,
@@ -73,6 +83,13 @@ class MakeController extends MakeClassCommand
         return true;
     }
 
+    /**
+     * @param string $namespace
+     * @param string $name
+     * @param SymfonyStyle $symfonyStyle
+     *
+     * @return int
+     */
     protected function doGeneration(string $namespace, string $name, SymfonyStyle $symfonyStyle): int
     {
         $fullClassName = $namespace ? "$namespace\\" : '';

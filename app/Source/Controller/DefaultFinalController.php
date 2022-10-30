@@ -9,6 +9,9 @@ use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
 
 final class DefaultFinalController extends AbstractController
 {
+    /**
+     * @return string
+     */
     public function getRoutePattern(): string
     {
         return '*';
@@ -26,6 +29,11 @@ final class DefaultFinalController extends AbstractController
         ResponseInterface $response,
         array $params = []
     ): ResponseInterface {
-        return $response;
+        return $this->eventDispatch(
+            'Controller:DefaultFinalController',
+            $response,
+            $request,
+            $params
+        );
     }
 }

@@ -243,7 +243,7 @@ class ObjectFileReader extends AbstractContainerization
                                     if (isset($values['class'])) {
                                         $lowerClass = strtolower($values['class']);
                                         $paramDefaultAliasName = $allAliasesBase[$lowerClass] ?? $values['class'];
-                                        $paramDefaultAlias = "{$paramDefaultAliasName}::{$values['name']}";
+                                        $paramDefaultAlias = "$paramDefaultAliasName::{$values['name']}";
                                     }
                                     $paramDefaultValue = $paramDefaultName;
                                 }
@@ -332,10 +332,11 @@ class ObjectFileReader extends AbstractContainerization
                      * @var Stmt\UseUse $stmt
                      */
                     $object = $stmt->name->toString();
-                    $alias = $stmt->alias?$stmt->alias->name : null;
+                    $alias = $stmt?->alias?->name;
                     if ($alias) {
                         $lowerAlias = strtolower($alias);
                         $allAliases[$lowerAlias] = $object;
+                        /** @noinspection PhpArrayUsedOnlyForWriteInspection */
                         $allAliasesBase[$lowerAlias] = $object;
                     }
                     $last = explode('\\', $object);
@@ -343,6 +344,7 @@ class ObjectFileReader extends AbstractContainerization
                     if (!in_array(strtolower($object), array_map('strtolower', $allAliases))) {
                         $allAliasesBase[strtolower($last)] = $object;
                     }
+                    /** @noinspection PhpArrayUsedOnlyForWriteInspection */
                     $definitions['use'][$object] = [
                         'name' => $object,
                         'alias' => $alias,
@@ -397,7 +399,7 @@ class ObjectFileReader extends AbstractContainerization
                         }
                     }
                     if (isset($stmt->implements)) {
-                        foreach ($stmt->implements as $key => $i) {
+                        foreach ($stmt->implements as $i) {
                             $definitions['class']['hasInterface'] = true;
                             /**
                              * @var Name $i

@@ -7,8 +7,6 @@ use RuntimeException;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TrayDigita\Streak\Source\Console\Abstracts\MakeClassCommand;
-use TrayDigita\Streak\Source\Database\Abstracts\Model;
-use TrayDigita\Streak\Source\Events;
 use TrayDigita\Streak\Source\StoragePath;
 use TrayDigita\Streak\Source\Time;
 

@@ -56,6 +56,12 @@ class Translation extends AbstractContainerization
         return $this->translate($translate, $textDomain, $locale);
     }
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return mixed
+     */
     public function __call(string $name, array $arguments)
     {
         return call_user_func_array(
