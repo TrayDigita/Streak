@@ -7,6 +7,7 @@ use JetBrains\PhpStorm\Pure;
 use SplObjectStorage;
 use TrayDigita\Streak\Source\ACL\Interfaces\AccessInterface;
 use TrayDigita\Streak\Source\ACL\Interfaces\IdentityInterface;
+use TrayDigita\Streak\Source\Container;
 
 abstract class AbstractIdentity implements IdentityInterface
 {
@@ -26,11 +27,19 @@ abstract class AbstractIdentity implements IdentityInterface
      */
     private SplObjectStorage $access;
 
-    #[Pure] public function __construct()
+    final public function __construct(Container $container)
     {
         $this->access = new SplObjectStorage();
         $this->id = $this->id?:get_class($this);
         $this->name = $this->name?:ucwords($this->id);
+        $this->afterConstruct($container);
+    }
+
+    /**
+     * Call after construct
+     */
+    protected function afterConstruct(Container $container)
+    {
     }
 
     /**
@@ -49,6 +58,11 @@ abstract class AbstractIdentity implements IdentityInterface
         return $this->name;
     }
 
+    /**
+     * @param AccessInterface|string $access
+     *
+     * @return $this
+     */
     public function remove(AccessInterface|string $access): static
     {
         if (is_string($access)) {

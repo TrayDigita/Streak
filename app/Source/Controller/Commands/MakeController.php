@@ -17,7 +17,7 @@ class MakeController extends MakeClassCommand
     protected string $command = 'controller';
     protected string $type = 'controller';
     protected string $controllerDirectory = '';
-    protected string $controllerNamespace = 'TrayDigita\\Streak\\Controller';
+    protected string $classNamespace = 'TrayDigita\\Streak\\Controller';
     protected int $maxDepth = 1;
 
     /**
@@ -29,7 +29,6 @@ class MakeController extends MakeClassCommand
         $collector = $this->getContainer(Collector::class);
         $namespace = $collector->getNamespaces();
         $this->classNamespace = reset($namespace);
-        $this->controllerNamespace = $this->classNamespace;
         $this->maxDepth = $collector->getMaxDepth();
         $this->controllerDirectory = $collector->getControllerDirectory();
     }
@@ -48,6 +47,9 @@ class MakeController extends MakeClassCommand
         string $fullClassName,
         SymfonyStyle $symfonyStyle
     ): bool|string {
+        if (!is_dir($this->controllerDirectory) && is_writable(dirname($this->controllerDirectory))) {
+            mkdir($this->controllerDirectory, 0755, true);
+        }
         $subClass = substr($namespace, strlen($this->classNamespace));
         if (!is_dir($this->controllerDirectory)) {
             throw new RuntimeException(

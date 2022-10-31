@@ -5,17 +5,37 @@ namespace TrayDigita\Streak\Source\ACL\Abstracts;
 
 use JetBrains\PhpStorm\Pure;
 use TrayDigita\Streak\Source\ACL\Interfaces\AccessInterface;
+use TrayDigita\Streak\Source\Container;
 
 abstract class AbstractAccess implements AccessInterface
 {
+    /**
+     * @var string
+     */
     protected string $id;
+
+    /**
+     * @var string
+     */
     protected string $name = '';
+
+    /**
+     * @var string
+     */
     protected string $description = '';
 
-    public function __construct()
+    final public function __construct(Container $container)
     {
         $this->id   = $this->id?:get_class($this);
         $this->name = $this->name?:ucwords($this->id);
+        $this->afterConstruct($container);
+    }
+
+    /**
+     * Do process after construct
+     */
+    protected function afterConstruct(Container $container)
+    {
     }
 
     /**

@@ -19,14 +19,12 @@ class MakeMiddleware extends MakeClassCommand
     protected string $type = 'middleware';
     protected string $middlewareDirectory = '';
     protected string $classNamespace = 'TrayDigita\\Streak\\Middleware';
-    protected string $middlewareNamespace = '';
     protected function configure()
     {
         parent::configure();
         $collector = $this->getContainer(Collector::class);
         $namespace = $collector->getNamespaces();
         $this->classNamespace = reset($namespace);
-        $this->middlewareNamespace = $this->classNamespace;
         $this->middlewareDirectory = $collector->getMiddlewareDirectory();
     }
 
@@ -36,6 +34,9 @@ class MakeMiddleware extends MakeClassCommand
         string $fullClassName,
         SymfonyStyle $symfonyStyle
     ): bool|string {
+        if (!is_dir($this->middlewareDirectory) && is_writable(dirname($this->middlewareDirectory))) {
+            mkdir($this->middlewareDirectory, 0755, true);
+        }
         $subClass = substr($namespace, strlen($this->classNamespace));
         if (!is_dir($this->middlewareDirectory)) {
             throw new RuntimeException(

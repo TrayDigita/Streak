@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace TrayDigita\Streak;
 
 use RuntimeException;
+use TrayDigita\Streak\Source\ACL\Commands\MakeACLAccess;
+use TrayDigita\Streak\Source\ACL\Commands\MakeACLIdentity;
 use TrayDigita\Streak\Source\Application;
 use TrayDigita\Streak\Source\Configurations;
 use TrayDigita\Streak\Source\Console\Runner;
@@ -73,6 +75,8 @@ return (function () {
         $container = $application->getContainer();
         $console = $container->get(Runner::class);
         $console->addCommands([
+            new MakeACLAccess($container),
+            new MakeACLIdentity($container),
             new MakeController($container),
             new MakeModule($container),
             new MakeMiddleware($container),

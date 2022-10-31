@@ -18,7 +18,7 @@ class MakeModule extends MakeClassCommand
     protected string $command = 'module';
     protected string $type = 'module';
     protected string $moduleDirectory = '';
-    protected string $moduleNameSpace = 'TrayDigita\\Streak\\Module';
+    protected string $classNamespace = 'TrayDigita\\Streak\\Module';
 
     protected function configure()
     {
@@ -26,7 +26,6 @@ class MakeModule extends MakeClassCommand
         $collector = $this->getContainer(Collector::class);
         $namespace = $collector->getNamespaces();
         $this->classNamespace = reset($namespace);
-        $this->moduleNameSpace = $this->classNamespace;
         $this->moduleDirectory = $collector->getModuleDirectory();
     }
 
@@ -39,7 +38,7 @@ class MakeModule extends MakeClassCommand
             ? $name
             : null;
         $name = $name ? ucwords($name, '\\') : null;
-        $namespace = $name ? "$this->moduleNameSpace\\$name" : '';
+        $namespace = $name ? "$this->classNamespace\\$name" : '';
         if (!$isQuiet) {
             $questionName      = new Question(
                 sprintf(
@@ -56,7 +55,7 @@ class MakeModule extends MakeClassCommand
             $c = 0;
             if ($name !== null) {
                 $name = ucwords($name, '\\');
-                $namespace = "$this->moduleNameSpace\\$name";
+                $namespace = "$this->classNamespace\\$name";
                 $fullClassName = "$namespace\\$name";
                 if (($ready = $this->isReadyForWriting(
                     $namespace,
@@ -91,7 +90,7 @@ class MakeModule extends MakeClassCommand
                     : null;
                 if ($name) {
                     $name = ucwords($name, '\\');
-                    $namespace = "$this->moduleNameSpace\\$name";
+                    $namespace = "$this->classNamespace\\$name";
                     $fullClassName = "$namespace\\$name";
                 }
                 $ready = false;
@@ -130,7 +129,7 @@ class MakeModule extends MakeClassCommand
 
         if ($isQuiet) {
             $name = ucwords($name, '\\');
-            $namespace = "$this->moduleNameSpace\\$name";
+            $namespace = "$this->classNamespace\\$name";
             $fullClassName = "$namespace\\$name";
             if (($ready = $this->isReadyForWriting(
                 $namespace,
@@ -162,6 +161,10 @@ class MakeModule extends MakeClassCommand
         string $fullClassName,
         SymfonyStyle $symfonyStyle
     ): bool|string {
+        if (!is_dir($this->moduleDirectory) && is_writable(dirname($this->moduleDirectory))) {
+            mkdir($this->moduleDirectory, 0755, true);
+        }
+
         if (!is_dir($this->moduleDirectory)) {
             throw new RuntimeException(
                 $this->translate('Module directory is not exist.')

@@ -33,7 +33,7 @@ abstract class MakeClassCommand extends MakeCommand
                 sprintf(
                     $this->translate('[%s] Generate %s'),
                     $this->command,
-                    ucfirst($this->type)
+                    ucwords($this->type)
                 )
             );
         }

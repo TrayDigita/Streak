@@ -16,7 +16,6 @@ class MakeScheduler extends MakeClassCommand
     protected string $type = 'scheduler';
     protected string $schedulerDirectory = '';
     protected string $classNamespace = 'TrayDigita\\Streak\\Scheduler';
-    protected string $middlewareNamespace = '';
 
     /**
      * Configure command
@@ -25,7 +24,6 @@ class MakeScheduler extends MakeClassCommand
     {
         parent::configure();
         $appDir = Consolidation::appDirectory();
-        $this->middlewareNamespace = $this->classNamespace;
         $this->schedulerDirectory = "$appDir". DIRECTORY_SEPARATOR . "Scheduler";
     }
 
@@ -43,6 +41,9 @@ class MakeScheduler extends MakeClassCommand
         string $fullClassName,
         SymfonyStyle $symfonyStyle
     ): bool|string {
+        if (!is_dir($this->schedulerDirectory) && is_writable(dirname($this->schedulerDirectory))) {
+            mkdir($this->schedulerDirectory, 0755, true);
+        }
         $subClass = substr($namespace, strlen($this->classNamespace));
         if (!is_dir($this->schedulerDirectory)) {
             throw new RuntimeException(

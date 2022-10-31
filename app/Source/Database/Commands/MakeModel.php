@@ -30,6 +30,10 @@ class MakeModel extends MakeClassCommand
         string $fullClassName,
         SymfonyStyle $symfonyStyle
     ): bool|string {
+        if (!is_dir($this->modelDirectory) && is_writable(dirname($this->modelDirectory))) {
+            mkdir($this->modelDirectory, 0755, true);
+        }
+
         $subClass = substr($namespace, strlen($this->classNamespace));
         if (!is_dir($this->modelDirectory)) {
             throw new RuntimeException(

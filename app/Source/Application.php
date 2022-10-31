@@ -61,7 +61,6 @@ use TrayDigita\Streak\Source\Module\Collector as ModuleCollector;
 use TrayDigita\Streak\Source\Module\Storage as ModuleStorage;
 use TrayDigita\Streak\Source\Middleware\Collector as MiddlewareCollector;
 use TrayDigita\Streak\Source\Middleware\Storage as MiddlewareStorage;
-use TrayDigita\Streak\Source\Records\Collections;
 use TrayDigita\Streak\Source\RouteAnnotations\Collector as AnnotationCollector;
 use TrayDigita\Streak\Source\Session\Driver\DefaultDriver;
 use TrayDigita\Streak\Source\Session\Sessions;
