@@ -5,9 +5,9 @@
         "sha256": "5ba8ab44fb9a2f83760cb12a684b299d0978633a872588d069b470cda5356861"
     },
     "Loader.php": {
-        "md5": "fa3656aed20ccf258b53f1301e1a2d09",
-        "sha1": "288c3e49c1075711c95952a09f15c8647aafd697",
-        "sha256": "98f00dbe3115602beac4de776f82206c356d73a97f9f165de53df41ec30ee212"
+        "md5": "22d0aced994566b55d6a0607b60a6c37",
+        "sha1": "d88f817635913953124aad91ce17f92536c9b8af",
+        "sha256": "63b09458f4971f41a61e532b5d35447fcabbf70414a255591dc2fb32c6db83f7"
     },
     "app/Middleware/ErrorMiddlewareHandler.php": {
         "md5": "32aec6f350467dd7460f11aa62640b66",

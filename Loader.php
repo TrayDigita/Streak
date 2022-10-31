@@ -86,7 +86,7 @@ return (function () {
         ]);
     }
 
-    $events->dispatch('Serve:loader');
+    $events->dispatch('Serve:loader', $application);
 
     return $application;
 })();
