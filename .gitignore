@@ -114,6 +114,7 @@ node_modules/
 !/app/Middleware/ErrorMiddlewareHandler.php
 !/app/Middleware/SafePathMiddlewareDebugHandler.php
 !/app/Middleware/SchedulerRegistrationMiddleware.php
+!/app/Middleware/AclRegistrationMiddleware.php
 
 # Model Ignore except .gitkeep
 /app/Module/**/*
