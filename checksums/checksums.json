@@ -805,9 +805,9 @@
         "sha256": "20c549fa179225afa3165c137989256e68fa186ec03ea8a2df72a2596c27fa35"
     },
     "bin/sha-sum.php": {
-        "md5": "610ad749f5e2d67be3eec918b88115ae",
-        "sha1": "3d9cdd32a44f86a0649fc2c9fcaebf11a76913e6",
-        "sha256": "b2f6866d10b65802af43fd160dd1776b02cc3b3f9d34751975d524f1ddb8d7b8"
+        "md5": "10e03b36723093d8ea3675fb8df74f21",
+        "sha1": "b94f404c013837786e1540a01e0acdd5573e00cd",
+        "sha256": "325849e7534b2c00fb73b54a8f075286ecd4a8d420eb5afa9fdf0ee758faf350"
     },
     "public/index.php": {
         "md5": "d041bf71933af6c47cfc06129be9436c",
@@ -830,9 +830,9 @@
         "sha256": "69efaf9d312ba5c89f4f14089dedf722b4bd162cffd93d56c4cf4d997647590a"
     },
     "composer.json": {
-        "md5": "da07888e65f8009fa7951722543337d9",
-        "sha1": "fe95bb677e2c24729325874a819f7402d61e4532",
-        "sha256": "0038e319554b8e51f992810e7841947e6cab71043ee44573284e8c38895d050a"
+        "md5": "ff03aa0d6d2b65fe82034fd56b14e8bc",
+        "sha1": "776e5785e3f5074df495e086e765a6c632b08023",
+        "sha256": "68272e5b3cc8670dc16d4a64e211dcee3b7a5366bf3e40eb11a237b54333065c"
     },
     "phpcs.xml": {
         "md5": "f22e709250d78aea18777d842ba16bf2",

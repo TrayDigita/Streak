@@ -55,9 +55,12 @@
         "jetbrains/phpstorm-stubs": "dev-master"
     },
     "config": {
-        "optimize-autoloader": true,
-        "bin-dir": "./bin"
+        "optimize-autoloader": true
     },
+    "bin": [
+        "bin/streak-console",
+        "bin/streak-cron"
+    ],
     "autoload": {
         "psr-4": {
             "TrayDigita\\Streak\\Source\\": "app/Source",
