@@ -171,7 +171,8 @@ class MakeModule extends MakeClassCommand
             );
         }
 
-        $subClass = substr($namespace, strlen($this->classNamespace));
+        $newNamespace = "$this->classNamespace\\$name";
+        $subClass = substr($namespace, strlen($newNamespace));
         if (!empty($subClass)) {
             $this->isYes = false;
             return $this->translate(

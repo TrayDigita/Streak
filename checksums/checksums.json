@@ -525,9 +525,9 @@
         "sha256": "25c245571b13516772045f209fb35b5371cd7eeca5d312157e0cb948afafc827"
     },
     "app/Source/Module/Commands/MakeModule.php": {
-        "md5": "75f294f28c20e3e2d982293b788d6647",
-        "sha1": "afc0c4db86a2ef11121f0a52845af12290f2cd94",
-        "sha256": "216962107a5458118a9403c5faa52327d8cf375c09a77ccccbc8635caacbbebb"
+        "md5": "7f6c295cf614e529a089679761e90ac6",
+        "sha1": "c6a43dd902fa7022e72f08f61f1c3634cd332978",
+        "sha256": "7685c74481d707084a74ca44b0c641b8dd2af194110e054f5525404945900811"
     },
     "app/Source/Module/Collector.php": {
         "md5": "3ea6147bfc5b8ff421f4461d9d99700c",
