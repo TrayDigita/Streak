@@ -655,9 +655,9 @@
         "sha256": "c8f84ad53646d0e3c26d955db583315d10f488008d1c80ecab87557f2bcf1489"
     },
     "app/Source/Traits/EventsMethods.php": {
-        "md5": "9f537f50dc6bd2258952c7096d0c29d4",
-        "sha1": "4d8edc956f5c22c8303284d90ad224027c85ffa5",
-        "sha256": "2b68e9fcc2d6b7625db878f9e364b43860c438c3d70284665f602e67d744dbd6"
+        "md5": "9ead639faaa98579bb8af23f15f43d43",
+        "sha1": "ed23fc2ab3db51e8d9f8809bbc80cc4f0555e2dd",
+        "sha256": "cbe7c02146433be7d69eefa86eb60fb39805f1f97393b46bac54363622a11cff"
     },
     "app/Source/Traits/NamespacesArray.php": {
         "md5": "4f97f746f3c5fdc01f635d9f836e8dee",
