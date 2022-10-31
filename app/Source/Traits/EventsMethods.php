@@ -7,17 +7,29 @@ use TrayDigita\Streak\Source\Events;
 
 trait EventsMethods
 {
+    public function eventCurrent() : ?string
+    {
+        return $this?->getContainer(Events::class)->getCurrentEvent();
+    }
+
+    public function eventCurrents() : array
+    {
+        return $this?->getContainer(Events::class)->getCurrentEvents()?:[];
+    }
+
+    public function eventRemove(string $name, ?callable $callable = null, ?int $priority = null) : int
+    {
+        return $this?->getContainer(Events::class)->remove($name, $callable, $priority)?:0;
+    }
 
     public function eventHas(string $name) : bool
     {
-        $result = $this?->getContainer(Events::class)->has($name);
-        return $result?:false;
+        return $this?->getContainer(Events::class)->has($name)??false;
     }
 
     public function eventIn(string $name) : bool
     {
-        $result = $this?->getContainer(Events::class)->inEvent($name);
-        return $result?:false;
+        return $this?->getContainer(Events::class)->inEvent($name)??false;
     }
 
     public function eventAdd(string $name, callable $callable, int $priority = 10) : ?string
@@ -38,8 +50,7 @@ trait EventsMethods
      */
     public function eventDispatched(string $name, ?callable $callable = null) : int
     {
-        $res = $this?->getContainer(Events::class)->dispatched($name, $callable);
-        return $res ?: 0;
+        $res = $this?->getContainer(Events::class)->dispatched($name, $callable)??0;
     }
 
     /**
