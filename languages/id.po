@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-31 02:17+0700\n"
-"PO-Revision-Date: 2022-10-31 02:18+0700\n"
+"POT-Creation-Date: 2022-10-31 14:50+0700\n"
+"PO-Revision-Date: 2022-10-31 14:51+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -17,6 +17,141 @@ msgstr ""
 "X-Poedit-SearchPath-1: Middleware/ErrorMiddlewareHandler.php\n"
 "X-Poedit-SearchPath-2: Middleware/SafePathMiddlewareDebugHandler.php\n"
 "X-Poedit-SearchPath-3: Middleware/SchedulerRegistrationMiddleware.php\n"
+
+#: Source/ACL/Commands/MakeACLAccess.php:54
+#: Source/ACL/Commands/MakeACLIdentity.php:54
+#: Source/Console/Abstracts/MakeClassCommand.php:117
+#: Source/Module/Commands/MakeModule.php:45
+#, php-format
+msgid "Please Insert %s Name"
+msgstr "Mohon Masukkan Nama %s"
+
+#: Source/ACL/Commands/MakeACLAccess.php:60
+#: Source/ACL/Commands/MakeACLIdentity.php:60
+#: Source/Console/Abstracts/MakeClassCommand.php:123
+#: Source/Module/Commands/MakeModule.php:51
+#, php-format
+msgid "Please Insert Valid %s Name"
+msgstr "Harap Masukkan Nama %s yang Valid"
+
+#: Source/ACL/Commands/MakeACLAccess.php:80
+#: Source/ACL/Commands/MakeACLAccess.php:117
+#: Source/ACL/Commands/MakeACLAccess.php:154
+#: Source/ACL/Commands/MakeACLIdentity.php:80
+#: Source/ACL/Commands/MakeACLIdentity.php:117
+#: Source/ACL/Commands/MakeACLIdentity.php:154
+#: Source/Console/Abstracts/MakeClassCommand.php:158
+#: Source/Console/Abstracts/MakeClassCommand.php:195
+#: Source/Console/Abstracts/MakeClassCommand.php:235
+#: Source/Module/Commands/MakeModule.php:71
+#: Source/Module/Commands/MakeModule.php:108
+#: Source/Module/Commands/MakeModule.php:145
+#, php-format
+msgid "Class Name %s exist or not valid for repository."
+msgstr "Nama kelas %s tidak  ada atau tidak sah pada repositori."
+
+#: Source/ACL/Commands/MakeACLAccess.php:132
+#: Source/ACL/Commands/MakeACLIdentity.php:132
+#: Source/Console/Abstracts/MakeClassCommand.php:210
+#: Source/Module/Commands/MakeModule.php:123
+#, php-format
+msgid "%s name could not be empty."
+msgstr "Nama %s tidak boleh kosong."
+
+#: Source/ACL/Commands/MakeACLAccess.php:187
+#: Source/ACL/Commands/MakeACLIdentity.php:187
+msgid "Acl directory is not exist."
+msgstr "Direktori acl %s tidak ada."
+
+#: Source/ACL/Commands/MakeACLAccess.php:193
+#: Source/ACL/Commands/MakeACLIdentity.php:193
+msgid "Acl could not contain nested class."
+msgstr "Acl tidak boleh berisi kelas turunan."
+
+#: Source/ACL/Commands/MakeACLAccess.php:201
+#: Source/ACL/Commands/MakeACLIdentity.php:201
+#: Source/Controller/Commands/MakeController.php:80
+#: Source/Database/Commands/MakeModel.php:52
+#: Source/Middleware/Commands/MakeMiddleware.php:57
+#: Source/Scheduler/Commands/MakeScheduler.php:64
+#, php-format
+msgid "File %s already exists."
+msgstr "Berkas %s sudah ada."
+
+#: Source/ACL/Commands/MakeACLAccess.php:228
+#: Source/ACL/Commands/MakeACLIdentity.php:228
+#: Source/Controller/Commands/MakeController.php:108
+#: Source/Database/Commands/MakeModel.php:72
+#: Source/Middleware/Commands/MakeMiddleware.php:77
+#: Source/Module/Commands/MakeModule.php:207
+#: Source/Scheduler/Commands/MakeScheduler.php:91
+msgid "Namespace"
+msgstr "Namespace"
+
+#: Source/ACL/Commands/MakeACLAccess.php:229
+#: Source/ACL/Commands/MakeACLIdentity.php:229
+#: Source/Controller/Commands/MakeController.php:109
+#: Source/Database/Commands/MakeModel.php:73
+#: Source/Middleware/Commands/MakeMiddleware.php:78
+#: Source/Module/Commands/MakeModule.php:208
+#: Source/Scheduler/Commands/MakeScheduler.php:92
+msgid "Base class name"
+msgstr "Nama basis kelas"
+
+#: Source/ACL/Commands/MakeACLAccess.php:230
+#: Source/ACL/Commands/MakeACLIdentity.php:230
+#: Source/Controller/Commands/MakeController.php:110
+#: Source/Database/Commands/MakeModel.php:74
+#: Source/Middleware/Commands/MakeMiddleware.php:79
+#: Source/Module/Commands/MakeModule.php:209
+#: Source/Scheduler/Commands/MakeScheduler.php:93
+msgid "Class name"
+msgstr "Name kelas"
+
+#: Source/ACL/Commands/MakeACLAccess.php:231
+msgid "ACL Access directory"
+msgstr "Direktori ACL Access"
+
+#: Source/ACL/Commands/MakeACLAccess.php:232
+#: Source/ACL/Commands/MakeACLIdentity.php:232
+msgid "ACL file"
+msgstr "Berkas ACL"
+
+#: Source/ACL/Commands/MakeACLAccess.php:247
+#: Source/ACL/Commands/MakeACLIdentity.php:247
+#: Source/Controller/Commands/MakeController.php:128
+#: Source/Database/Commands/MakeModel.php:91
+#: Source/Middleware/Commands/MakeMiddleware.php:96
+#: Source/Module/Commands/MakeModule.php:227
+#: Source/Scheduler/Commands/MakeScheduler.php:110
+msgid "Are you sure [Y/n]"
+msgstr "Apa anda yakin [Y/n]"
+
+#: Source/ACL/Commands/MakeACLAccess.php:308
+#: Source/ACL/Commands/MakeACLIdentity.php:308
+#: Source/Controller/Commands/MakeController.php:228
+#: Source/Database/Commands/MakeModel.php:176
+#: Source/Middleware/Commands/MakeMiddleware.php:167
+#: Source/Module/Commands/MakeModule.php:324
+#: Source/Scheduler/Commands/MakeScheduler.php:182
+#, php-format
+msgid "Directory %s is not writable."
+msgstr "Direktori %s tidak dapat ditulis."
+
+#: Source/ACL/Commands/MakeACLAccess.php:319
+#: Source/ACL/Commands/MakeACLIdentity.php:319
+#: Source/Controller/Commands/MakeController.php:239
+#: Source/Database/Commands/MakeModel.php:187
+#: Source/Middleware/Commands/MakeMiddleware.php:178
+#: Source/Module/Commands/MakeModule.php:335
+#: Source/Scheduler/Commands/MakeScheduler.php:193
+#, php-format
+msgid "File %s is exists."
+msgstr "Berkas %s tidak ada."
+
+#: Source/ACL/Commands/MakeACLIdentity.php:231
+msgid "ACL Identity directory"
+msgstr "Direktori ACL Identity"
 
 #: Source/Console/Abstracts/MakeClassCommand.php:34
 #, php-format
@@ -45,39 +180,11 @@ msgstr "Namespace `%s` tidak sah."
 
 #: Source/Console/Abstracts/MakeClassCommand.php:110
 msgid "Please Insert Namespace (Empty To Ignore)"
-msgstr "Harap Masukkan Namaspace (Kosongkan Untuk Abaikan)"
+msgstr "Harap Masukkan Namespace (Kosongkan Untuk Abaikan)"
 
 #: Source/Console/Abstracts/MakeClassCommand.php:113
 msgid "Please Insert Valid Namespace (Empty To Ignore)"
 msgstr "Harap Masukkan Namespace Yang Sah (Kosongkan Untuk Abaikan)"
-
-#: Source/Console/Abstracts/MakeClassCommand.php:117
-#: Source/Module/Commands/MakeModule.php:46
-#, php-format
-msgid "Please Insert %s Name"
-msgstr "Mohon Masukkan Nama %s"
-
-#: Source/Console/Abstracts/MakeClassCommand.php:123
-#: Source/Module/Commands/MakeModule.php:52
-#, php-format
-msgid "Please Insert Valid %s Name"
-msgstr "Harap Masukkan Nama %s yang Valid"
-
-#: Source/Console/Abstracts/MakeClassCommand.php:158
-#: Source/Console/Abstracts/MakeClassCommand.php:195
-#: Source/Console/Abstracts/MakeClassCommand.php:235
-#: Source/Module/Commands/MakeModule.php:72
-#: Source/Module/Commands/MakeModule.php:109
-#: Source/Module/Commands/MakeModule.php:146
-#, php-format
-msgid "Class Name %s exist or not valid for repository."
-msgstr "Nama kelas %s tidak  ada atau tidak sah pada repositori."
-
-#: Source/Console/Abstracts/MakeClassCommand.php:210
-#: Source/Module/Commands/MakeModule.php:124
-#, php-format
-msgid "%s name could not be empty."
-msgstr "Nama %s tidak boleh kosong."
 
 #: Source/Console/Abstracts/NamespaceCommand.php:121
 #, php-format
@@ -159,80 +266,22 @@ msgstr "Tidak dapat menambahkan %1$s saat %1$s sudah mulai memproses."
 msgid "controller"
 msgstr "controller"
 
-#: Source/Controller/Commands/MakeController.php:54
+#: Source/Controller/Commands/MakeController.php:56
 msgid "Controller directory is not exist."
 msgstr "Direktori controller tidak ada."
 
-#: Source/Controller/Commands/MakeController.php:64
+#: Source/Controller/Commands/MakeController.php:66
 #, php-format
 msgid "Max depth of class name is %d, you have %d depth."
 msgstr "Kedalaman maksimum nama kelas adalah %d, Anda memiliki kedalaman %d."
 
-#: Source/Controller/Commands/MakeController.php:78
-#: Source/Database/Commands/MakeModel.php:48
-#: Source/Middleware/Commands/MakeMiddleware.php:56
-#: Source/Scheduler/Commands/MakeScheduler.php:63
-#, php-format
-msgid "File %s already exists."
-msgstr "Berkas %s sudah ada."
-
-#: Source/Controller/Commands/MakeController.php:106
-#: Source/Database/Commands/MakeModel.php:68
-#: Source/Middleware/Commands/MakeMiddleware.php:76
-#: Source/Module/Commands/MakeModule.php:204
-#: Source/Scheduler/Commands/MakeScheduler.php:90
-msgid "Namespace"
-msgstr "Namespace"
-
-#: Source/Controller/Commands/MakeController.php:107
-#: Source/Database/Commands/MakeModel.php:69
-#: Source/Middleware/Commands/MakeMiddleware.php:77
-#: Source/Module/Commands/MakeModule.php:205
-#: Source/Scheduler/Commands/MakeScheduler.php:91
-msgid "Base class name"
-msgstr "Nama basis kelas"
-
-#: Source/Controller/Commands/MakeController.php:108
-#: Source/Database/Commands/MakeModel.php:70
-#: Source/Middleware/Commands/MakeMiddleware.php:78
-#: Source/Module/Commands/MakeModule.php:206
-#: Source/Scheduler/Commands/MakeScheduler.php:92
-msgid "Class name"
-msgstr "Name kelas"
-
-#: Source/Controller/Commands/MakeController.php:109
+#: Source/Controller/Commands/MakeController.php:111
 msgid "Controller directory"
 msgstr "Direktori controller"
 
-#: Source/Controller/Commands/MakeController.php:110
+#: Source/Controller/Commands/MakeController.php:112
 msgid "Controller file"
 msgstr "Berkas controller"
-
-#: Source/Controller/Commands/MakeController.php:126
-#: Source/Database/Commands/MakeModel.php:87
-#: Source/Middleware/Commands/MakeMiddleware.php:95
-#: Source/Module/Commands/MakeModule.php:224
-#: Source/Scheduler/Commands/MakeScheduler.php:109
-msgid "Are you sure [Y/n]"
-msgstr "Apa anda yakin [Y/n]"
-
-#: Source/Controller/Commands/MakeController.php:226
-#: Source/Database/Commands/MakeModel.php:172
-#: Source/Middleware/Commands/MakeMiddleware.php:166
-#: Source/Module/Commands/MakeModule.php:321
-#: Source/Scheduler/Commands/MakeScheduler.php:181
-#, php-format
-msgid "Directory %s is not writable."
-msgstr "Direktori %s tidak dapat ditulis."
-
-#: Source/Controller/Commands/MakeController.php:237
-#: Source/Database/Commands/MakeModel.php:183
-#: Source/Middleware/Commands/MakeMiddleware.php:177
-#: Source/Module/Commands/MakeModule.php:332
-#: Source/Scheduler/Commands/MakeScheduler.php:192
-#, php-format
-msgid "File %s is exists."
-msgstr "Berkas %s tidak ada."
 
 #: Source/Controller/DynamicController.php:89
 #, php-format
@@ -278,15 +327,15 @@ msgstr "Metode pembaruan tidak ada pernyataan where"
 msgid "Column (%s) must be set."
 msgstr "Kolom (%s) harus deklarasikan."
 
-#: Source/Database/Commands/MakeModel.php:36
+#: Source/Database/Commands/MakeModel.php:40
 msgid "Model directory is not exist."
 msgstr "Direktori model %s tidak ada."
 
-#: Source/Database/Commands/MakeModel.php:71
+#: Source/Database/Commands/MakeModel.php:75
 msgid "Model directory"
 msgstr "Direktori model"
 
-#: Source/Database/Commands/MakeModel.php:72
+#: Source/Database/Commands/MakeModel.php:76
 msgid "Model file"
 msgstr "Berkas model"
 
@@ -374,19 +423,19 @@ msgstr "500 Kesalahan Internal Server"
 msgid "middleware"
 msgstr "middleware"
 
-#: Source/Middleware/Commands/MakeMiddleware.php:42
+#: Source/Middleware/Commands/MakeMiddleware.php:43
 msgid "Middleware directory is not exist."
 msgstr "Direktori middleware %s tidak ada."
 
-#: Source/Middleware/Commands/MakeMiddleware.php:48
+#: Source/Middleware/Commands/MakeMiddleware.php:49
 msgid "Middleware could not contain nested class."
 msgstr "Middleware tidak dapat berisi kelas turunan."
 
-#: Source/Middleware/Commands/MakeMiddleware.php:79
+#: Source/Middleware/Commands/MakeMiddleware.php:80
 msgid "Middleware directory"
 msgstr "Direktori middleware"
 
-#: Source/Middleware/Commands/MakeMiddleware.php:80
+#: Source/Middleware/Commands/MakeMiddleware.php:81
 msgid "Middleware file"
 msgstr "Berkas middleware"
 
@@ -403,32 +452,32 @@ msgstr "Module %s initialized."
 msgid "module"
 msgstr "modul"
 
-#: Source/Module/Commands/MakeModule.php:167
+#: Source/Module/Commands/MakeModule.php:170
 msgid "Module directory is not exist."
 msgstr "Direktori modul %s tidak ada."
 
-#: Source/Module/Commands/MakeModule.php:175
+#: Source/Module/Commands/MakeModule.php:178
 msgid "Module could not contain nested class."
 msgstr "Modul tidak boleh berisi kelas turunan."
 
-#: Source/Module/Commands/MakeModule.php:182
+#: Source/Module/Commands/MakeModule.php:185
 #, php-format
 msgid "Directory %s already exists."
 msgstr "Direktori %s sudah ada."
 
-#: Source/Module/Commands/MakeModule.php:203
+#: Source/Module/Commands/MakeModule.php:206
 msgid "Module name"
 msgstr "Nama modul"
 
-#: Source/Module/Commands/MakeModule.php:207
+#: Source/Module/Commands/MakeModule.php:210
 msgid "Module directory"
 msgstr "Direktori modul"
 
-#: Source/Module/Commands/MakeModule.php:208
+#: Source/Module/Commands/MakeModule.php:211
 msgid "Module file"
 msgstr "Berkas modul"
 
-#: Source/Module/Commands/MakeModule.php:241
+#: Source/Module/Commands/MakeModule.php:244
 #, php-format
 msgid "Module %s."
 msgstr "Module %s."
@@ -499,23 +548,23 @@ msgstr "Tugas bermasalah."
 msgid "Unknown"
 msgstr "Tidak diketahui"
 
-#: Source/Scheduler/Commands/MakeScheduler.php:49
+#: Source/Scheduler/Commands/MakeScheduler.php:50
 msgid "Scheduler directory is not exist."
 msgstr "Direktori penjadwal tidak ada."
 
-#: Source/Scheduler/Commands/MakeScheduler.php:55
+#: Source/Scheduler/Commands/MakeScheduler.php:56
 msgid "Scheduler could not contain nested class."
 msgstr "Penjadwal tidak dapat berisi kelas turunan."
 
-#: Source/Scheduler/Commands/MakeScheduler.php:93
+#: Source/Scheduler/Commands/MakeScheduler.php:94
 msgid "Scheduler directory"
 msgstr "Direktori penjadwal"
 
-#: Source/Scheduler/Commands/MakeScheduler.php:94
+#: Source/Scheduler/Commands/MakeScheduler.php:95
 msgid "Scheduler file"
 msgstr "Berkas penjadwal"
 
-#: Source/Scheduler/Commands/MakeScheduler.php:129
+#: Source/Scheduler/Commands/MakeScheduler.php:130
 #, php-format
 msgid "Fill with response result of task of %s"
 msgstr "Isi dengan hasil respon tugas %s"
@@ -697,43 +746,43 @@ msgstr "403 Terlarang"
 msgid "You are not permitted to perform the requested operation."
 msgstr "Anda tidak diizinkan untuk melakukan operasi yang diminta."
 
-#: Source/Uploads/ChunkResponse.php:101
+#: Source/Uploads/ChunkResponse.php:100
 msgid "Content-Range header is not fulfilled."
 msgstr "Header Content-Range tidak terpenuhi."
 
-#: Source/Uploads/ChunkResponse.php:158
+#: Source/Uploads/ChunkResponse.php:157
 msgid "Server only accept bytes unit."
 msgstr "Server hanya menerima unit byte."
 
-#: Source/Uploads/ChunkResponse.php:173
+#: Source/Uploads/ChunkResponse.php:172
 msgid "Content-Range start bytes must be zero without Request-Id."
 msgstr "Byte awal Content-Range harus nol tanpa Request-Id."
 
-#: Source/Uploads/ChunkResponse.php:191
+#: Source/Uploads/ChunkResponse.php:190
 msgid "Invalid uploaded file name."
 msgstr "Nama berkas unggahan tidak valid."
 
-#: Source/Uploads/ChunkResponse.php:213
+#: Source/Uploads/ChunkResponse.php:212
 msgid "Invalid Request-Id header."
 msgstr "Request-Id header tidak valid."
 
-#: Source/Uploads/ChunkResponse.php:231
+#: Source/Uploads/ChunkResponse.php:230
 msgid "Range bytes is out of range."
 msgstr "Rentang byte berada di luar jangkauan."
 
-#: Source/Uploads/ChunkResponse.php:246
+#: Source/Uploads/ChunkResponse.php:245
 msgid "There was an error with uploaded file."
 msgstr "Terdapat kesalahan dengan berkas unggahan."
 
-#: Source/Uploads/ChunkResponse.php:263
+#: Source/Uploads/ChunkResponse.php:262
 msgid "Range size is bigger than file size."
 msgstr "Ukuran rentang lebih besar dari ukuran berkas."
 
-#: Source/Uploads/ChunkResponse.php:278
+#: Source/Uploads/ChunkResponse.php:277
 msgid "Uploaded file size is bigger than ending size."
 msgstr "Ukuran berkas unggahan lebih besar dari ukuran akhir."
 
-#: Source/Uploads/ChunkResponse.php:320
+#: Source/Uploads/ChunkResponse.php:319
 msgid "Could not save uploaded file."
 msgstr "Tidak dapat menyimpan berkas unggahan."
 
