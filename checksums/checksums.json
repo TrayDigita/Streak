@@ -830,9 +830,9 @@
         "sha256": "69efaf9d312ba5c89f4f14089dedf722b4bd162cffd93d56c4cf4d997647590a"
     },
     "composer.json": {
-        "md5": "fa810c0b372f02ca0fa0c60f16476be5",
-        "sha1": "dfeb62f6aebcd466ee2dd67f6ea48aa27eda1350",
-        "sha256": "0e652bffef5b13723ef96e47ce4f3d8530a77796b000ac617ab5cd22ad1db1b6"
+        "md5": "da07888e65f8009fa7951722543337d9",
+        "sha1": "fe95bb677e2c24729325874a819f7402d61e4532",
+        "sha256": "0038e319554b8e51f992810e7841947e6cab71043ee44573284e8c38895d050a"
     },
     "phpcs.xml": {
         "md5": "f22e709250d78aea18777d842ba16bf2",
