@@ -5,9 +5,9 @@
         "sha256": "5ba8ab44fb9a2f83760cb12a684b299d0978633a872588d069b470cda5356861"
     },
     "Loader.php": {
-        "md5": "1bae7b1859fc37e8da5c46a23a8c873e",
-        "sha1": "869c2380e3935f83e78c6998bde162238480c164",
-        "sha256": "b41e0b49384dc52619e74b295733a987ecb42584323a9fb965e6f2d031270817"
+        "md5": "fa3656aed20ccf258b53f1301e1a2d09",
+        "sha1": "288c3e49c1075711c95952a09f15c8647aafd697",
+        "sha256": "98f00dbe3115602beac4de776f82206c356d73a97f9f165de53df41ec30ee212"
     },
     "app/Middleware/ErrorMiddlewareHandler.php": {
         "md5": "32aec6f350467dd7460f11aa62640b66",
@@ -150,19 +150,19 @@
         "sha256": "6d64e01f9f47397c88cb7416a04f5cc4de30e0c715f0daa35a11e2cdccdb149d"
     },
     "app/Source/ACL/Lists.php": {
-        "md5": "63d474fc36950caecdc3b5939911a767",
-        "sha1": "ec26eec86458d1886c96b3bd740b0561995e2b61",
-        "sha256": "1fa3de98194a30fc54314bc342d7d36a91b4b1d4e241213d41612c575bdec2cf"
+        "md5": "765c9ea49982e18c88455fb29b464273",
+        "sha1": "3535cd21adabd1a717b0af455f8cd5b8b65beaf2",
+        "sha256": "fb1f749bc363cdbd150b7ea2dab8d08af486f2884a572bbc891b86e85ef77767"
     },
     "app/Source/ACL/Abstracts/AbstractIdentity.php": {
-        "md5": "eda99e3bbb66ee81e601ecfe65b9cd77",
-        "sha1": "cde624e30f37cba00c7481581f05fac0162d99bd",
-        "sha256": "eab681c640c5a9a03a6a93206694f8d52c7d3f5e44470cdc68771b4b69a61c39"
+        "md5": "5c17a6dc6671018f428d57a6c4812e88",
+        "sha1": "255da7e6b88cbd9684a6b4b64cfdb0439a1b78c7",
+        "sha256": "026b42733de619f3ef95b1dec863fc2d85662e3d4c298412cdba0c874abe8569"
     },
     "app/Source/ACL/Abstracts/AbstractAccess.php": {
-        "md5": "1f305d72ed4c80fe2e9469af7454f65e",
-        "sha1": "919f317b261452aa99d7501a04463eaab1ce297c",
-        "sha256": "f811e9567a2151d6eb3b0113c1f37619a15c048691e2a38caef2b27e49c251b2"
+        "md5": "90f8fc9c1d0c446e32f4ee1f0d1a6e29",
+        "sha1": "11794917bb85f391db2ac32e9303e6910c933bfe",
+        "sha256": "76610c8c0cc5f41662366ab3c80f5d94a80384af96d92dd0e6dbb5896e5b6f64"
     },
     "app/Source/ACL/Interfaces/IdentityInterface.php": {
         "md5": "223a39037afaf717a2d476f46e91a493",
@@ -173,6 +173,16 @@
         "md5": "5d5be583500329246743c407139ebc53",
         "sha1": "32a2d6838fa3bd7cdc8beae86de7865427eaf850",
         "sha256": "1942c716442b3a551e2ce8ae5b0b01ecf0007db266cb74a60be2a4457c1243e4"
+    },
+    "app/Source/ACL/Commands/MakeACLIdentity.php": {
+        "md5": "db73617d1613f291fa91784ed68a3faf",
+        "sha1": "0a82d15687b665d6cbe01a00e933ae2dac54f723",
+        "sha256": "64a024306436bd6183e002b6dadd75c1a2c9938c1d884871ea25df6f7a1d578b"
+    },
+    "app/Source/ACL/Commands/MakeACLAccess.php": {
+        "md5": "a2d93bf04716df2bf20cca4299941e32",
+        "sha1": "483c656cb5cca3b36642e01061ddd61357beba48",
+        "sha256": "a024fbf0b60a113db044505f04d29ed66420aa9b4b75b0c80eeaa4feb1f52253"
     },
     "app/Source/ACL/UserControl.php": {
         "md5": "02e47b097b12c1ac8d36a1db33cb5977",
@@ -195,9 +205,9 @@
         "sha256": "cd74a26b25ebf337af9e0cc93a2af76b0e83eeeff019f86bb47f69d98d22eabd"
     },
     "app/Source/Middleware/Commands/MakeMiddleware.php": {
-        "md5": "30e6e15e139f3b77cabe0817781b9a18",
-        "sha1": "a2a8f0084a9cc8771653abd17c5c5fe726353165",
-        "sha256": "4836a5f57eb00ad19e4120df787ae998aea870763b9bd1d69897ea07f749c6e5"
+        "md5": "d926159555b5eae98ab7e15431386315",
+        "sha1": "2481558ea5d710817759247ba2f298c6b0d72ffe",
+        "sha256": "43ef539a2ad28ac94056f95819c0955a882373f2e07f1d9db1ca30c0e48aef19"
     },
     "app/Source/Middleware/Collector.php": {
         "md5": "d043262d28daec5ceb79832504c5041c",
@@ -230,9 +240,9 @@
         "sha256": "b752f8212a9b75dd016acae62130799e57776b627839f59456baa627ae085f72"
     },
     "app/Source/Database/Commands/MakeModel.php": {
-        "md5": "352bca95e96f4ffce570522ba24ed7a8",
-        "sha1": "235e5be3918a45a6c7a5e8d3059d87e8c9672e15",
-        "sha256": "ce98bcdd6b62e765484042ae5e854841b095be99401e94370bf0d93035fbdcd8"
+        "md5": "f45c58aa70e849f61362dbab1ed28f2e",
+        "sha1": "f926ffee1efc651e8f77b60e23e46a4c1012abc6",
+        "sha256": "a7f7bff2b85e841d6ed0004e7e886bbfab13beeceab957972b9a38a51a7780f0"
     },
     "app/Source/Database/Traits/ModelSchema.php": {
         "md5": "b31b76ca284c61e9490de217235d580b",
@@ -380,9 +390,9 @@
         "sha256": "ae2e990b6c952f396bba94b58dff3556876a0e85e28da6d9a0d9d2a397375db4"
     },
     "app/Source/Scheduler/Commands/MakeScheduler.php": {
-        "md5": "02456e7253166ae08ece6e49bc8b253c",
-        "sha1": "559a46ff8608e58e1b7c8fd1f3113bbbb09355ec",
-        "sha256": "2d46528f5d14eaa202193221fcebb257b5b3883b782d7892de1d60518f3b5906"
+        "md5": "8267c276bdb27d20550cc7b5d1ec7a5d",
+        "sha1": "2472ffcabe73b7b020a27b662abdee568d01d50a",
+        "sha256": "b6052cb8f5acf469df5fc08184763280d2d8ddbbbefc97ba086b37758233e393"
     },
     "app/Source/Scheduler/Worker.php": {
         "md5": "5c91be545ab49bd9e5173e07ae55d2dd",
@@ -515,9 +525,9 @@
         "sha256": "25c245571b13516772045f209fb35b5371cd7eeca5d312157e0cb948afafc827"
     },
     "app/Source/Module/Commands/MakeModule.php": {
-        "md5": "96cb1546f4669d2f8511469c3e0e9ff4",
-        "sha1": "1cd28fabe02658c4a4aaaf1df4ae74dd426b160b",
-        "sha256": "745181d46a66f02dde1c65688261841f44eaa2f2f6284c0aa4effad61036307f"
+        "md5": "75f294f28c20e3e2d982293b788d6647",
+        "sha1": "afc0c4db86a2ef11121f0a52845af12290f2cd94",
+        "sha256": "216962107a5458118a9403c5faa52327d8cf375c09a77ccccbc8635caacbbebb"
     },
     "app/Source/Module/Collector.php": {
         "md5": "3ea6147bfc5b8ff421f4461d9d99700c",
@@ -590,9 +600,9 @@
         "sha256": "3be04167634f3cb0a81e266f0f0319b7b22714a2b255efbc8b058c36d5b4ff24"
     },
     "app/Source/Controller/Commands/MakeController.php": {
-        "md5": "9052114b0d0fa15f9623b9f837684fbe",
-        "sha1": "f20ac3feefad94a761bae206ec81a3001ea4133b",
-        "sha256": "9ccac7916cb1350fb853faeb590753a9d54ba4763c0586104f7ce2902c6454c0"
+        "md5": "5104bf122e54dd81865569d5ab2c485d",
+        "sha1": "635802e24a5031ebc8fee9e8cd3df1d779bd62ed",
+        "sha256": "dab7cb7057490e384ce93c25ad65186f90fa680241c5f71a5c87d603532c2b08"
     },
     "app/Source/Controller/DynamicController.php": {
         "md5": "12dc54667337e4bb6c0b8f1f6d4508e1",
@@ -725,9 +735,9 @@
         "sha256": "440213936128f0be6a71e34be0ce7a4ba36dd77684fcd4d412dfe8d1231e1197"
     },
     "app/Source/Console/Abstracts/MakeClassCommand.php": {
-        "md5": "482538064404cade669e5e5f72cf5450",
-        "sha1": "5ffc9257fed8859db4ed3333fa550119100f8adb",
-        "sha256": "ad88f4ab358302e9079bfd03a6d7abc3d64718a274bfb420a56bd7a7b4ff6159"
+        "md5": "bc093f0c3a880492cedf03fe7c192b9b",
+        "sha1": "12639aececb8d9f9c800cf5e7efebe7664c19399",
+        "sha256": "c1e0fb79a473fc54e2ef5cfd2fc0c66fbf649e63040889031f0248304caec861"
     },
     "app/Source/Console/Abstracts/MakeCommand.php": {
         "md5": "68e1b092b6e772d4d5f9fca1a7ab3fb3",
@@ -745,9 +755,9 @@
         "sha256": "70192f29560d567397f93c166952c4842ea73da7f50a05b0befab54a01f6011e"
     },
     "app/Source/Application.php": {
-        "md5": "77b0f55fedf345ac05d9f13e46a54b5e",
-        "sha1": "f7fb4ca342781f379d8b8b667ea84956c967c6b7",
-        "sha256": "25eb9848962c84e6d8d487d42ba98e4995c6e6a882d03710e63e019a37bf990a"
+        "md5": "9850cf82e3d888364270d51b681f1107",
+        "sha1": "859ce5b7f11875f7c37cdbb4c1b86bd5f9a394e8",
+        "sha256": "f1d761d1b1dac889cf725a1f4c279803fe0730c0da11b41820ce8c63f0ee2059"
     },
     "app/Source/RouteAnnotations/Annotation/Admin.php": {
         "md5": "4b2895c31395ab52f9e9ccd31c4394ec",
@@ -815,19 +825,19 @@
         "sha256": "fde12dd3422f5f010de7a78bbeef258c1098b2126e934e6887d715e688cc0b30"
     },
     "languages/id.mo": {
-        "md5": "1aa13eab5c41164ab543427945488af7",
-        "sha1": "9498e9e0b3788ef70c292d584092d33f94504f54",
-        "sha256": "cbe76e7da868d621d203765d3b3c039b1959e11b9961088c9ca00aaf6dd8fe7e"
+        "md5": "cb1185d89d3454f1221c3cbce6285e16",
+        "sha1": "a7e00ff3d7d03ee6acfbbc59f4758737a6a47db4",
+        "sha256": "02a014c2e274add9e88a737f889cff764d366089fd9bc252977550b020cbf7c1"
     },
     "languages/id.po": {
-        "md5": "d0f6090c40459d5fcb145a999f4a022d",
-        "sha1": "1090a84bc26601fea72fc730d1c423be2df7a808",
-        "sha256": "f90d8653105613baba168e64afeeecb02567fd62f5e36a27fb6eda1e8c87963d"
+        "md5": "6b8e4a30c5707caafd59c55f70888228",
+        "sha1": "eb268c689e3592f2c985367d07d90ef51213f79b",
+        "sha256": "c696794e448f72019c4085870dc805e98b0c72ea3072874654de2176cc1e68f1"
     },
     "languages/en.pot": {
-        "md5": "faf8658b67d1df4704707279447f056d",
-        "sha1": "da7febf843e5b1305db2dde43ecac103dc714e9c",
-        "sha256": "69efaf9d312ba5c89f4f14089dedf722b4bd162cffd93d56c4cf4d997647590a"
+        "md5": "ee6840aec6109cc004de6542e6928fff",
+        "sha1": "638a03acbd864519d2ce6c26ec04e003e969d93c",
+        "sha256": "05a1c081aa74a50d6b5f1393a7ea9035c7a38e2666931e5443be5c50dfc51625"
     },
     "composer.json": {
         "md5": "ff03aa0d6d2b65fe82034fd56b14e8bc",
