@@ -50,6 +50,11 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
     protected bool $autoPrefix = true;
 
     /**
+     * @var bool use prefix to force using prefix on model
+     */
+    protected bool $usePrefix = false;
+
+    /**
      * @var Container
      */
     public readonly Container $container;
@@ -108,17 +113,17 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
     /**
      * @var ?int
      */
-    private ?int $result_limit = null;
+    private ?int $resultLimit = null;
 
     /**
      * @var ?int
      */
-    private ?int $result_offset = null;
+    private ?int $resultOffset = null;
 
     /**
      * @var array<array<string,string|null>>|null
      */
-    private ?array $result_column = null;
+    private ?array $resultColumn = null;
 
     /**
      * @var QueryBuilder
@@ -243,7 +248,9 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         $originalClassName = get_class($this);
         if ($table_name !== '') {
             $table_lower = strtolower($table_name);
-            if ($this->autoPrefix) {
+            if ($this->usePrefix) {
+                $this->tableName = $tables[$prefix.$table_lower]??$prefix.$this->tableName;
+            } elseif ($this->autoPrefix) {
                 $this->tableName = $tables[$prefix.$table_lower]??($tables[$table_lower]??$this->tableName);
             } else {
                 $this->tableName = $tables[$table_lower]??$this->tableName;
@@ -279,6 +286,7 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
             }
             $this->tableName = self::$recordDatabaseTableModel[$originalClassName];
         }
+
         if ($this->tableName === '') {
             throw new Exception(
                 sprintf(
@@ -593,13 +601,13 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
 
     public function limitResult(?int $limit): static
     {
-        $this->result_limit = $limit;
+        $this->resultLimit = $limit;
         return $this;
     }
 
     public function offsetResult(?int $offset): static
     {
-        $this->result_offset = $offset;
+        $this->resultOffset = $offset;
         return $this;
     }
 
@@ -608,10 +616,10 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         $col = $column ? ($this->columns[strtolower($column)]?->getName()?:null) : null;
         $sort = !is_string($sort) || trim($sort) === '' ? null : trim(strtoupper($sort));
         if ($col) {
-            $this->result_column = [];
-            $this->result_column[] = [$col, $sort];
+            $this->resultColumn   = [];
+            $this->resultColumn[] = [$col, $sort];
         } else {
-            $this->result_column = null;
+            $this->resultColumn = null;
         }
         return $this;
     }
@@ -621,10 +629,10 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         $col = $column ? ($this->columns[strtolower($column)]?->getName()?:null) : null;
         $sort = !is_string($sort) || trim($sort) === '' ? null : trim(strtoupper($sort));
         if ($col) {
-            if ($this->result_column === null) {
-                $this->result_column = [];
+            if ($this->resultColumn === null) {
+                $this->resultColumn = [];
             }
-            $this->result_column[] = [$col, $sort];
+            $this->resultColumn[] = [$col, $sort];
         }
 
         return $this;
@@ -645,10 +653,10 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         $hashes = [];
         $value = $is_array
             ? array_map(
-                /**
-                 * @throws ConversionException
-                 * @throws Exception
-                 */
+            /**
+             * @throws ConversionException
+             * @throws Exception
+             */
                 fn ($e) => $model->filterDatabaseValue($key, $e),
                 $value
             )
@@ -1061,11 +1069,11 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
         $selects = $qb->getQueryPart('select');
         empty($selects) && $qb->select(['*']);
 
-        $qb->setMaxResults($model->result_limit);
-        $qb->setFirstResult($model->result_offset??0);
+        $qb->setMaxResults($model->resultLimit);
+        $qb->setFirstResult($model->resultOffset ?? 0);
 
-        if (!empty($model->result_column)) {
-            foreach ($model->result_column as $col) {
+        if (!empty($model->resultColumn)) {
+            foreach ($model->resultColumn as $col) {
                 $qb->addOrderBy(reset($col), next($col)?:null);
             }
         }
