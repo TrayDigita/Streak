@@ -11,6 +11,7 @@ use Slim\Exception\HttpSpecializedException;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Application;
+use TrayDigita\Streak\Source\Helper\Http\Code;
 use TrayDigita\Streak\Source\Json\Schema\ErrorSource;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\TranslationMethods;
@@ -133,7 +134,20 @@ class ApiCreator extends AbstractContainerization
         $code = $response->getStatusCode();
         $httpCode = $exception instanceof HttpSpecializedException
             ? $exception->getCode()
-            : 500;
+            : ($code !== 200 ? $code : 500);
+        if ($httpCode !== 500) {
+            $newTitle = Code::statusMessage($code);
+            $newTitle = $newTitle ? $this->translate($newTitle) : null;
+            if (($hasMethod = method_exists($exception, 'getTitle'))
+                || (
+                    property_exists($exception, 'title')
+                    && (new \ReflectionProperty($exception, 'title'))->isPublic())
+                ) {
+                $exceptionTitle = $hasMethod ? $exception->getTitle() : $exception->{'title'};
+                $newTitle       = !is_string($exceptionTitle) ? $newTitle : $exceptionTitle;
+            }
+            $title = $newTitle ? $this->translate($newTitle) : $title;
+        }
         if ($code < 400) {
             $jsonApi->setResponse($response->withStatus($httpCode));
         }

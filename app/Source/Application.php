@@ -86,7 +86,7 @@ class Application implements ContainerizeInterface
         ComposerLoaderObject,
         EventsMethods;
 
-    final const VERSION = '1.0.1';
+    final const VERSION = '1.0.0';
 
     public readonly string $version;
 
