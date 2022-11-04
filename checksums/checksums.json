@@ -235,9 +235,9 @@
         "sha256": "c229a50cc6af1c1ffc1b8809999bcee390669acc3996681c7846c06f6a9f7fad"
     },
     "app/Source/Database/Abstracts/Model.php": {
-        "md5": "608d5d5da3132df628326d424665052b",
-        "sha1": "e70938b4faf69c8f7e74c03b0b4fd16d21a0b110",
-        "sha256": "b752f8212a9b75dd016acae62130799e57776b627839f59456baa627ae085f72"
+        "md5": "d3f9016292881d409e00b8589ddc2d73",
+        "sha1": "17055aa2016c567ee2ca559449b71d93a556bc4b",
+        "sha256": "33eae765efd09988ce106d930f9479a8739d622625df21ae117af80f9119ba82"
     },
     "app/Source/Database/Commands/MakeModel.php": {
         "md5": "f45c58aa70e849f61362dbab1ed28f2e",
@@ -755,9 +755,9 @@
         "sha256": "70192f29560d567397f93c166952c4842ea73da7f50a05b0befab54a01f6011e"
     },
     "app/Source/Application.php": {
-        "md5": "9850cf82e3d888364270d51b681f1107",
-        "sha1": "859ce5b7f11875f7c37cdbb4c1b86bd5f9a394e8",
-        "sha256": "f1d761d1b1dac889cf725a1f4c279803fe0730c0da11b41820ce8c63f0ee2059"
+        "md5": "39fb7d83b7e08fdc385dd3f0942faee3",
+        "sha1": "eab2ebe54450a3c847df83dd16261b86cc9d3565",
+        "sha256": "db85cbf689eeb0a1fea3e34fcfac561d18aee882ab6ae9493aadd505fb827386"
     },
     "app/Source/RouteAnnotations/Annotation/Admin.php": {
         "md5": "4b2895c31395ab52f9e9ccd31c4394ec",
@@ -840,9 +840,9 @@
         "sha256": "05a1c081aa74a50d6b5f1393a7ea9035c7a38e2666931e5443be5c50dfc51625"
     },
     "composer.json": {
-        "md5": "ff03aa0d6d2b65fe82034fd56b14e8bc",
-        "sha1": "776e5785e3f5074df495e086e765a6c632b08023",
-        "sha256": "68272e5b3cc8670dc16d4a64e211dcee3b7a5366bf3e40eb11a237b54333065c"
+        "md5": "e3a4078d1fadc9a2e7da95c751397707",
+        "sha1": "c98ca71210201daf8970e937a9dbd63420645f59",
+        "sha256": "5388edfb5b710b93e067973747bf48479c2433d23ed7d32b3f1a154e77ba0348"
     },
     "phpcs.xml": {
         "md5": "f22e709250d78aea18777d842ba16bf2",
@@ -860,9 +860,9 @@
         "sha256": "8f6ddb0a3df988554013926c22591d4ada72cf58c39c658e4d6081e0cf5f93ec"
     },
     "VERSION": {
-        "md5": "47cd76e43f74bbc2e1baaf194d07e1fa",
-        "sha1": "91e95be6b6634e3c21072dfcd661146728694326",
-        "sha256": "92521fc3cbd964bdc9f584a991b89fddaa5754ed1cc96d6d42445338669c1305"
+        "md5": "3accddf64b1dd03abeb9b0b3e5a7ba44",
+        "sha1": "d1b76f3800b4ffa88b1062b60da950bacf4f54b0",
+        "sha256": "d51e6ec94058554a84558a5b402ee6ef5fdf5455e35c902feda61cda8752943a"
     },
     "docs-md/STRUCTURES.md": {
         "md5": "777d36a7e00fb2621f115caa2aa6c1ce",
