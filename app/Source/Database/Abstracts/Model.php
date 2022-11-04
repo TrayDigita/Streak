@@ -343,7 +343,7 @@ abstract class Model implements ContainerizeInterface, Stringable, Serializable,
      */
     public function getValueData(string $name, $default = null) : mixed
     {
-        return is_array($this->data) & array_key_exists($name, $this->data)
+        return is_array($this->data) && array_key_exists($name, $this->data)
             ? $this->data[$name]
             : $default;
     }
