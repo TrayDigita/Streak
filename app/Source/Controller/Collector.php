@@ -325,8 +325,12 @@ class Collector extends AbstractContainerization implements Scannable
         if (!$this->scanned()) {
             return $controller;
         }
-
-        $controllerClass = get_class($controller);
+        $controllerClass = $controller instanceof DynamicController
+            ? sprintf(
+                '%s::%s',
+                $controller->getRouteAnnotation()->getController(),
+                $controller->getRouteAnnotation()->getControllerMethod()
+            ) : get_class($controller);
         $name = strtolower($controllerClass);
         if (!isset($this->loadedControllers[$name])) {
             $currents = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
