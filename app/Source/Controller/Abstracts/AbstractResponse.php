@@ -7,6 +7,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Json\ApiCreator;
+use TrayDigita\Streak\Source\Themes\Abstracts\AbstractTheme;
+use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\HttpThrowableException;
 use TrayDigita\Streak\Source\Traits\SimpleDocumentCreator;
@@ -109,5 +111,17 @@ abstract class AbstractResponse extends AbstractContainerization
                 $response,
                 $apiCreator->createJsonApiRequest($request)
             );
+    }
+
+    /**
+     * @return ?AbstractTheme
+     */
+    public function getTheme() : ?AbstractTheme
+    {
+        return $this->eventDispatch(
+            'ResponseTheme',
+            $this->getContainer(ThemeReader::class)->getActiveTheme(),
+            $this
+        );
     }
 }
