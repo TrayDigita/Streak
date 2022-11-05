@@ -225,6 +225,8 @@ class MultiRenderView extends AbstractRenderer
     {
         if (!$this->renderer instanceof ExceptionsRenderView) {
             $array = $this->renderer->toArray();
+            // remove title
+            unset($array['title']);
             $this->renderer = $this
                 ->getContainer(Renderer::class)
                 ->createExceptionRenderView($exception);
@@ -242,6 +244,11 @@ class MultiRenderView extends AbstractRenderer
     {
         if (!$this->renderer instanceof DefaultRenderView) {
             $array = $this->renderer->toArray();
+            if ($this->renderer instanceof ExceptionsRenderView
+                && $array['title'] === $this->renderer->defaultTitle
+            ) {
+                unset($array['title']);
+            }
             $this->renderer = $this
                 ->getContainer(Renderer::class)
                 ->createDefaultRenderView();

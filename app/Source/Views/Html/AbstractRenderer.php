@@ -331,7 +331,7 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         if (!preg_match("~$skipFailComments|</head[^>]*>~i", $head)) {
             $head = preg_match("~$skipFailComments|(<body[^>]*>)~i", $head)
                 ? preg_replace("~$skipFailComments|(<body[^>]*>)~i", "\n</head>\$1", $head)
-                : "$head\n<body>\n";
+                : "$head\n</head>\n";
         }
 
         if (!preg_match("~$skipFailComments|</body[^>]*>~i", $head.$content)) {

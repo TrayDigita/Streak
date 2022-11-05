@@ -18,6 +18,11 @@ class ExceptionsRenderView extends AbstractRenderer
     use TranslationMethods;
 
     /**
+     * @var string
+     */
+    public readonly string $defaultTitle;
+
+    /**
      * @var Throwable|HttpSpecializedException
      */
     protected Throwable|HttpSpecializedException $exceptions;
@@ -38,7 +43,8 @@ class ExceptionsRenderView extends AbstractRenderer
      */
     public function __construct(Throwable|HttpSpecializedException $exception, Container $container)
     {
-        $this->title = $this->translate('500 Internal Server Error');
+        $this->defaultTitle = $this->translate('500 Internal Server Error');
+        $this->title = $this->defaultTitle;
         $this->exceptions = $exception;
         if ($exception instanceof HttpSpecializedException) {
             $this->code = $exception->getCode();
