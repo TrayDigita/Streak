@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-10-31 14:50+0700\n"
-"PO-Revision-Date: 2022-10-31 14:51+0700\n"
+"POT-Creation-Date: 2022-11-05 21:05+0700\n"
+"PO-Revision-Date: 2022-11-05 21:06+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -83,7 +83,7 @@ msgstr "Berkas %s sudah ada."
 #: Source/Controller/Commands/MakeController.php:108
 #: Source/Database/Commands/MakeModel.php:72
 #: Source/Middleware/Commands/MakeMiddleware.php:77
-#: Source/Module/Commands/MakeModule.php:207
+#: Source/Module/Commands/MakeModule.php:208
 #: Source/Scheduler/Commands/MakeScheduler.php:91
 msgid "Namespace"
 msgstr "Namespace"
@@ -93,7 +93,7 @@ msgstr "Namespace"
 #: Source/Controller/Commands/MakeController.php:109
 #: Source/Database/Commands/MakeModel.php:73
 #: Source/Middleware/Commands/MakeMiddleware.php:78
-#: Source/Module/Commands/MakeModule.php:208
+#: Source/Module/Commands/MakeModule.php:209
 #: Source/Scheduler/Commands/MakeScheduler.php:92
 msgid "Base class name"
 msgstr "Nama basis kelas"
@@ -103,7 +103,7 @@ msgstr "Nama basis kelas"
 #: Source/Controller/Commands/MakeController.php:110
 #: Source/Database/Commands/MakeModel.php:74
 #: Source/Middleware/Commands/MakeMiddleware.php:79
-#: Source/Module/Commands/MakeModule.php:209
+#: Source/Module/Commands/MakeModule.php:210
 #: Source/Scheduler/Commands/MakeScheduler.php:93
 msgid "Class name"
 msgstr "Name kelas"
@@ -122,7 +122,7 @@ msgstr "Berkas ACL"
 #: Source/Controller/Commands/MakeController.php:128
 #: Source/Database/Commands/MakeModel.php:91
 #: Source/Middleware/Commands/MakeMiddleware.php:96
-#: Source/Module/Commands/MakeModule.php:227
+#: Source/Module/Commands/MakeModule.php:228
 #: Source/Scheduler/Commands/MakeScheduler.php:110
 msgid "Are you sure [Y/n]"
 msgstr "Apa anda yakin [Y/n]"
@@ -132,7 +132,7 @@ msgstr "Apa anda yakin [Y/n]"
 #: Source/Controller/Commands/MakeController.php:228
 #: Source/Database/Commands/MakeModel.php:176
 #: Source/Middleware/Commands/MakeMiddleware.php:167
-#: Source/Module/Commands/MakeModule.php:324
+#: Source/Module/Commands/MakeModule.php:325
 #: Source/Scheduler/Commands/MakeScheduler.php:182
 #, php-format
 msgid "Directory %s is not writable."
@@ -143,7 +143,7 @@ msgstr "Direktori %s tidak dapat ditulis."
 #: Source/Controller/Commands/MakeController.php:239
 #: Source/Database/Commands/MakeModel.php:187
 #: Source/Middleware/Commands/MakeMiddleware.php:178
-#: Source/Module/Commands/MakeModule.php:335
+#: Source/Module/Commands/MakeModule.php:336
 #: Source/Scheduler/Commands/MakeScheduler.php:193
 #, php-format
 msgid "File %s is exists."
@@ -303,26 +303,26 @@ msgstr "Route controller %s tidak memiliki metode kembalian %s."
 msgid "Route controller method does not returning %s."
 msgstr "Route controller method tidak mengembalikan %s."
 
-#: Source/Database/Abstracts/Model.php:285
+#: Source/Database/Abstracts/Model.php:293
 #, php-format
 msgid "Table for model %s is not exist."
 msgstr "Tabel untuk model %s tidak ada."
 
-#: Source/Database/Abstracts/Model.php:569
+#: Source/Database/Abstracts/Model.php:577
 #, php-format
 msgid "Argument parameters key index must be as a string, %s given."
 msgstr "Parameter argumen indeks kunci harus sebagai string, %s diberikan."
 
-#: Source/Database/Abstracts/Model.php:583
+#: Source/Database/Abstracts/Model.php:591
 #, php-format
 msgid "Table %s does not have primary key"
 msgstr "Tabel %s tidak memiliki kunci utama"
 
-#: Source/Database/Abstracts/Model.php:747
+#: Source/Database/Abstracts/Model.php:755
 msgid "Update method does not where statement"
 msgstr "Metode pembaruan tidak ada pernyataan where"
 
-#: Source/Database/Abstracts/Model.php:900
+#: Source/Database/Abstracts/Model.php:908
 #, php-format
 msgid "Column (%s) must be set."
 msgstr "Kolom (%s) harus deklarasikan."
@@ -414,8 +414,8 @@ msgstr "Berkas %s berisi data kosong."
 msgid "Argument is empty data or whitespace only."
 msgstr "Argument berupa data kosong atau hanya whitespace."
 
-#: Source/Json/ApiCreator.php:129 Source/Traits/HttpThrowableException.php:166
-#: Source/Views/ExceptionsRenderView.php:41
+#: Source/Json/ApiCreator.php:130 Source/Traits/HttpThrowableException.php:166
+#: Source/Views/ExceptionsRenderView.php:46
 msgid "500 Internal Server Error"
 msgstr "500 Kesalahan Internal Server"
 
@@ -456,28 +456,28 @@ msgstr "modul"
 msgid "Module directory is not exist."
 msgstr "Direktori modul %s tidak ada."
 
-#: Source/Module/Commands/MakeModule.php:178
+#: Source/Module/Commands/MakeModule.php:179
 msgid "Module could not contain nested class."
 msgstr "Modul tidak boleh berisi kelas turunan."
 
-#: Source/Module/Commands/MakeModule.php:185
+#: Source/Module/Commands/MakeModule.php:186
 #, php-format
 msgid "Directory %s already exists."
 msgstr "Direktori %s sudah ada."
 
-#: Source/Module/Commands/MakeModule.php:206
+#: Source/Module/Commands/MakeModule.php:207
 msgid "Module name"
 msgstr "Nama modul"
 
-#: Source/Module/Commands/MakeModule.php:210
+#: Source/Module/Commands/MakeModule.php:211
 msgid "Module directory"
 msgstr "Direktori modul"
 
-#: Source/Module/Commands/MakeModule.php:211
+#: Source/Module/Commands/MakeModule.php:212
 msgid "Module file"
 msgstr "Berkas modul"
 
-#: Source/Module/Commands/MakeModule.php:244
+#: Source/Module/Commands/MakeModule.php:245
 #, php-format
 msgid "Module %s."
 msgstr "Module %s."
@@ -712,12 +712,12 @@ msgstr ""
 "permintaan."
 
 #: Source/Traits/HttpThrowableException.php:163
-#: Source/Views/ExceptionsRenderView.php:81
+#: Source/Views/ExceptionsRenderView.php:87
 msgid "Internal server error."
 msgstr "Kesalahan internal server."
 
 #: Source/Traits/HttpThrowableException.php:170
-#: Source/Views/ExceptionsRenderView.php:83
+#: Source/Views/ExceptionsRenderView.php:89
 msgid ""
 "Unexpected condition encountered preventing server from fulfilling request."
 msgstr "Terjadi kondisi tak terduga yang mencegah server memenuhi permintaan."
@@ -828,27 +828,27 @@ msgstr "Tidak dapat menentukan urutan berkas tujuan."
 msgid "%s is not writable."
 msgstr "%s tidak dapat ditulisi."
 
-#: Source/Views/ExceptionsRenderView.php:153
+#: Source/Views/ExceptionsRenderView.php:159
 msgid "Type"
 msgstr "Jenis"
 
-#: Source/Views/ExceptionsRenderView.php:160
+#: Source/Views/ExceptionsRenderView.php:166
 msgid "Code"
 msgstr "Kode"
 
-#: Source/Views/ExceptionsRenderView.php:165
+#: Source/Views/ExceptionsRenderView.php:171
 msgid "Message"
 msgstr "Pesan"
 
-#: Source/Views/ExceptionsRenderView.php:170
+#: Source/Views/ExceptionsRenderView.php:176
 msgid "File"
 msgstr "Berkas"
 
-#: Source/Views/ExceptionsRenderView.php:175
+#: Source/Views/ExceptionsRenderView.php:181
 msgid "Line"
 msgstr "Baris"
 
-#: Source/Views/ExceptionsRenderView.php:179
+#: Source/Views/ExceptionsRenderView.php:185
 msgid "Trace"
 msgstr "Rekam Jejak"
 
