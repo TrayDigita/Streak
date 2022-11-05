@@ -610,9 +610,9 @@
         "sha256": "88fd3fef0335aa25ad0852aea8501fcc200b41b60c27c524f49e27c80fb88064"
     },
     "app/Source/Controller/Collector.php": {
-        "md5": "bab35337e7793989ce6059f0b9a1df6a",
-        "sha1": "f843d4a4ef2db2c12e0524af584d269ddad92884",
-        "sha256": "07f184f8f430a2956885dbda127f0cab1de207ec6e724b101e0d0da4b13ac653"
+        "md5": "679f78deffc4fc47a7776017b15db718",
+        "sha1": "b67c9336a7650e8df62ddff1a9f7f3e040196812",
+        "sha256": "e126e5271d7483e78b6a3b4dff201f4db356bd8a1c727a4210b2f04583697a34"
     },
     "app/Source/StoragePath.php": {
         "md5": "a4b1da60cf72852ea9a0bd43eb350e95",
