@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-06 15:52+0700\n"
+"POT-Creation-Date: 2022-11-06 15:57+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -381,7 +381,7 @@ msgstr ""
 msgid "Database type %s is not exist."
 msgstr ""
 
-#: Source/Database/Traits/ModelSchema.php:368
+#: Source/Database/Traits/ModelSchema.php:369
 #, php-format
 msgid "Columns %s is not exists on index %s column %s"
 msgstr ""
