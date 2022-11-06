@@ -301,6 +301,17 @@ trait ModelSchema
                 $foreignName = $foreigner['name']??null;
                 $foreignOptions = $foreigner['options']??null;
                 if ($tableForeign && $columnForeign) {
+                    $prefix = $database->prefix;
+                    if (property_exists($this, 'usePrefix')
+                        && $this->usePrefix
+                    ) {
+                        $tableForeign = "$prefix$tableForeign";
+                    } elseif (property_exists($this, 'autoPrefix')
+                              && $this->autoPrefix
+                              && $database->isTableExists("$prefix$tableForeign")
+                    ) {
+                        $tableForeign = "$prefix$tableForeign";
+                    }
                     $foreign[$columnName] = [
                         'table' => $tableForeign,
                         'column' => $columnForeign,
@@ -327,7 +338,7 @@ trait ModelSchema
                 }
                 $column = $indexes_name['columns']??null;
                 $column = is_string($column) ? [$column] : (
-                    is_array($column) ? $column : null
+                is_array($column) ? $column : null
                 );
                 if ($columnName === null) {
                     $column = [$columnName];
@@ -412,10 +423,10 @@ trait ModelSchema
                 $currentTable = $database->isTableExists($tableName)
                     ? $database->getTableDetails($tableName)->getName()
                     : (
-                        $database->isTableExists($item['table'])
+                    $database->isTableExists($item['table'])
                         ? $database->getTableDetails($item['table'])->getName()
                         : $item['table']
-                );
+                    );
                 /*
                 if (!$database->isTableExists($item['table'])
                     && $item['table'] !== $table->getName()
