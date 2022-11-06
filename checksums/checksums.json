@@ -420,9 +420,9 @@
         "sha256": "d9d321db5f4f0b5dc3ad749ec9db0262d878967b78499eaff73187f1cbfb4634"
     },
     "app/Source/Json/ApiCreator.php": {
-        "md5": "86490510bb1193b4ab61adb3a030883d",
-        "sha1": "ee1ead2749a097bb91a9dfe90a72da7b3483c3fb",
-        "sha256": "94e91586f525927af6e299a234ada10b919a0361b207d8a28a4537d97f5b22f9"
+        "md5": "870fc237453467f5102579a2502e5f52",
+        "sha1": "ed4dafa48182a8d5bea41dc58e77cd964b1d3fde",
+        "sha256": "b0f0f117256ad5c9a33949b2f452baa7c88f41122572025685c452963d35e10e"
     },
     "app/Source/Json/SimpleDocument.php": {
         "md5": "b1264404face502aa40b3b5c54123f32",
