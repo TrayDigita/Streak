@@ -304,6 +304,7 @@ trait ModelSchema
                     $prefix = $database->prefix;
                     if (property_exists($this, 'usePrefix')
                         && $this->usePrefix
+                        && $database->isTableExists("$prefix$tableForeign")
                     ) {
                         $tableForeign = "$prefix$tableForeign";
                     } elseif (property_exists($this, 'autoPrefix')
