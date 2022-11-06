@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-06 15:57+0700\n"
+"POT-Creation-Date: 2022-11-06 16:52+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -359,7 +359,7 @@ msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 
 #: Source/Database/Instance.php:931
-#: Source/Themes/Abstracts/AbstractTheme.php:426
+#: Source/Themes/Abstracts/AbstractTheme.php:430
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr ""
