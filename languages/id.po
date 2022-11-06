@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-05 21:05+0700\n"
-"PO-Revision-Date: 2022-11-05 21:06+0700\n"
+"POT-Creation-Date: 2022-11-06 15:52+0700\n"
+"PO-Revision-Date: 2022-11-06 15:53+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -390,7 +390,7 @@ msgstr "Nama kelas %s tidak sah."
 msgid "Database type %s is not exist."
 msgstr "Jenis basis data %s tidak ada."
 
-#: Source/Database/Traits/ModelSchema.php:357
+#: Source/Database/Traits/ModelSchema.php:368
 #, php-format
 msgid "Columns %s is not exists on index %s column %s"
 msgstr "Kolom %s tidak ada pada indeks %s kolom %s"
