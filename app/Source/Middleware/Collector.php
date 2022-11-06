@@ -143,7 +143,7 @@ class Collector extends AbstractContainerization implements Scannable
                     $alreadyInclude = true;
                     (function ($info) {
                         require_once $info->getRealPath();
-                    })->call(null, $info);
+                    })->call($this, $info);
                 }
                 $ref = new ReflectionClass($className);
                 if (!$ref->isSubclassOf(AbstractMiddleware::class)) {
