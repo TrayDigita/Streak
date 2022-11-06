@@ -134,7 +134,7 @@ class ApiCreator extends AbstractContainerization
         $code = $response->getStatusCode();
         $httpCode = $exception instanceof HttpSpecializedException
             ? $exception->getCode()
-            : ($code !== 200 ? $code : 500);
+            : ($code >= 400 ? $code : 500);
         if ($httpCode !== 500) {
             $newTitle = Code::statusMessage($code);
             $newTitle = $newTitle ? $this->translate($newTitle) : null;
@@ -142,19 +142,22 @@ class ApiCreator extends AbstractContainerization
                 || (
                     property_exists($exception, 'title')
                     && (new \ReflectionProperty($exception, 'title'))->isPublic())
-                ) {
+            ) {
                 $exceptionTitle = $hasMethod ? $exception->getTitle() : $exception->{'title'};
                 $newTitle       = !is_string($exceptionTitle) ? $newTitle : $exceptionTitle;
             }
             $title = $newTitle ? $this->translate($newTitle) : $title;
         }
+
         if ($code < 400) {
-            $jsonApi->setResponse($response->withStatus($httpCode));
+            $response = $response->withStatus($httpCode);
         }
+
+        $jsonApi->setResponse($response);
         $error = $this->createError()
-            ->setTitle($title)
-            ->setDetail($description)
-            ->setStatus((string) $httpCode);
+                      ->setTitle($title)
+                      ->setDetail($description)
+                      ->setStatus((string) $httpCode);
         $errorDocument = $this->createErrorDocument($error);
         if (!$application->isProduction()) {
             $error->setSource(new ErrorSource('exception', get_class($exception)));
@@ -171,7 +174,7 @@ class ApiCreator extends AbstractContainerization
 
         return $jsonApi->respond()->genericError(
             $errorDocument,
-            $code
+            $response->getStatusCode()
         );
     }
 }
