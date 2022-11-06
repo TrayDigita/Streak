@@ -210,9 +210,9 @@
         "sha256": "43ef539a2ad28ac94056f95819c0955a882373f2e07f1d9db1ca30c0e48aef19"
     },
     "app/Source/Middleware/Collector.php": {
-        "md5": "d043262d28daec5ceb79832504c5041c",
-        "sha1": "73bf43af1fb07d47353875b3a71eebe11ee0b85b",
-        "sha256": "a824ea62e297db36a5de883994cc44e8c6138e7489f6014bc5d909a0a1a88f0d"
+        "md5": "b9bfceb8e4b8f81bb6f7d493616426e1",
+        "sha1": "eacc9d0e556ac07b59f974157c185797ea81d154",
+        "sha256": "805d34f3d3228044218e0ed3d6e418ec3dd6421f23adb8835e905fae57738f3f"
     },
     "app/Source/Time.php": {
         "md5": "21756412d14bd8f8709b7c27f1c6ee61",
