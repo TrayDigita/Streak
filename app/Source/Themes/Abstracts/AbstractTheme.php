@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Themes\Abstracts;
@@ -173,18 +174,21 @@ abstract class AbstractTheme extends AbstractContainerization
      * @return UriInterface
      */
     public function getURI(
-        ?ServerRequest $request = null,
-        ?string $afterURI = null
+        ?string $afterURI = null,
+        ?ServerRequest $request = null
     ): UriInterface {
         $request = $request??(
-            $this->getRequest()??$this->getContainer(ServerRequestInterface::class)
-        );
+                $this->getRequest()??$this->getContainer(ServerRequestInterface::class)
+            );
         $uri = $request
             ->getUri()
             ->withFragment('')
             ->withQuery('')
             ->withPath("/$this->path/");
         if ($afterURI) {
+            if ($afterURI[0] === '/') {
+                $afterURI = substr($afterURI, 1);
+            }
             $uri = new Uri("$uri$afterURI");
         }
         return $uri;
@@ -306,7 +310,7 @@ abstract class AbstractTheme extends AbstractContainerization
     public function is404() : bool
     {
         return $this->getResponse()?->getStatusCode() === 404
-            || $this->getException() instanceof HttpNotFoundException;
+               || $this->getException() instanceof HttpNotFoundException;
     }
 
     /**
@@ -323,7 +327,7 @@ abstract class AbstractTheme extends AbstractContainerization
         }
         if ($exception instanceof HttpSpecializedException) {
             return $exception instanceof HttpInternalServerErrorException
-                || ($exception->getCode() >= 500 && $exception->getCode() < 600);
+                   || ($exception->getCode() >= 500 && $exception->getCode() < 600);
         }
         return true;
     }
