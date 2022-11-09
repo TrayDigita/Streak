@@ -413,7 +413,12 @@ abstract class AbstractTheme extends AbstractContainerization
             $params,
             $controller
         );
-        return $this->doRenderException($exception, $request, $response, $params, $controller);
+        try {
+            return $this->doRenderException($exception, $request, $response, $params, $controller);
+        } catch (Throwable $e) {
+            $this->eventAdd('Exception:handled', fn() => true);
+            throw $e;
+        }
     }
 
     /**
