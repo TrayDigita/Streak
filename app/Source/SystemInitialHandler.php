@@ -384,13 +384,13 @@ class SystemInitialHandler extends AbstractContainerization
             // fallback if error
             if ($this->handled) {
                 $exceptionView->setArgument(AbstractRenderer::SKIP_THEME, true);
-            } else {
-                ob_get_length() && ob_get_level() > 0 && ob_end_clean();
-                $this->previousStream = $this->getStream();
-                // reset stream
-                $this->stream = null;
-                ob_start([$this, 'handleBuffer']);
             }
+
+            ob_get_length() && ob_get_level() > 0 && ob_end_clean();
+            $this->previousStream = $this->getStream();
+            // reset stream
+            $this->stream = null;
+            ob_start([$this, 'handleBuffer']);
 
             $response = $this->noCacheResponse($exceptionView->render($response));
             $this->getContainer(ResponseEmitter::class)->emit($response);
