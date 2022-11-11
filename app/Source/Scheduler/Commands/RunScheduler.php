@@ -5,6 +5,7 @@ namespace TrayDigita\Streak\Source\Scheduler\Commands;
 
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Comparator;
+use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Schema\Table;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -82,6 +83,9 @@ EOT
                 $existingTable = $database->getTableDetails($table->getName());
                 $diffTable = $comparator->compareTables($table, $existingTable);
                 $sql_data[$table->getName()] = $platform->getAlterTableSQL($diffTable);
+            } else {
+                $schema = new Schema([$table]);
+                $sql_data[$table->getName()] = $schema->toSql($platform);
             }
         }
         if (!empty($sql_data)) {

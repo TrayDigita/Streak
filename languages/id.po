@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-11 23:06+0700\n"
-"PO-Revision-Date: 2022-11-11 23:07+0700\n"
+"POT-Creation-Date: 2022-11-11 23:10+0700\n"
+"PO-Revision-Date: 2022-11-11 23:11+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
 "Language: id\n"
@@ -544,7 +544,7 @@ msgid "Task error."
 msgstr "Tugas bermasalah."
 
 #: Source/Scheduler/Abstracts/AbstractTask.php:168
-#: Source/Scheduler/Commands/RunScheduler.php:174
+#: Source/Scheduler/Commands/RunScheduler.php:178
 msgid "Unknown"
 msgstr "Tidak diketahui"
 
@@ -569,47 +569,47 @@ msgstr "Berkas penjadwal"
 msgid "Fill with response result of task of %s"
 msgstr "Isi dengan hasil respon tugas %s"
 
-#: Source/Scheduler/Commands/RunScheduler.php:30
+#: Source/Scheduler/Commands/RunScheduler.php:31
 #, php-format
 msgid "The %s to run the task scheduler"
 msgstr "%s untuk menjalankan penjadwal tugas"
 
-#: Source/Scheduler/Commands/RunScheduler.php:37
+#: Source/Scheduler/Commands/RunScheduler.php:38
 #, php-format
 msgid "[%s] Run the scheduler"
 msgstr "[%s] Menjalankan penjadwal"
 
-#: Source/Scheduler/Commands/RunScheduler.php:62
+#: Source/Scheduler/Commands/RunScheduler.php:63
 msgid "Database Schema"
 msgstr "Skema Basis Data"
 
-#: Source/Scheduler/Commands/RunScheduler.php:67
+#: Source/Scheduler/Commands/RunScheduler.php:68
 msgid "Checking database schema"
 msgstr "Memeriksa skema basis data"
 
-#: Source/Scheduler/Commands/RunScheduler.php:92
+#: Source/Scheduler/Commands/RunScheduler.php:96
 #, php-format
 msgid "Creating database tables schema for %s"
 msgstr "Membuat skema basis data untuk tabel %s"
 
-#: Source/Scheduler/Commands/RunScheduler.php:105
+#: Source/Scheduler/Commands/RunScheduler.php:109
 msgid "Database schema tables for scheduler are complete."
 msgstr "Skema tabel basis data untuk penjadwal telah selesai."
 
-#: Source/Scheduler/Commands/RunScheduler.php:118
+#: Source/Scheduler/Commands/RunScheduler.php:122
 msgid "No schedule to be execute"
 msgstr "Tidak ada jadwal yang bisa dieksekusi"
 
-#: Source/Scheduler/Commands/RunScheduler.php:127
+#: Source/Scheduler/Commands/RunScheduler.php:131
 msgid "Scheduler"
 msgstr "Penjadwal"
 
-#: Source/Scheduler/Commands/RunScheduler.php:132
+#: Source/Scheduler/Commands/RunScheduler.php:136
 #, php-format
 msgid "Execute %d scheduler on total."
 msgstr "Mengeksekusi dengan total %d penjadwal."
 
-#: Source/Scheduler/Commands/RunScheduler.php:146
+#: Source/Scheduler/Commands/RunScheduler.php:150
 msgid "Pending"
 msgstr "Tertunda"
 
