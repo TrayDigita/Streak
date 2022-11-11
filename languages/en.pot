@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-06 17:19+0700\n"
+"POT-Creation-Date: 2022-11-11 23:06+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -253,13 +253,13 @@ msgstr ""
 msgid "Dispatching route"
 msgstr ""
 
-#: Source/Controller/Collector.php:258 Source/Middleware/Collector.php:220
-#: Source/Module/Collector.php:182
+#: Source/Controller/Collector.php:261 Source/Middleware/Collector.php:222
+#: Source/Module/Collector.php:186
 #, php-format
 msgid "Can not add %1$s while the %1$s already initiated to processing."
 msgstr ""
 
-#: Source/Controller/Collector.php:260
+#: Source/Controller/Collector.php:263
 msgid "controller"
 msgstr ""
 
@@ -280,22 +280,22 @@ msgstr ""
 msgid "Controller file"
 msgstr ""
 
-#: Source/Controller/DynamicController.php:89
+#: Source/Controller/DynamicController.php:87
 #, php-format
 msgid "Route %s does not have controller."
 msgstr ""
 
-#: Source/Controller/DynamicController.php:102
+#: Source/Controller/DynamicController.php:100
 #, php-format
 msgid "Route controller %s does not have fallback method."
 msgstr ""
 
-#: Source/Controller/DynamicController.php:114
+#: Source/Controller/DynamicController.php:112
 #, php-format
 msgid "Route controller %s does not have fallback method %s."
 msgstr ""
 
-#: Source/Controller/DynamicController.php:132
+#: Source/Controller/DynamicController.php:130
 #, php-format
 msgid "Route controller method does not returning %s."
 msgstr ""
@@ -359,7 +359,7 @@ msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 
 #: Source/Database/Instance.php:931
-#: Source/Themes/Abstracts/AbstractTheme.php:430
+#: Source/Themes/Abstracts/AbstractTheme.php:436
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr ""
@@ -405,12 +405,12 @@ msgstr ""
 msgid "Argument is empty data or whitespace only."
 msgstr ""
 
-#: Source/Json/ApiCreator.php:130 Source/Traits/HttpThrowableException.php:166
-#: Source/Views/ExceptionsRenderView.php:46
+#: Source/Json/ApiCreator.php:131 Source/Traits/HttpThrowableException.php:166
+#: Source/Views/ExceptionsRenderView.php:45
 msgid "500 Internal Server Error"
 msgstr ""
 
-#: Source/Middleware/Collector.php:222
+#: Source/Middleware/Collector.php:224
 msgid "middleware"
 msgstr ""
 
@@ -439,7 +439,7 @@ msgstr ""
 msgid "Module %s initialized."
 msgstr ""
 
-#: Source/Module/Collector.php:184
+#: Source/Module/Collector.php:188
 msgid "module"
 msgstr ""
 
@@ -535,7 +535,7 @@ msgid "Task error."
 msgstr ""
 
 #: Source/Scheduler/Abstracts/AbstractTask.php:168
-#: Source/Scheduler/Commands/RunScheduler.php:163
+#: Source/Scheduler/Commands/RunScheduler.php:174
 msgid "Unknown"
 msgstr ""
 
@@ -560,47 +560,47 @@ msgstr ""
 msgid "Fill with response result of task of %s"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:28
+#: Source/Scheduler/Commands/RunScheduler.php:30
 #, php-format
 msgid "The %s to run the task scheduler"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:35
+#: Source/Scheduler/Commands/RunScheduler.php:37
 #, php-format
 msgid "[%s] Run the scheduler"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:60
+#: Source/Scheduler/Commands/RunScheduler.php:62
 msgid "Database Schema"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:65
+#: Source/Scheduler/Commands/RunScheduler.php:67
 msgid "Checking database schema"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:80
+#: Source/Scheduler/Commands/RunScheduler.php:92
 #, php-format
-msgid "Creating database tables %s"
+msgid "Creating database tables schema for %s"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:89
+#: Source/Scheduler/Commands/RunScheduler.php:105
 msgid "Database schema tables for scheduler are complete."
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:107
+#: Source/Scheduler/Commands/RunScheduler.php:118
 msgid "No schedule to be execute"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:116
+#: Source/Scheduler/Commands/RunScheduler.php:127
 msgid "Scheduler"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:121
+#: Source/Scheduler/Commands/RunScheduler.php:132
 #, php-format
 msgid "Execute %d scheduler on total."
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:135
+#: Source/Scheduler/Commands/RunScheduler.php:146
 msgid "Pending"
 msgstr ""
 
@@ -691,12 +691,12 @@ msgid "The server does not support the functionality required to fulfill the req
 msgstr ""
 
 #: Source/Traits/HttpThrowableException.php:163
-#: Source/Views/ExceptionsRenderView.php:87
+#: Source/Views/ExceptionsRenderView.php:86
 msgid "Internal server error."
 msgstr ""
 
 #: Source/Traits/HttpThrowableException.php:170
-#: Source/Views/ExceptionsRenderView.php:89
+#: Source/Views/ExceptionsRenderView.php:88
 msgid "Unexpected condition encountered preventing server from fulfilling request."
 msgstr ""
 
@@ -724,43 +724,43 @@ msgstr ""
 msgid "You are not permitted to perform the requested operation."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:100
+#: Source/Uploads/ChunkResponse.php:101
 msgid "Content-Range header is not fulfilled."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:157
+#: Source/Uploads/ChunkResponse.php:158
 msgid "Server only accept bytes unit."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:172
+#: Source/Uploads/ChunkResponse.php:173
 msgid "Content-Range start bytes must be zero without Request-Id."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:190
+#: Source/Uploads/ChunkResponse.php:191
 msgid "Invalid uploaded file name."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:212
+#: Source/Uploads/ChunkResponse.php:213
 msgid "Invalid Request-Id header."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:230
+#: Source/Uploads/ChunkResponse.php:231
 msgid "Range bytes is out of range."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:245
+#: Source/Uploads/ChunkResponse.php:246
 msgid "There was an error with uploaded file."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:262
+#: Source/Uploads/ChunkResponse.php:263
 msgid "Range size is bigger than file size."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:277
+#: Source/Uploads/ChunkResponse.php:278
 msgid "Uploaded file size is bigger than ending size."
 msgstr ""
 
-#: Source/Uploads/ChunkResponse.php:319
+#: Source/Uploads/ChunkResponse.php:320
 msgid "Could not save uploaded file."
 msgstr ""
 
@@ -806,26 +806,26 @@ msgstr ""
 msgid "%s is not writable."
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:159
+#: Source/Views/ExceptionsRenderView.php:158
 msgid "Type"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:166
+#: Source/Views/ExceptionsRenderView.php:165
 msgid "Code"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:171
+#: Source/Views/ExceptionsRenderView.php:170
 msgid "Message"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:176
+#: Source/Views/ExceptionsRenderView.php:175
 msgid "File"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:181
+#: Source/Views/ExceptionsRenderView.php:180
 msgid "Line"
 msgstr ""
 
-#: Source/Views/ExceptionsRenderView.php:185
+#: Source/Views/ExceptionsRenderView.php:184
 msgid "Trace"
 msgstr ""

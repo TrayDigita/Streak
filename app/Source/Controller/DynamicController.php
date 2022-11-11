@@ -16,8 +16,6 @@ use TrayDigita\Streak\Source\RouteAnnotations\Annotation\Route;
 
 class DynamicController extends AbstractController
 {
-    private static int $priority = 10;
-
     private ?Route $routeAnnotation = null;
 
     #[Pure] public function getDefaultResultContentType(): string
@@ -38,9 +36,9 @@ class DynamicController extends AbstractController
         return $this->routeAnnotation;
     }
 
-    public static function thePriority(): int
+    #[Pure] public function getPriority(): int
     {
-        return self::$priority;
+        return $this->routeAnnotation->getPriority();
     }
 
     #[Pure] public function getRouteMethods(): array
@@ -146,7 +144,6 @@ class DynamicController extends AbstractController
 
         $obj = new static($container);
         $obj->routeAnnotation = $route;
-        $obj::$priority = $route->getPriority();
         return $obj;
     }
 }

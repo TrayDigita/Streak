@@ -9,8 +9,6 @@ interface SessionDriverInterface
      * Set default session name
      *
      * @param string $session_name
-     *
-     * @return mixed
      */
     public function setDefaultSessionName(string $session_name);
 

@@ -18,7 +18,7 @@ use TrayDigita\Streak\Source\Middleware\Abstracts\AbstractMiddleware;
 
 class AclRegistrationMiddleware extends AbstractMiddleware
 {
-    public static function thePriority(): int
+    public function getPriority(): int
     {
         return PHP_INT_MIN + 11;
     }

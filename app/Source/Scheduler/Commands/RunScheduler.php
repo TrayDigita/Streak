@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\Scheduler\Commands;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\SchemaException;
+use Doctrine\DBAL\Schema\Table;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -69,19 +71,33 @@ EOT
             $database->createModel(ActionSchedulers::class)->getTableFromSchemaData(),
             $database->createModel(ActionSchedulersLog::class)->getTableFromSchemaData(),
         ];
-        $compared = $database->compareSchemaFromTables($tables);
-        $tables = $compared->newTables;
-        $tables = array_keys($tables);
-        if (!empty($tables)) {
+        $sql_data = [];
+        $platform = $database->getDatabasePlatform();
+        $comparator = new Comparator($platform);
+        /**
+         * @var Table $table
+         */
+        foreach ($tables as $table) {
+            if ($database->tablesExist($table->getName())) {
+                $existingTable = $database->getTableDetails($table->getName());
+                $diffTable = $comparator->compareTables($table, $existingTable);
+                $sql_data[$table->getName()] = $platform->getAlterTableSQL($diffTable);
+            }
+        }
+        if (!empty($sql_data)) {
             $symfonyStyle->writeln(
                 sprintf(
                     '<fg=yellow>%s</>',
                     sprintf(
-                        $this->translate('Creating database tables %s'),
-                        implode(', ', $tables)
+                        $this->translate('Creating database tables schema for %s'),
+                        implode(', ', array_keys($sql_data))
                     )
                 )
             );
+            $database->multiQuery($sql_data, [], $exception);
+            if ($exception) {
+                throw $exception;
+            }
         } else {
             $symfonyStyle->writeln(
                 sprintf(
@@ -89,11 +105,6 @@ EOT
                     $this->translate('Database schema tables for scheduler are complete.')
                 )
             );
-        }
-        $sql = $compared->toSaveSql($database->getDatabasePlatform());
-        $database->multiQuery($sql, [], $exception);
-        if ($exception) {
-            throw $exception;
         }
 
         $scheduler = $this->getContainer(Scheduler::class);

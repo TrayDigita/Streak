@@ -47,10 +47,11 @@ trait EventsMethods
      * @param callable|null $callable
      *
      * @return int
+     * @noinspection PhpUnused
      */
     public function eventDispatched(string $name, ?callable $callable = null) : int
     {
-        $res = $this?->getContainer(Events::class)->dispatched($name, $callable)??0;
+        return $this?->getContainer(Events::class)->dispatched($name, $callable)??0;
     }
 
     /**

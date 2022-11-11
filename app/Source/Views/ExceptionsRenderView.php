@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\Views;
 
 use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpSpecializedException;
 use Throwable;

@@ -47,7 +47,7 @@ class ErrorMiddlewareHandler extends AbstractMiddleware
     /**
      * @inheritDoc
      */
-    public static function thePriority(): int
+    public function getPriority(): int
     {
         return PHP_INT_MIN+1;
     }

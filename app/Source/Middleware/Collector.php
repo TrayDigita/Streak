@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Middleware;
 
-use Closure;
 use DirectoryIterator;
 use ReflectionClass;
 use RuntimeException;
-use Slim\Interfaces\MiddlewareDispatcherInterface;
 use Slim\Interfaces\RouteCollectorProxyInterface;
 use SplFileInfo;
 use Throwable;
@@ -89,7 +87,6 @@ class Collector extends AbstractContainerization implements Scannable
         }
 
         $this->scanned = true;
-        $middlewares = [];
         $directory = realpath($this->middlewareDirectory)?:false;
 
         // append self middlewares
@@ -104,7 +101,7 @@ class Collector extends AbstractContainerization implements Scannable
                 if (!$info->isFile() || $info->getExtension() !== 'php') {
                     continue;
                 }
-                $this->readMiddlewares($info, $middlewares);
+                $this->readMiddlewares($info);
             }
         }
 
@@ -113,22 +110,19 @@ class Collector extends AbstractContainerization implements Scannable
                 if (!$info->isFile() || $info->getExtension() !== 'php') {
                     continue;
                 }
-                $this->readMiddlewares($info, $middlewares);
+                $this->readMiddlewares($info);
             }
         }
-
-        ksort($this->middlewares, SORT_ASC);
-        foreach ($middlewares as $classNames) {
-            foreach ($classNames as $className => $class) {
-                $className                     = trim(strtolower($className));
-                $this->middlewares[$className] = $class;
-            }
-        }
-
+        $this->sortCollections();
         return $this;
     }
 
-    private function readMiddlewares(SplFileInfo|DirectoryIterator $info, &$middlewares) : bool
+    /**
+     * @param SplFileInfo|DirectoryIterator $info
+     *
+     * @return bool
+     */
+    private function readMiddlewares(SplFileInfo|DirectoryIterator $info) : bool
     {
         $name = substr($info->getBasename(), 0, -4);
         if (!preg_match('~[a-zA-Z_][A-Za-z_0-9]*$~', $name)) {
@@ -160,11 +154,19 @@ class Collector extends AbstractContainerization implements Scannable
             return false;
         }
 
-        /**
-         * @var AbstractMiddleware $foundClassName
-         */
-        $middlewares[$foundClassName::thePriority()][$foundClassName] = $foundClassName;
+        $this->middlewares[strtolower($foundClassName)] = new $foundClassName(
+            $this->container,
+            $this->getCollectorProxy()
+        );
         return true;
+    }
+
+    /**
+     * Sort
+     */
+    private function sortCollections()
+    {
+        uasort($this->middlewares, fn ($a, $b) => $a->getPriority() > $b->getPriority());
     }
 
     public function scanned(): bool
@@ -174,6 +176,7 @@ class Collector extends AbstractContainerization implements Scannable
 
     /**
      * @return array<string, class-string<AbstractMiddleware>>
+     * @noinspection PhpUnused
      */
     public function getMiddlewaresKey(): array
     {
@@ -184,21 +187,20 @@ class Collector extends AbstractContainerization implements Scannable
      * @param string $name
      *
      * @return ?AbstractMiddleware
+     * @noinspection PhpUnused
      */
     public function getMiddleware(string $name) : ?AbstractMiddleware
     {
         $name = strtolower(ltrim($name, '\\'));
-        if (!isset($this->middlewares[$name])) {
-            return null;
-        }
-        if (is_string($this->middlewares[$name])) {
-            $this->middlewares[$name] = new $this->middlewares[$name](
-                $this->getContainer(),
-                $this->getCollectorProxy()
-            );
-        }
+        return $this->middlewares[$name]??null;
+    }
 
-        return $this->middlewares[$name];
+    /**
+     * @return array<string, AbstractMiddleware>
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
     }
 
     /**
@@ -230,44 +232,7 @@ class Collector extends AbstractContainerization implements Scannable
         }
 
         $this->middlewares[$className] = $middleware;
+        $this->sortCollections();
         return true;
-    }
-
-    /**
-     * @param T $middleware
-     * @param Storage $storageControllers
-     * @param MiddlewareDispatcherInterface $middlewareDispatcher
-     * @param Closure $callback
-     *
-     * @template T AbstractController
-     * @return T
-     */
-    public function load(
-        Storage $storageControllers,
-        AbstractMiddleware $middleware,
-        MiddlewareDispatcherInterface $middlewareDispatcher,
-        Closure $callback
-    ) : AbstractMiddleware {
-        // always scan first
-        if (!$this->scanned()) {
-            return $middleware;
-        }
-        $middlewareClass = get_class($middleware);
-        $name = strtolower($middlewareClass);
-        if (!isset($this->loadedMiddlewares[$name])) {
-            $currents = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-            $storageMiddleware = next($currents)['class']??null;
-            // validate
-            if (($storageMiddleware == Storage::class
-                 || !$storageMiddleware instanceof Storage
-                )
-            ) {
-                $this->alreadyLoaded            = true;
-                $this->loadedMiddlewares[$name] = $middlewareClass;
-                $callback->call($storageControllers, $middleware, $middlewareDispatcher);
-            }
-        }
-
-        return $middleware;
     }
 }

@@ -381,6 +381,7 @@ abstract class AbstractTheme extends AbstractContainerization
      * @param array $params
      *
      * @return ResponseInterface
+     * @throws Throwable
      */
     final public function renderException(
         Throwable $exception,

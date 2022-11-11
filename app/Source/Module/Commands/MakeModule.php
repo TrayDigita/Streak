@@ -297,7 +297,7 @@ class $name extends AbstractModule
      *
      * @return int
      */
-    public static function thePriority(): int
+    public function getPriority(): int
     {
         return 10;
     }

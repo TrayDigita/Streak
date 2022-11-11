@@ -49,6 +49,7 @@ class ChunkResponse extends AbstractContainerization
      * @param null $handler
      *
      * @return ResponseInterface
+     * @throws Throwable
      */
     public function handle(
         string $parameterName,

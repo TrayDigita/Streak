@@ -62,24 +62,19 @@ class Storage extends AbstractContainerization implements Startable
         $this->eventDispatch('StorageMiddlewares:middlewares:start', $this);
         $obj = $this;
         // reverse
-        foreach (array_reverse($this->collectorModules->getMiddlewaresKey()) as $middlewareName) {
-            $middleware = $this->collectorModules->getMiddleware($middlewareName);
-            $className  = get_class($middleware);
+        foreach (array_reverse(
+            $this
+                ->collectorModules
+                ->scan()
+                ->getMiddlewares()
+        ) as $middlewareName => $middleware) {
+            $className   = get_class($middleware);
             $classNameId = sprintf('StorageMiddlewares:load[%s]', $className);
             $timeRecord->start($classNameId);
-            $this->collectorModules->load(
-                $this,
-                $middleware,
-                $this->getMiddlewareDispatcher(),
-                function ($middleware) use ($className, $obj) {
-                    $obj->eventDispatch('StorageMiddlewares:middleware:prepare', $middleware, $this);
-                    $this
-                        ->getMiddlewareDispatcher()
-                        ->addMiddleware($middleware);
-                    $this->registered[$className] = true;
-                    $obj->eventDispatch('StorageMiddlewares:middleware:registered', $middleware, $this);
-                }
-            );
+            $obj->eventDispatch('Storage:middleware:prepare', $middleware, $this);
+            $this->getMiddlewareDispatcher()->addMiddleware($middleware);
+            $this->registered[$middlewareName] = true;
+            $obj->eventDispatch('Storage:middleware:registered', $middleware, $this);
             $timeRecord->stop($classNameId);
         }
         // events

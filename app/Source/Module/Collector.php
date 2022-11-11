@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Module;
 
-use Closure;
 use DirectoryIterator;
 use ReflectionClass;
 use RuntimeException;
@@ -62,15 +61,16 @@ class Collector extends AbstractContainerization implements Scannable
         return $this->moduleDirectory;
     }
 
+    /**
+     * @return $this
+     */
     public function scan(): static
     {
         if ($this->scanned) {
             return $this;
         }
 
-
         $this->scanned = true;
-        $modules = [];
         $directory = realpath($this->moduleDirectory)?:false;
         if (!$directory || !is_dir($directory)) {
             return $this;
@@ -113,22 +113,26 @@ class Collector extends AbstractContainerization implements Scannable
             if (!$foundClassName) {
                 continue;
             }
-            /**
-             * @var AbstractModule $foundClassName
-             */
-            $modules[$foundClassName::thePriority()][$foundClassName] = $foundClassName;
+            $this->modules[strtolower($foundClassName)] = new $foundClassName(
+                $this->container,
+                $this
+            );
         }
-        ksort($this->modules, SORT_ASC);
-        foreach ($modules as $classNames) {
-            foreach ($classNames as $className => $class) {
-                $className                     = trim(strtolower($className));
-                $this->modules[$className] = $class;
-            }
-        }
-
+        $this->sortCollections();
         return $this;
     }
 
+    /**
+     * Sort
+     */
+    private function sortCollections()
+    {
+        uasort($this->modules, fn ($a, $b) => $a->getPriority() > $b->getPriority());
+    }
+
+    /**
+     * @return bool
+     */
     public function scanned(): bool
     {
         return $this->scanned;
@@ -136,10 +140,19 @@ class Collector extends AbstractContainerization implements Scannable
 
     /**
      * @return array<string, class-string<AbstractModule>>
+     * @noinspection PhpUnused
      */
     public function getModulesKey(): array
     {
         return array_keys($this->scan()->modules);
+    }
+
+    /**
+     * @return array<string, AbstractModule>
+     */
+    public function getModules() : array
+    {
+        return $this->modules;
     }
 
     /**
@@ -151,16 +164,7 @@ class Collector extends AbstractContainerization implements Scannable
     public function getModule(string $name) : ?AbstractModule
     {
         $name = strtolower(ltrim($name, '\\'));
-        if (!isset($this->modules[$name])) {
-            return null;
-        }
-        if (is_string($this->modules[$name])) {
-            $this->modules[$name] = new $this->modules[$name](
-                $this->getContainer(),
-                $this
-            );
-        }
-        return $this->modules[$name];
+        return $this->modules[$name]??null;
     }
 
     /**
@@ -192,44 +196,7 @@ class Collector extends AbstractContainerization implements Scannable
         }
 
         $this->modules[$className] = $module;
+        $this->sortCollections();
         return true;
-    }
-
-    /**
-     * @param T $module
-     * @param Storage $Storage
-     * @param string $moduleName
-     * @param Closure $callback
-     *
-     * @template T AbstractController
-     * @return T
-     */
-    public function load(
-        Storage $Storage,
-        AbstractModule $module,
-        string $moduleName,
-        Closure $callback
-    ) : AbstractModule {
-        // always scan first
-        if (!$this->scanned()) {
-            return $module;
-        }
-        $middlewareClass = get_class($module);
-        $name = strtolower($middlewareClass);
-        if (!isset($this->loadedModules[$name])) {
-            $currents = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-            $storageModule = next($currents)['class']??null;
-            // validate
-            if ((
-                $storageModule == Storage::class
-                 || !$storageModule instanceof Storage
-            )) {
-                $this->alreadyLoaded            = true;
-                $this->loadedModules[$name] = $middlewareClass;
-                $callback->call($Storage, $module, $moduleName);
-            }
-        }
-
-        return $module;
     }
 }

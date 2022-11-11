@@ -7,6 +7,7 @@ use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use ReflectionProperty;
 use Slim\Exception\HttpSpecializedException;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
@@ -141,7 +142,7 @@ class ApiCreator extends AbstractContainerization
             if (($hasMethod = method_exists($exception, 'getTitle'))
                 || (
                     property_exists($exception, 'title')
-                    && (new \ReflectionProperty($exception, 'title'))->isPublic())
+                    && (new ReflectionProperty($exception, 'title'))->isPublic())
             ) {
                 $exceptionTitle = $hasMethod ? $exception->getTitle() : $exception->{'title'};
                 $newTitle       = !is_string($exceptionTitle) ? $newTitle : $exceptionTitle;

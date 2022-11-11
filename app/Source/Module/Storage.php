@@ -8,7 +8,6 @@ use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
 use TrayDigita\Streak\Source\Benchmark;
-use TrayDigita\Streak\Source\Module\Abstracts\AbstractModule;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use TrayDigita\Streak\Source\Traits\NamespacesArray;
 
@@ -52,27 +51,20 @@ class Storage extends AbstractContainerization implements Startable
         $timeRecord = $this->getContainer(Benchmark::class);
         $timeRecord->start('StorageModules:load');
         // events
-        $this->eventDispatch('StorageModules:modules:start', $this);
+        $this->eventDispatch('StorageModules:modules:prepare', $this);
         // reverse
-        foreach ($this->collectorModules->getModulesKey() as $moduleName) {
-            $module = $this->collectorModules->getModule($moduleName);
+        foreach ($this->collectorModules->scan()->getModules() as $moduleName => $module) {
             $moduleClass = get_class($module);
             $moduleNameId = sprintf('StorageModules:load[%s]', $moduleClass);
             $timeRecord->start($moduleNameId);
-            $this->collectorModules->load(
-                $this,
-                $module,
-                $moduleClass,
-                function (AbstractModule $module, $moduleName) {
-                    $this->registered[$moduleName] = true;
-                    if ($module->isInitializeModule()) {
-                        $module->initModule();
-                    }
-                }
-            );
+            if ($module->isInitializeModule()) {
+                $this->eventDispatch('Storage:module:prepare', $module, $this);
+                $module->initModule();
+                $this->eventDispatch('Storage:module:registered', $module, $this);
+            }
+            $this->registered[$moduleName] = true;
             $timeRecord->stop($moduleNameId);
         }
-
         // events
         $this->eventDispatch('StorageModules:modules:registered', $this);
         $timeRecord->stop('StorageModules:load');

@@ -22,7 +22,7 @@ class SafePathMiddlewareDebugHandler extends AbstractMiddleware
     private bool $inException = false;
     private ?string $quoted = null;
 
-    public static function thePriority(): int
+    public function getPriority(): int
     {
         return PHP_INT_MIN;
     }

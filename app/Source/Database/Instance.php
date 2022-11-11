@@ -881,7 +881,7 @@ class Instance extends AbstractContainerization
         return $this
             ->connection
             ->createSchemaManager()
-            ->listTableDetails($tableName);
+            ->introspectTable($tableName);
     }
 
     /**
@@ -945,7 +945,7 @@ class Instance extends AbstractContainerization
     public function compareSchema(Schema $fromSchema, ?Schema $withSchema = null) : SchemaDiff
     {
         $comparator = new Comparator();
-        $withSchema = $withSchema ?? $this->createSchemaManager()->createSchema();
+        $withSchema = $withSchema ?? $this->createSchemaManager()->introspectSchema();
         return $comparator->compareSchemas($withSchema, $fromSchema);
     }
 
@@ -961,7 +961,7 @@ class Instance extends AbstractContainerization
     {
         return $this->compareSchema(
             new Schema($tables),
-            $withSchema??$this->createSchemaManager()->createSchema()
+            $withSchema??$this->createSchemaManager()->introspectSchema()
         );
     }
 

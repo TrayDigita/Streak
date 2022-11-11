@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Controller;
 
+use FastRoute\BadRouteException;
 use FastRoute\RouteParser\Std;
 use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
@@ -91,170 +92,160 @@ class Storage extends AbstractContainerization implements Startable
         $timeRecord->start('StorageControllers:load');
 
         // events
-        $this->eventDispatch('StorageControllers:controllers:start', $this);
-        $routes = [];
-        foreach ($this->controllers->getControllersKey() as $controllerName) {
-            $controller = $this->controllers->getController($controllerName);
-            $routes[$controller->getGroupRoutePattern()][$controllerName] = $controller;
-        }
-        $parser = new Std();
+        $this->eventDispatch('StorageControllers:controllers:prepare', $this);
         $obj = $this;
-        $routes_collections = [];
-        foreach ($routes as $groupPattern => $controllers) {
-            unset($routes[$groupPattern]);
-            $this->routeCollectorProxy->group(
-                $groupPattern,
-                function (RouteCollectorProxy $routeCollectorProxy) use (
-                    &$routes_collections,
-                    $groupPattern,
-                    $parser,
-                    $obj,
-                    $controllers,
-                    $timeRecord
+        $parser = new Std();
+        $methodToRegexToRoutesMap = [];
+        foreach ($this->controllers->scan()->getControllers() as $controllerName => $controller) {
+            $groupPattern = $controller->getGroupRoutePattern();
+            $routePattern = $controller->getRoutePattern();
+            $classNameId = sprintf('StorageControllers:load[%s]', get_class($controller));
+            $timeRecord->start($classNameId);
+            $pattern = "$groupPattern$routePattern";
+            try {
+                $methods = $controller->getRouteMethods();
+                $methods = array_filter(
+                    array_map(
+                        'strtoupper',
+                        array_filter($methods, 'is_string')
+                    )
+                );
+                $methods = array_unique($methods);
+                if (in_array('ANY', $methods, true)
+                    || in_array('ALL', $methods, true)
                 ) {
-                    /**
-                     * @var AbstractController $controller
-                     */
-                    foreach ($controllers as $identifier => $controller) {
-                        $classNameId = sprintf('StorageControllers:load[%s]', get_class($controller));
-                        $timeRecord->start($classNameId);
-                        $methods = $controller->getRouteMethods();
-                        $methods = array_filter(
-                            array_map(
-                                'strtoupper',
-                                array_filter($methods, 'is_string')
-                            )
-                        );
-                        try {
-                            $parsed = $parser->parse("$groupPattern{$controller->getRoutePattern()}");
-                        } catch (Throwable $e) {
-                            $obj->invalidRoutes[$identifier][$classNameId] = $e->getMessage();
-                            $timeRecord->stop($classNameId);
+                    $methods   = array_merge(
+                        $methods,
+                        ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+                    );
+                    $methods   = array_unique($methods);
+                    $keySearch = array_search('ANY', $methods);
+                    if ($keySearch !== false) {
+                        unset($methods[$keySearch]);
+                    }
+                    $keySearch = array_search('ALL', $methods);
+                    if ($keySearch !== false) {
+                        unset($methods[$keySearch]);
+                    }
+                    $methods = array_values($methods);
+                }
+                $noRegister  = false;
+                $parsed = [];
+                foreach ($parser->parse($pattern) as $routeData) {
+                    $regex = $this->buildRegexForRoute($routeData);
+                    $parsed[] = $regex;
+                    foreach ((array)$methods as $method) {
+                        if (!isset($methodToRegexToRoutesMap[$method][$regex])) {
+                            $methodToRegexToRoutesMap[$method][$regex] = true;
                             continue;
                         }
-
-                        $methods = array_unique($methods);
-                        if (in_array('ANY', $methods, true)
-                            || in_array('ALL', $methods, true)
-                        ) {
-                            $methods = array_merge($methods, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']);
-                            $methods = array_unique($methods);
-                            $keySearch = array_search('ANY', $methods);
-                            if ($keySearch !== false) {
-                                unset($methods[$keySearch]);
-                            }
-                            $keySearch = array_search('ALL', $methods);
-                            if ($keySearch !== false) {
-                                unset($methods[$keySearch]);
-                            }
-                            $methods = array_values($methods);
-                        }
-                        $temp_routes = [];
-                        $noRegister = false;
-                        foreach ($parsed as $item) {
-                            $route = '';
-                            foreach ($item as $path) {
-                                $route .= is_string($path) ? $path : $path[1];
-                            }
-                            $temp_routes[$route] = true;
-                            if (isset($routes_collections[$route])) {
-                                $diff = array_intersect_assoc($routes_collections[$route], $methods);
-                                if (!empty($diff)) {
-                                    $noRegister = true;
-                                    $obj->duplicateRoutes[$identifier][$route] = $diff;
-                                }
-                            }
-                        }
-                        if ($noRegister) {
-                            $timeRecord->stop($classNameId);
-                            continue;
-                        }
-
-                        foreach ($temp_routes as $route => $tmp) {
-                            if (isset($routes_collections[$route])) {
-                                $routes_collections[$route] = array_merge($routes_collections[$route], $methods);
-                                $routes_collections[$route] = array_unique($routes_collections[$route]);
-                                continue;
-                            }
-                            $routes_collections[$route] = $methods;
-                        }
-
-                        // add register
-                        $obj->registered[$identifier] = true;
-                        $obj->controllers->load(
-                            $obj,
-                            $controller,
-                            $routeCollectorProxy,
-                            function (
-                                AbstractController $controller,
-                                RouteCollectorProxy $routeCollectorProxy
-                            ) use (
-                                $obj,
-                                $methods,
-                                $parsed,
-                                $identifier
-                            ) {
-                                $obj->eventDispatch(
-                                    'StorageControllers:controller:prepare',
-                                    $controller,
-                                    $this
-                                );
-                                $annotate = method_exists($controller, 'getRouteAnnotation')
-                                    ? $controller->getRouteAnnotation()
-                                    : null;
-                                $controllerName = $annotate instanceof Route
-                                    ? ($annotate->getName()?:$identifier)
-                                    : $identifier;
-                                $route = $routeCollectorProxy->map(
-                                    $methods,
-                                    $controller->getRoutePattern(),
-                                    function (
-                                        ServerRequestInterface $request,
-                                        ResponseInterface $response,
-                                        array $params = []
-                                    ) use (
-                                        $parsed,
-                                        $controller,
-                                        &$route,
-                                        $obj
-                                    ) {
-                                        $params['$controller'] = $controller;
-                                        $params['$route'] = $route;
-                                        $obj->currentController = $controller;
-                                        $obj->matchedRouteParameters = $params;
-                                        return $controller->doingRouting(
-                                            $route,
-                                            $parsed,
-                                            $request,
-                                            $response,
-                                            $params
-                                        );
-                                    }
-                                )->setName($controllerName);
-                                foreach ($controller->getRouteArguments() as $key => $argument) {
-                                    if (is_string($argument) && is_string($key)) {
-                                        $route->setArgument($key, $argument);
-                                    }
-                                }
-
-                                $obj->eventDispatch(
-                                    'StorageControllers:controller:registered',
-                                    $controller,
-                                    $this,
-                                    $route
-                                );
-                            }
-                        );
-
-                        $timeRecord->stop($classNameId);
+                        $noRegister = true;
+                        $this->duplicateRoutes[$controllerName][$regex][] = $method;
                     }
                 }
-            );
+                if ($noRegister) {
+                    $timeRecord->stop($classNameId);
+                    continue;
+                }
+                // add register
+                $this->registered[$controllerName] = true;
+                $obj->eventDispatch('Storage:controller:prepare', $controller, $this);
+                $annotate       = method_exists($controller, 'getRouteAnnotation')
+                    ? $controller->getRouteAnnotation()
+                    : null;
+                $controllerName = $annotate instanceof Route
+                    ? ($annotate->getName() ?: $controllerName)
+                    : $controllerName;
+                $route = $this->routeCollectorProxy->map(
+                    $methods,
+                    $pattern,
+                    function (
+                        ServerRequestInterface $request,
+                        ResponseInterface $response,
+                        array $params = []
+                    ) use (
+                        $parsed,
+                        $controller,
+                        &$route,
+                        $obj
+                    ) {
+                        $params['$controller']       = $controller;
+                        $params['$route']            = $route;
+                        $obj->currentController      = $controller;
+                        $obj->matchedRouteParameters = $params;
+
+                        return $controller->doingRouting(
+                            $route,
+                            $parsed,
+                            $request,
+                            $response,
+                            $params
+                        );
+                    }
+                )->setName($controllerName);
+                foreach ($controller->getRouteArguments() as $key => $argument) {
+                    if (is_string($argument) && is_string($key)) {
+                        $route->setArgument($key, $argument);
+                    }
+                }
+                $obj->eventDispatch('Storage:controller:registered', $controller, $this, $route);
+                $timeRecord->stop($classNameId);
+                unset($route);
+            } catch (Throwable $e) {
+                $this->invalidRoutes[$controllerName][$classNameId] = $e->getMessage();
+                $timeRecord->stop($classNameId);
+                continue;
+            }
+        }
+        // events
+        $this->eventDispatch('Storage:controllers:registered', $this);
+        $timeRecord->stop('StorageControllers:load');
+    }
+
+    /**
+     * @param array $routeData
+     *
+     * @return string
+     */
+    private function buildRegexForRoute(array $routeData): string
+    {
+        $regex = '';
+        $variables = [];
+        foreach ($routeData as $part) {
+            if (is_string($part)) {
+                $regex .= preg_quote($part, '~');
+                continue;
+            }
+            [$varName, $regexPart] = $part;
+            if (isset($variables[$varName])) {
+                throw new BadRouteException(sprintf(
+                    'Cannot use the same placeholder "%s" twice',
+                    $varName
+                ));
+            }
+            if (str_contains($regexPart, '(')) {
+                $skipFail = "(*SKIP)(*FAIL)";
+                if (preg_match(
+                    "~
+                (?:
+                    \(\?\(
+                  | \[ [^]\\\\]* (?: \\\\ . [^]\\\\]* )*]
+                  | \\\\.) $skipFail |\((?!\?(?!<(?![!=])|P<|')| \*)
+                ~x",
+                    $regex
+                )) {
+                    throw new BadRouteException(sprintf(
+                        'Regex "%s" for parameter "%s" contains a capturing group',
+                        $regexPart,
+                        $varName
+                    ));
+                }
+            }
+            $variables[$varName] = $varName;
+            $regex .= '(' . $regexPart . ')';
         }
 
-        // events
-        $this->eventDispatch('StorageControllers:controllers:registered', $this);
-        $timeRecord->stop('StorageControllers:load');
+        return $regex;
     }
 
     /**

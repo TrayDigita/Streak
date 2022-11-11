@@ -196,11 +196,12 @@ class SystemInitialHandler extends AbstractContainerization
 
     /**
      * @param string $path
+     * @param bool $first
      *
      * @return bool
      * @internal
      */
-    private function recursiveRemoveDirectoryStorage(string $path, $first = true): bool
+    private function recursiveRemoveDirectoryStorage(string $path, bool $first = true): bool
     {
         if (is_dir($path)) {
             $dir = @opendir($path);
@@ -410,6 +411,7 @@ class SystemInitialHandler extends AbstractContainerization
      * @param ResponseInterface $response
      *
      * @return ResponseInterface
+     * @throws Throwable
      */
     public function renderError(
         Throwable $exception,

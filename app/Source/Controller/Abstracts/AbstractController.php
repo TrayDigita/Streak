@@ -111,7 +111,7 @@ abstract class AbstractController extends AbstractResponse implements PriorityCa
         return $this->htmlContentType;
     }
 
-    public static function thePriority() : int
+    public function getPriority() : int
     {
         return 10;
     }

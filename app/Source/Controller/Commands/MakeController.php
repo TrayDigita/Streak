@@ -169,7 +169,7 @@ class $name extends AbstractController
      *
      * @return int the priority
      */
-    public static function thePriority() : int
+    public function getPriority() : int
     {
         //change the priority, sorted from small priority
         return 10;

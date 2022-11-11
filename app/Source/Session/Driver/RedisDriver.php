@@ -2,7 +2,6 @@
 /**
  * @noinspection PhpUndefinedNamespaceInspection
  * @noinspection PhpUndefinedClassInspection
- * @noinspection PhpComposerExtensionStubsInspection
  */
 declare(strict_types=1);
 

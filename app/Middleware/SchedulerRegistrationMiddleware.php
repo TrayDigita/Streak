@@ -16,7 +16,7 @@ use TrayDigita\Streak\Source\Scheduler\Scheduler;
 
 class SchedulerRegistrationMiddleware extends AbstractMiddleware
 {
-    public static function thePriority(): int
+    public function getPriority(): int
     {
         return PHP_INT_MIN + 10;
     }

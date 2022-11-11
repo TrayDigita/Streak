@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Controller;
 
-use Closure;
 use FilesystemIterator;
 use Psr\Http\Message\ServerRequestInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
 use RuntimeException;
-use Slim\Routing\RouteCollectorProxy;
-use Slim\Routing\RouteGroup;
 use SplFileInfo;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Throwable;
@@ -99,6 +96,9 @@ class Collector extends AbstractContainerization implements Scannable
         $this->maxDepth = $maxDepth < 0 ? 0 : $maxDepth;
     }
 
+    /**
+     * @return $this
+     */
     public function scan() : static
     {
         if ($this->scanned) {
@@ -111,7 +111,7 @@ class Collector extends AbstractContainerization implements Scannable
         if (!$directory || !is_dir($directory)) {
             return $this;
         }
-        $controllers = [];
+
         $length = strlen($directory);
         $recursive = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
@@ -164,7 +164,7 @@ class Collector extends AbstractContainerization implements Scannable
                     $ref = new ReflectionClass($className);
                     if (!$ref->isSubclassOf(AbstractController::class)) {
                         if ($ref->isSubclassOf(AnnotationController::class)) {
-                            $this->createFromAnnotationController($ref->getName(), $controllers);
+                            $this->createFromAnnotationController($ref->getName());
                         }
                         continue;
                     }
@@ -178,23 +178,25 @@ class Collector extends AbstractContainerization implements Scannable
             if (!$foundClassName) {
                 continue;
             }
+            $this->controllers[strtolower($foundClassName)] = new $foundClassName($this->container);
+        }
 
-            /**
-             * @var AbstractController $foundClassName
-             */
-            $controllers[$foundClassName::thePriority()][$foundClassName] = $foundClassName;
-        }
-        ksort($controllers, SORT_ASC);
-        foreach ($controllers as $classNames) {
-            foreach ($classNames as $className => $class) {
-                $className = strtolower($className);
-                $this->controllers[$className] = $class;
-            }
-        }
+        $this->sortCollections();
         return $this;
     }
 
-    private function createFromAnnotationController($className, &$controllers)
+    /**
+     * Sort
+     */
+    private function sortCollections()
+    {
+        uasort($this->controllers, fn ($a, $b) => $a->getPriority() > $b->getPriority());
+    }
+
+    /**
+     * @param $className
+     */
+    private function createFromAnnotationController($className)
     {
         try {
             $annotation = $this
@@ -223,9 +225,10 @@ class Collector extends AbstractContainerization implements Scannable
                             continue;
                         }
                     }
+
                     $name = sprintf('%s::%s', $route->getController(), $route->getControllerMethod());
                     $name = strtolower($name);
-                    $controllers[$route->getPriority()][$name] = $controller;
+                    $this->controllers[$name] = $controller;
                 } catch (Throwable $e) {
                     $this->logWarningException($e, ['annotation' => $className]);
                 }
@@ -266,13 +269,16 @@ class Collector extends AbstractContainerization implements Scannable
         if (isset($this->controllers[$className])) {
             return false;
         }
-
         $this->controllers[$className] = $controller;
+        // sorting again
+        $this->sortCollections();
+
         return true;
     }
 
     /**
      * @return array<string, class-string<AbstractController>>
+     * @noinspection PhpUnused
      */
     public function getControllersKey(): array
     {
@@ -285,17 +291,20 @@ class Collector extends AbstractContainerization implements Scannable
      * @template T
      * @return ?AbstractController|T
      * @noinspection PhpDocSignatureInspection
+     * @noinspection PhpUnused
      */
     public function getController(string $name) : ?AbstractController
     {
         $name = strtolower(ltrim($name, '\\'));
-        if (!isset($this->controllers[$name])) {
-            return null;
-        }
-        if (is_string($this->controllers[$name])) {
-            $this->controllers[$name] = new $this->controllers[$name]($this->getContainer());
-        }
-        return $this->controllers[$name];
+        return $this->controllers[$name]??null;
+    }
+
+    /**
+     * @return array<string, AbstractController>
+     */
+    public function getControllers() : array
+    {
+        return $this->controllers;
     }
 
     /**
@@ -305,48 +314,5 @@ class Collector extends AbstractContainerization implements Scannable
     public function getLoadedControllers(): array
     {
         return array_keys($this->loadedControllers);
-    }
-
-    /**
-     * @param T $controller
-     * @param Storage $storageControllers
-     * @param RouteCollectorProxy $collectorProxy
-     * @param Closure $callback
-     * @template T AbstractController
-     * @return T
-     */
-    public function load(
-        Storage $storageControllers,
-        AbstractController $controller,
-        RouteCollectorProxy $collectorProxy,
-        Closure $callback
-    ) : AbstractController {
-        // always scan first
-        if (!$this->scanned()) {
-            return $controller;
-        }
-        $controllerClass = $controller instanceof DynamicController
-            ? sprintf(
-                '%s::%s',
-                $controller->getRouteAnnotation()->getController(),
-                $controller->getRouteAnnotation()->getControllerMethod()
-            ) : get_class($controller);
-        $name = strtolower($controllerClass);
-        if (!isset($this->loadedControllers[$name])) {
-            $currents = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-            $storageController = next($currents)['class']??null;
-            $routeGroup = next($currents)['class']??null;
-            // validate
-            if (($storageController == Storage::class
-                 || !$storageController instanceof Storage
-                )
-                && ($routeGroup === RouteGroup::class || $routeGroup instanceof RouteGroup)
-            ) {
-                $this->alreadyLoaded = true;
-                $this->loadedControllers[$name] = $controllerClass;
-                $callback->call($storageControllers, $controller, $collectorProxy);
-            }
-        }
-        return $controller;
     }
 }

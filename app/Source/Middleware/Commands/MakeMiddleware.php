@@ -135,7 +135,7 @@ class $name extends AbstractMiddleware
      *
      * @return int
      */
-    public static function thePriority(): int
+    public function getPriority(): int
     {
         return 10;
     }

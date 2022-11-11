@@ -216,7 +216,7 @@ class StoragePath extends AbstractContainerization
         $cache = is_string($cache) || trim($cache) === '' || str_contains($cache, '..')
             ? 'cache'
             : $cache;
-        return "$storagePath{$this->directorySeparator}$cache";
+        return "$storagePath$this->directorySeparator$cache";
     }
 
     /**
@@ -229,7 +229,7 @@ class StoragePath extends AbstractContainerization
         $stream = is_string($stream) || trim($stream) === '' || str_contains($stream, '..')
             ? 'streams'
             : $stream;
-        return "$cacheDirectory{$this->directorySeparator}$stream";
+        return "$cacheDirectory$this->directorySeparator$stream";
     }
 
     /**
@@ -242,7 +242,7 @@ class StoragePath extends AbstractContainerization
         $uploads = is_string($uploads) || trim($uploads) === '' || str_contains($uploads, '..')
             ? 'stream'
             : $uploads;
-        return "$cacheDirectory{$this->directorySeparator}$uploads";
+        return "$cacheDirectory$this->directorySeparator$uploads";
     }
 
     /**
@@ -257,7 +257,7 @@ class StoragePath extends AbstractContainerization
         $logs = is_string($logs) || trim($logs) === '' || str_contains($logs, '..')
             ? 'logs'
             : $logs;
-        return "$storagePath{$this->directorySeparator}$logs";
+        return "$storagePath$this->directorySeparator$logs";
     }
 
     /**
@@ -272,6 +272,6 @@ class StoragePath extends AbstractContainerization
         $sessions = is_string($sessions) || trim($sessions) === '' || str_contains($sessions, '..')
             ? 'sessions'
             : $sessions;
-        return "$storagePath{$this->directorySeparator}$sessions";
+        return "$storagePath$this->directorySeparator$sessions";
     }
 }

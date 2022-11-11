@@ -5,5 +5,5 @@ namespace TrayDigita\Streak\Source\Interfaces;
 
 interface PriorityCallableInterface
 {
-    public static function thePriority() : int;
+    public function getPriority() : int;
 }
