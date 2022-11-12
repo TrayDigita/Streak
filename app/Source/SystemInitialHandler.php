@@ -14,7 +14,6 @@ use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Console\Runner;
 use TrayDigita\Streak\Source\Controller\Storage;
-use TrayDigita\Streak\Source\Helper\Util\NumericConverter;
 use TrayDigita\Streak\Source\Helper\Util\StreamCreator;
 use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Json\ApiCreator;
@@ -212,7 +211,7 @@ class SystemInitialHandler extends AbstractContainerization
                         continue;
                     }
                     if (!$this->recursiveRemoveDirectoryStorage("$path/$file", false)) {
-                        $succeed = (bool)$first;
+                        $succeed = $first;
                     } elseif ($succeed !== false) {
                         $succeed  = true;
                     }
@@ -250,12 +249,12 @@ class SystemInitialHandler extends AbstractContainerization
                 $this->stream = null;
                 ob_start([$this, 'handleBuffer']);
                 $exception = $this->exception ?? new ErrorException(
-                    $error['message'],
-                    $error['type'],
-                    1,
-                    $error['file'],
-                    $error['line']
-                );
+                        $error['message'],
+                        $error['type'],
+                        1,
+                        $error['file'],
+                        $error['line']
+                    );
                 try {
                     $this->handleException($exception);
                 } catch (Throwable $e) {
@@ -369,6 +368,24 @@ class SystemInitialHandler extends AbstractContainerization
     }
 
     /**
+     * @return bool
+     */
+    private function isHandledByShutdown() : bool
+    {
+        if ($this->handled) {
+            return true;
+        }
+
+        $debugSource = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+        if ($debugSource['class']??null === __CLASS__
+           && $debugSource['function']??null === 'handleShutdown'
+        ) {
+            $this->handled = true;
+        }
+        return $this->handled;
+    }
+
+    /**
      * @param Throwable $exception
      */
     public function handleException(Throwable $exception)
@@ -382,8 +399,9 @@ class SystemInitialHandler extends AbstractContainerization
             $exceptionView = $this
                 ->getContainer(Renderer::class)
                 ->createExceptionRenderView($exception);
+
             // fallback if error
-            if ($this->handled) {
+            if ($this->isHandledByShutdown() === true) {
                 $exceptionView->setArgument(AbstractRenderer::SKIP_THEME, true);
             }
 
@@ -480,7 +498,7 @@ class SystemInitialHandler extends AbstractContainerization
             ->getContainer(Renderer::class)
             ->createExceptionRenderView($exception);
         // fallback if error
-        if ($this->handled) {
+        if ($this->isHandledByShutdown()) {
             $exceptionView->setArgument(AbstractRenderer::SKIP_THEME, true);
         }
 
