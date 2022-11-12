@@ -67,7 +67,7 @@ class ResultQuery
         $exp = $this->model->queryBuilder->expr();
         if ($value === null) {
             $equal = ['eq', 'like', 'in'];
-            return [in_array($method, $equal) ? [$exp->isNull($name)] : [$exp->isNotNull($name)]];
+            return [in_array($method, $equal) ? $exp->isNull($name) : $exp->isNotNull($name)];
         }
         if (is_array($value)) {
             $value = array_map(
