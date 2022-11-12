@@ -149,8 +149,8 @@ abstract class Model extends AbstractContainerization
         $this->modelUniqueId = RandomString::createUniqueHash();
 
         $this->determineTableName();
-
         $this->modelTableName = $this->tableName;
+        $this->queryBuilder->from($this->tableName);
     }
 
     /**
