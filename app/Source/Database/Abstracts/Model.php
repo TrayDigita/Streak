@@ -451,7 +451,7 @@ abstract class Model extends AbstractContainerization
     {
         $name = $this->guessColumnName($key);
         $found = array_key_exists($name, $this->modelData);
-        return $found ? $this->modelDataSet[$name] : $default;
+        return $found ? $this->modelData[$name] : $default;
     }
 
     /**
