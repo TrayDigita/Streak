@@ -261,7 +261,7 @@ class Application implements ContainerizeInterface
         $baseNS = Consolidation::getNameSpace(__NAMESPACE__);
         $appDir = Consolidation::appDirectory();
 
-        $container = $container??new Container();
+        $container ??= new Container();
         // add application
         $container->setProtect(Application::class, $this);
 

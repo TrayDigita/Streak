@@ -236,8 +236,8 @@ class Consolidation
         ?InputInterface $input = null,
         ?OutputInterface $output = null
     ) : SymfonyStyle {
-        $input = $input??new ArgvInput();
-        $output = $output??StreamCreator::createStreamOutput(null, true);
+        $input ??= new ArgvInput();
+        $output ??= StreamCreator::createStreamOutput(null, true);
         return new SymfonyStyle(
             $input,
             $output

@@ -30,7 +30,7 @@ trait ModelSchema
     /**
      * @return Instance
      */
-    abstract public function getDatabaseInstance() : Instance;
+    abstract public function getInstance() : Instance;
 
     /**
      * @reference
@@ -48,6 +48,14 @@ trait ModelSchema
             return $this->tableSchemaData;
         }
         return [];
+    }
+
+    public function getTableSchemaEngine() : ?string
+    {
+        if (isset($this->tableSchemaEngine) && is_string($this->tableSchemaEngine) && trim($this->tableSchemaEngine) !== '') {
+            return $this->tableSchemaEngine;
+        }
+        return null;
     }
 
     /**
@@ -85,7 +93,7 @@ trait ModelSchema
     {
         $tableSchemaData = $this->getTableSchemaData();
         if (empty($tableSchemaData)) {
-            return $this->getDatabaseInstance()->getTableDetails($this->getTableName());
+            return $this->getInstance()->getTableDetails($this->getTableName());
         }
 
         // determine columns method set
@@ -105,7 +113,7 @@ trait ModelSchema
         $modes = [];
         $primary = [];
         $foreign = [];
-        $database = $this->getDatabaseInstance();
+        $database = $this->getInstance();
         $platform = $database->getDatabasePlatform();
         $supportCollation = $platform->supportsColumnCollation();
         $isMysql = is_a($platform, MySQLPlatform::class);
@@ -303,12 +311,12 @@ trait ModelSchema
                 if ($tableForeign && $columnForeign) {
                     $prefix = $database->prefix;
                     if (property_exists($this, 'usePrefix')
-                        && $this->usePrefix
+                        && $this->modelUsePrefix
                         && $database->isTableExists("$prefix$tableForeign")
                     ) {
                         $tableForeign = "$prefix$tableForeign";
                     } elseif (property_exists($this, 'autoPrefix')
-                              && $this->autoPrefix
+                              && $this->modelAutoPrefix
                               && $database->isTableExists("$prefix$tableForeign")
                     ) {
                         $tableForeign = "$prefix$tableForeign";
@@ -476,6 +484,9 @@ trait ModelSchema
         ) {
             $table->addOption('collation', $definitionCollate['collate']);
             $table->addOption('charset', $definitionCollate['charset']);
+        }
+        if (($engine = $this->getTableSchemaEngine()) && $platform instanceof MySQLPlatform) {
+            $table->addOption('engine', $engine);
         }
 
         return $table;

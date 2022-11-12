@@ -79,8 +79,8 @@ class EncodeDecode extends AbstractContainerization implements SerializerInterfa
     public function encode(mixed $data, ?int $options = null, ?int $depth = null) : string|false
     {
         $originalOptions = $options;
-        $options = $options??$this->getOptions();
-        $depth = $depth??$this->getDepth();
+        $options ??= $this->getOptions();
+        $depth ??= $this->getDepth();
         $newOptions = $this->eventDispatch(
             'Json:options',
             $options,
@@ -132,7 +132,7 @@ class EncodeDecode extends AbstractContainerization implements SerializerInterfa
         ?bool $associative = true,
         ?int $depth = null
     ) : mixed {
-        $depth = $depth??$this->getDepth();
+        $depth ??= $this->getDepth();
         return json_decode($data, $associative, $depth);
     }
 

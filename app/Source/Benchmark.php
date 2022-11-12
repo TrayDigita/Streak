@@ -53,7 +53,7 @@ final class Benchmark extends AbstractContainerization implements JsonSerializab
 
     public function stop(?string $name = null)
     {
-        $name = $name??$this->lastRecord;
+        $name ??= $this->lastRecord;
         if ($name === null || !isset($this->temporaryRecords[$name])) {
             return;
         }

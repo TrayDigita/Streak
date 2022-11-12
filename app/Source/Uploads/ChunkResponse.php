@@ -219,7 +219,7 @@ class ChunkResponse extends AbstractContainerization
             }
         }
         // uuid
-        $id = $id??UUID::v4();
+        $id ??= UUID::v4();
 
         // if content-range is out of range
         // (total size) less than (end size)

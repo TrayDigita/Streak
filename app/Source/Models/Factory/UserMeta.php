@@ -24,8 +24,8 @@ class UserMeta extends Model
     /**
      * @throws Exception
      */
-    public static function findFromUsers(Users $user) : static
+    public static function findFromUsers(Users $user) : ?static
     {
-        return static::find(['user_id' => $user]);
+        return static::find(['user_id' => $user])->fetchFirst();
     }
 }

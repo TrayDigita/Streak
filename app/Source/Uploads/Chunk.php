@@ -108,8 +108,8 @@ class Chunk extends AbstractContainerization
      */
     public function clean(?int $max = null) : int
     {
-        $count = $max??$this->maxDeletionCount;
-        if (!is_dir($this->uploadCacheStorageDirectory) || $count <= 0) {
+        $max ??= $this->maxDeletionCount;
+        if (!is_dir($this->uploadCacheStorageDirectory) || $max <= 0) {
             return 0;
         }
 
@@ -127,7 +127,7 @@ class Chunk extends AbstractContainerization
             if ($item->isWritable()) {
                 continue;
             }
-            if ($count-- < 0) {
+            if ($max-- < 0) {
                 break;
             }
             $deleted++;

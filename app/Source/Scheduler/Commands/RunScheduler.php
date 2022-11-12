@@ -79,15 +79,22 @@ EOT
          * @var Table $table
          */
         foreach ($tables as $table) {
-            if ($database->tablesExist($table->getName())) {
+            if ($database->isTableExists($table->getName())) {
                 $existingTable = $database->getTableDetails($table->getName());
-                $diffTable = $comparator->compareTables($table, $existingTable);
-                $sql_data[$table->getName()] = $platform->getAlterTableSQL($diffTable);
+                $diffTable = $comparator->compareTables($existingTable, $table);
+                $sql = $platform->getAlterTableSQL($diffTable);
+                if ($sql) {
+                    $sql_data[$table->getName()] = $sql;
+                }
             } else {
                 $schema = new Schema([$table]);
-                $sql_data[$table->getName()] = $schema->toSql($platform);
+                $sql = $schema->toSql($platform);
+                if ($sql) {
+                    $sql_data[$table->getName()] = $sql;
+                }
             }
         }
+
         if (!empty($sql_data)) {
             $symfonyStyle->writeln(
                 sprintf(
@@ -98,9 +105,11 @@ EOT
                     )
                 )
             );
-            $database->multiQuery($sql_data, [], $exception);
-            if ($exception) {
-                throw $exception;
+            foreach ($sql_data as $sql) {
+                $database->multiQuery($sql, [], $exception);
+                if ($exception) {
+                    throw $exception;
+                }
             }
         } else {
             $symfonyStyle->writeln(

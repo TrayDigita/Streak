@@ -46,6 +46,7 @@ trait ActionSchedulersLogSchema
             'options' => [
                 'length' => 120,
                 'notnull' => true,
+                'collation' => 'utf8mb4_general_ci',
                 'comment' => 'Scheduler status fail or success'
             ],
             'index' => 'scheduler_log_index_status'
@@ -55,6 +56,7 @@ trait ActionSchedulersLogSchema
             'options' => [
                 'notnull' => true,
                 'default' => '',
+                'collation' => 'utf8mb4_unicode_ci',
                 'comment' => 'Scheduler message'
             ],
         ],

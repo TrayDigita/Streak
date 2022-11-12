@@ -13,7 +13,9 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Exception as DoctrineException;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
+use Doctrine\DBAL\Platforms\SQLServerPlatform;
 use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Comparator;
@@ -204,6 +206,12 @@ class Instance extends AbstractContainerization
     ])] public function getCollationByName(string $collation) : ?array
     {
         return $this->getAvailableCollations()[strtolower($collation)]??null;
+    }
+
+    public function getDatabasePlatform() : AbstractPlatform
+    {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return $this->getConnection()->getDatabasePlatform();
     }
 
     /**
@@ -571,6 +579,25 @@ class Instance extends AbstractContainerization
     }
 
     /**
+     * @param string $like
+     *
+     * @return string
+     */
+    public function escapeLike(string $like): string
+    {
+        $platform = $this->getDatabasePlatform();
+        $characters = '%_';
+        if ($platform instanceof SQLServerPlatform) {
+            $characters .= '[]';
+        }
+        return $platform
+            ->escapeStringForLike(
+                $like,
+                $characters
+            );
+    }
+
+    /**
      * Alternative multi variable type quote string
      *      Nested quote-able
      *
@@ -801,6 +828,17 @@ class Instance extends AbstractContainerization
             ->connection
             ->createSchemaManager()
             ->listTableIndexes($tableName);
+    }
+
+    /**
+     * @param array|string $tables
+     *
+     * @return bool
+     * @throws DoctrineException
+     */
+    public function tablesExist(array|string $tables) : bool
+    {
+        return $this->isTableExists($tables);
     }
 
     /**
@@ -1076,7 +1114,7 @@ class Instance extends AbstractContainerization
             );
         }
 
-        return new $model($this->getContainer());
+        return new $model($this);
     }
 
     /**

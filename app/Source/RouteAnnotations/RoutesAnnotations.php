@@ -124,7 +124,7 @@ final class RoutesAnnotations extends AbstractContainerization implements Starta
          */
         $annotation = $this->annotationReader->getClassAnnotations($ref)[0]??null;
         $groupPath = $annotation ? $annotation->getRoutePattern() : '';
-        if (!is_string($groupPath??'')) {
+        if (!is_string($groupPath)) {
             return $this;
         }
 

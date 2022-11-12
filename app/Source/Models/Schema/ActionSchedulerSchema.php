@@ -40,6 +40,7 @@ trait ActionSchedulerSchema
                 'length' => 120,
                 'notnull' => true,
                 'comment' => 'Scheduler status',
+                'collation' => 'utf8mb4_general_ci',
                 'default' => 'pending'
             ],
             'index' => 'scheduler_index_status'
@@ -50,6 +51,7 @@ trait ActionSchedulerSchema
                 'length'  => 65535,
                 'notnull' => true,
                 'default' => '',
+                'collation' => 'utf8mb4_unicode_ci',
                 'comment' => 'Scheduler message'
             ],
         ],

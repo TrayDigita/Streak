@@ -70,8 +70,8 @@ class Runner extends Application implements ContainerizeInterface
         }
         // add commands
         ConsoleRunner::addCommands($this, $this->getContainer(DependencyFactory::class));
-        $input = $input??new ArgvInput();
-        $output = $output??(Validator::isCli() ? $this->getContainer(ConsoleOutput::class) : null);
+        $input ??= new ArgvInput();
+        $output ??= (Validator::isCli() ? $this->getContainer(ConsoleOutput::class) : null);
         if (!$output instanceof OutputStyle) {
             $output = Consolidation::createSymfonyConsoleOutput(
                 $input,

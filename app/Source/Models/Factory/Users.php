@@ -6,7 +6,6 @@ namespace TrayDigita\Streak\Source\Models\Factory;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Types\ConversionException;
 use RuntimeException;
 use TrayDigita\Streak\Source\ACL\UserControl;
 use TrayDigita\Streak\Source\Database\Abstracts\Model;
@@ -44,8 +43,6 @@ class Users extends Model
      * @param $value
      *
      * @return mixed
-     * @throws Exception
-     * @throws ConversionException
      */
     protected function filterDatabaseValue(string $name, $value): mixed
     {
@@ -67,16 +64,16 @@ class Users extends Model
      */
     public function isValidPassword(string $password): bool
     {
-        $pass = $this->getValueData('password')?:null;
+        $pass = $this->get('password');
         return $pass && $this->verifyPassword($password, $pass);
     }
 
     /**
      * @throws Exception
      */
-    public function fromMetaUsers(UserMeta $metaUsers) : static
+    public function fromMetaUsers(UserMeta $metaUsers) : ?static
     {
-        return static::find(['id' => $metaUsers->user_id?->id]);
+        return static::find(['id' => $metaUsers->user_id?->id])->fetchFirst();
     }
 
     /**
@@ -89,7 +86,7 @@ class Users extends Model
             return $this->userControl;
         }
 
-        if (!$this->isFetched()) {
+        if (!$this->isModelFetched()) {
             throw new RuntimeException(
                 $this->translate('Users model has not been fetched yet.')
             );

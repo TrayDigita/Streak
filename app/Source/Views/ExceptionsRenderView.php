@@ -194,7 +194,7 @@ HTML
      */
     public function render(ResponseInterface $response, ?int $httpCode = null): ResponseInterface
     {
-        $httpCode = $httpCode??$this->code;
+        $httpCode ??= $this->code;
         return parent::render($response->withStatus($httpCode));
     }
 

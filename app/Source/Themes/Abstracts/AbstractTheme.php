@@ -177,9 +177,7 @@ abstract class AbstractTheme extends AbstractContainerization
         ?string $afterURI = null,
         ?ServerRequest $request = null
     ): UriInterface {
-        $request = $request??(
-                $this->getRequest()??$this->getContainer(ServerRequestInterface::class)
-            );
+        $request ??= $this->getRequest()??$this->getContainer(ServerRequestInterface::class);
         $uri = $request
             ->getUri()
             ->withFragment('')

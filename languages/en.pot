@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-11 23:10+0700\n"
+"POT-Creation-Date: 2022-11-12 16:18+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -205,46 +205,46 @@ msgstr ""
 msgid "Parameter %s is not exists."
 msgstr ""
 
-#: Source/Container.php:453
+#: Source/Container.php:452
 #, php-format
 msgid "Cannot override frozen service \"%s\"."
 msgstr ""
 
-#: Source/Container.php:503
+#: Source/Container.php:502
 #, php-format
 msgid "Identifier \"%s\" is not defined."
 msgstr ""
 
-#: Source/Container.php:561
+#: Source/Container.php:560
 msgid "Argument object closure is not allowed."
 msgstr ""
 
-#: Source/Container.php:585
+#: Source/Container.php:584
 #, php-format
 msgid "Class name %s is not exists."
 msgstr ""
 
-#: Source/Container.php:609
+#: Source/Container.php:608
 #, php-format
 msgid "Class name %s is not instantiable."
 msgstr ""
 
-#: Source/Container.php:691
+#: Source/Container.php:690
 #, php-format
 msgid "Class name %s contain required parameters (%s)."
 msgstr ""
 
-#: Source/Container.php:804
+#: Source/Container.php:803
 #, php-format
 msgid "Class name %s contain required parameter type: (%s) that could not to be resolved."
 msgstr ""
 
-#: Source/Container.php:823
+#: Source/Container.php:822
 #, php-format
 msgid "Class name %s contain required parameters."
 msgstr ""
 
-#: Source/Container.php:901
+#: Source/Container.php:900
 #, php-format
 msgid "Call to undefined property %s."
 msgstr ""
@@ -300,26 +300,37 @@ msgstr ""
 msgid "Route controller method does not returning %s."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:293
+#: Source/Database/Abstracts/Model.php:231
 #, php-format
 msgid "Table for model %s is not exist."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:577
+#: Source/Database/Abstracts/Model.php:514 Source/Database/Instance.php:969
+#: Source/Themes/Abstracts/AbstractTheme.php:434
+#, php-format
+msgid "Call to undefined Method %s."
+msgstr ""
+
+#: Source/Database/Abstracts/Model.php:663
+#, php-format
+msgid "%s can not called outside %s"
+msgstr ""
+
+#: Source/Database/Abstracts/Model.php:792
 #, php-format
 msgid "Argument parameters key index must be as a string, %s given."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:591
+#: Source/Database/Abstracts/Model.php:806
 #, php-format
 msgid "Table %s does not have primary key"
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:755
-msgid "Update method does not where statement"
+#: Source/Database/Abstracts/Model.php:869
+msgid "No data to be inserted."
 msgstr ""
 
-#: Source/Database/Abstracts/Model.php:908
+#: Source/Database/Abstracts/Model.php:911
 #, php-format
 msgid "Column (%s) must be set."
 msgstr ""
@@ -336,52 +347,46 @@ msgstr ""
 msgid "Model file"
 msgstr ""
 
-#: Source/Database/Instance.php:542 Source/Database/Instance.php:587
+#: Source/Database/Instance.php:550 Source/Database/Instance.php:614
 msgid "Invalid value to be quote, quote value could not be instance of `Closure` or as a `Resource`."
 msgstr ""
 
-#: Source/Database/Instance.php:564
+#: Source/Database/Instance.php:572
 msgid "Invalid value to be quote, quote value must be as a string."
 msgstr ""
 
-#: Source/Database/Instance.php:681
+#: Source/Database/Instance.php:708
 #, php-format
 msgid "Invalid statement binding count with sql query : %s."
 msgstr ""
 
-#: Source/Database/Instance.php:768 Source/Database/Instance.php:794
-#: Source/Database/Instance.php:875 Source/Database/Instance.php:900
+#: Source/Database/Instance.php:795 Source/Database/Instance.php:821
+#: Source/Database/Instance.php:913 Source/Database/Instance.php:938
 msgid "Invalid parameter table name. Table name could not be empty."
 msgstr ""
 
-#: Source/Database/Instance.php:820
+#: Source/Database/Instance.php:858
 msgid "Invalid table name type. Table name must be as string or array."
 msgstr ""
 
-#: Source/Database/Instance.php:931
-#: Source/Themes/Abstracts/AbstractTheme.php:436
-#, php-format
-msgid "Call to undefined Method %s."
-msgstr ""
-
-#: Source/Database/Instance.php:1060
+#: Source/Database/Instance.php:1098
 msgid "Argument must be subclass of %s, % given."
 msgstr ""
 
-#: Source/Database/Instance.php:1072
+#: Source/Database/Instance.php:1110
 #: Source/RouteAnnotations/RoutesAnnotations.php:113
 #, php-format
 msgid "Class name %s is not valid."
 msgstr ""
 
-#: Source/Database/Traits/ModelSchema.php:120
-#: Source/Database/Traits/ModelSchema.php:131
-#: Source/Database/Traits/ModelSchema.php:143
+#: Source/Database/Traits/ModelSchema.php:128
+#: Source/Database/Traits/ModelSchema.php:139
+#: Source/Database/Traits/ModelSchema.php:151
 #, php-format
 msgid "Database type %s is not exist."
 msgstr ""
 
-#: Source/Database/Traits/ModelSchema.php:369
+#: Source/Database/Traits/ModelSchema.php:377
 #, php-format
 msgid "Columns %s is not exists on index %s column %s"
 msgstr ""
@@ -430,7 +435,7 @@ msgstr ""
 msgid "Middleware file"
 msgstr ""
 
-#: Source/Models/Factory/Users.php:94
+#: Source/Models/Factory/Users.php:91
 msgid "Users model has not been fetched yet."
 msgstr ""
 
@@ -535,7 +540,7 @@ msgid "Task error."
 msgstr ""
 
 #: Source/Scheduler/Abstracts/AbstractTask.php:168
-#: Source/Scheduler/Commands/RunScheduler.php:178
+#: Source/Scheduler/Commands/RunScheduler.php:187
 msgid "Unknown"
 msgstr ""
 
@@ -578,29 +583,29 @@ msgstr ""
 msgid "Checking database schema"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:96
+#: Source/Scheduler/Commands/RunScheduler.php:103
 #, php-format
 msgid "Creating database tables schema for %s"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:109
+#: Source/Scheduler/Commands/RunScheduler.php:118
 msgid "Database schema tables for scheduler are complete."
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:122
+#: Source/Scheduler/Commands/RunScheduler.php:131
 msgid "No schedule to be execute"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:131
+#: Source/Scheduler/Commands/RunScheduler.php:140
 msgid "Scheduler"
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:136
+#: Source/Scheduler/Commands/RunScheduler.php:145
 #, php-format
 msgid "Execute %d scheduler on total."
 msgstr ""
 
-#: Source/Scheduler/Commands/RunScheduler.php:150
+#: Source/Scheduler/Commands/RunScheduler.php:159
 msgid "Pending"
 msgstr ""
 

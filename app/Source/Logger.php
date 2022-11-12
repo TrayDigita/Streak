@@ -47,7 +47,7 @@ class Logger extends Monolog implements ContainerizeInterface
         DateTimeZone $logTimezone = null
     ) {
         $this->container = $container;
-        $logName = $logName??$container->get(Application::class)->uuid;
+        $logName ??= $container->get(Application::class)->uuid;
         $logging = $this->getContainer(Configurations::class)->get('logging');
         $this->logging = ($logging instanceof Collections ? $logging->get('enable') : true) === true;
 

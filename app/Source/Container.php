@@ -282,7 +282,7 @@ class Container implements ContainerInterface, ArrayAccess
         string $alias,
         ?string $id = null
     ): static {
-        $id = $id??$this->last;
+        $id ??= $this->last;
         $this->lastAliasStatus = true;
         if ($id && isset($this->keys[$id]) && !isset($this->keys[$alias])) {
             if (!isset($this->aliases[$alias]) || ! $this->isAliasProtected($alias)) {
@@ -304,8 +304,7 @@ class Container implements ContainerInterface, ArrayAccess
      */
     public function setGlobalAliases(string $alias, ?string $id = null) : static
     {
-        $id = $id??$this->last;
-        if (!$id) {
+        if (!($id ??= $this->last)) {
             return $this;
         }
 

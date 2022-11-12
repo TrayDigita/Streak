@@ -197,7 +197,7 @@ final class StreamCreator
         ?int $verbosity = null,
         bool $inMemory = false
     ): StreamOutput {
-        $verbosity = $verbosity??OutputInterface::VERBOSITY_NORMAL;
+        $verbosity ??= OutputInterface::VERBOSITY_NORMAL;
         $decorated = Validator::isCli() ? true : null;
         return new StreamOutput(
             $inMemory
