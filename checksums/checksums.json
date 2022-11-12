@@ -60,9 +60,9 @@
         "sha256": "da9f68f184b7b4c0cfd1571cb13e1acb7f56455bc52dc212ea7ba63c91daaac2"
     },
     "app/Source/Helper/Util/StreamCreator.php": {
-        "md5": "de424663cda3bb56ecfc1a7c24637705",
-        "sha1": "b091b3b3b620013e9355e635e3b1dc828f7a88a3",
-        "sha256": "c547bc6756db21158b7bc1ce11ff8a4d0cbbbc30a7c78615d721cde4e55100a4"
+        "md5": "937fe48d11d7f4b2b0cb11fe61f29283",
+        "sha1": "e557dbddcc3571fd50200fe5c5ecd472ade54b76",
+        "sha256": "19a437c34065b790674443701863f8f4ffe34745bb2584f9a1108599c0a292c9"
     },
     "app/Source/Helper/Util/NumericConverter.php": {
         "md5": "9dc4ea4a4a084dac019f052cc7c28846",
@@ -70,9 +70,9 @@
         "sha256": "ff128ffcc884296942cf9389b750cb9662a70e114314fa533b96972d1e3dab39"
     },
     "app/Source/Helper/Util/Consolidation.php": {
-        "md5": "7a6d6ba297cc509743f6462f3b44c8f9",
-        "sha1": "2b8422a0584cf1d8fe1e3eff19803b857755c602",
-        "sha256": "14398cc174b42e995c5f1404f9c8184fba6aea5a0efcb8450351faf1b8d4b2e6"
+        "md5": "7a4ad836a16b2c4f5d5d52a0350232f1",
+        "sha1": "974057d92ede4bf13b7d421108a9a9a09b081b9c",
+        "sha256": "fbe9b30626166714baf16cf97bc5a8f5412dafe6fdd69af48d255f7957428a82"
     },
     "app/Source/Helper/Html/Attribute.php": {
         "md5": "3f92149c218c9758ef1cd316a3148b50",
@@ -110,9 +110,9 @@
         "sha256": "9c1509fd20515697e73b290b5fac83aef8622dd2b3630f94b50b648b2bcd4b7f"
     },
     "app/Source/Themes/Abstracts/AbstractTheme.php": {
-        "md5": "8308b135776c57dc1b561648c9e0d438",
-        "sha1": "6eaca50b6b9b67b7ad45ef73a6e83073d3decb7f",
-        "sha256": "ddd9f939e315c335d19767a7777cb30066582bc35f306dce2f4a67464c026e79"
+        "md5": "86914fb271e1a20ebb9dbd18db8a7156",
+        "sha1": "a1b7de9698ea05a5840f4d1f0dba98d1d4029cde",
+        "sha256": "794293c757ee8e3f2367b508b2d2f61d072198399907a4ee965c7dcaf9b0db4c"
     },
     "app/Source/Themes/ThemeReader.php": {
         "md5": "d1e1e8aa2fdc8664c7d29cb5108fecad",
@@ -125,9 +125,9 @@
         "sha256": "c7b5df5b7bfe4c41755e7db809b1bbef6d279278a24ffaa579f2efcb03757fc7"
     },
     "app/Source/Benchmark.php": {
-        "md5": "e99b7642289def3e4b95a9ce1527fbfc",
-        "sha1": "2e2a8115d16ee9bc86bf8222c66d1dcfe8e4f45c",
-        "sha256": "7d1a133ba5227e4ce859c0a4d7dbc7c3afcf5ed65b373c568f65c39f0d2690cb"
+        "md5": "0aa7009536a35e2b2458e23095ce876d",
+        "sha1": "6f70c7f5f7260faeaa3a4ffbfb264c4702e7a8f5",
+        "sha256": "abe98ebba7704852e81d46d43306aefaf2b579233a2fb9484eedb7fb7a776351"
     },
     "app/Source/Events.php": {
         "md5": "349e2a81295dac4c2697ebb1ca725954",
@@ -220,44 +220,54 @@
         "sha256": "448a2260c79f1deb963848eed1205d6719436f988465e35c1d7045de71740b78"
     },
     "app/Source/Logger.php": {
-        "md5": "a0a31a41158b61881f332c0ce10e570b",
-        "sha1": "21232bbb30df33ecaf18ce4d68234354196775af",
-        "sha256": "582992088812972184b206971033b9816d2e20dbeba671a2b1b2c33362d40299"
+        "md5": "86e135409f19ad472f5830afa917c74e",
+        "sha1": "41cb68772f25cd92dcb3aeb2374679c6be9703e6",
+        "sha256": "5f92ad5356955062a9cd28255b792ff2b9696f56f13052cd337d9932528b29bf"
     },
     "app/Source/Abstracts/AbstractContainerization.php": {
         "md5": "847acd2234d5ad0ba351f15b17b748d8",
         "sha1": "6b66b208ba49e7e1b857df3bd1508d61065c0345",
         "sha256": "d86079a82c20cad22a13027cd818b55bc894265faee199d156d8047661b0d6cb"
     },
+    "app/Source/Database/Exceptions/EmptyDataException.php": {
+        "md5": "279a8ef9796c6c59e0dc4d736504fa6a",
+        "sha1": "570adecb625d34376dc87cfb849a09ff5ec091f9",
+        "sha256": "5d537d93a8d840135b483d84be68a7abe714f5ff414bdeec1dc0c386a3ae94c8"
+    },
     "app/Source/Database/Instance.php": {
-        "md5": "3ff790ef11a9cb677ab66d97526d8b69",
-        "sha1": "6fb40ead6b89bd8b158fe1ea3348f50a8675ac71",
-        "sha256": "8e0c45b217eaaf3a42169562bfe99fc6dbdb7e0477465217a4d6aeeec61a7ce1"
+        "md5": "1714491c9f24bf4152b74e515325f039",
+        "sha1": "48c8d1ce8c899bd894bf3258a0f9beae5406d65b",
+        "sha256": "2468683534ec1269468a29da2f1a1649a372f7e59c2be94aee845bd58593d69d"
     },
     "app/Source/Database/Abstracts/Model.php": {
-        "md5": "0602d77bba0ee8248a02f3c4e29baa42",
-        "sha1": "d28c08b5416f592262bfbe8b472c87167a5ee042",
-        "sha256": "b364d5e70538e0304f1539dd0fe31e1dd1184f757ac8638ca03dd09d2360bd8c"
+        "md5": "7a8b98260dad31076e0f44b6e7502920",
+        "sha1": "f09c3f0070ddce11756936896118a58af2b69912",
+        "sha256": "2c7a05d36f02f79eefcd54bdadc5477fc304a1207d8ad6c66f62ace9cb8edbbc"
+    },
+    "app/Source/Database/ResultData.php": {
+        "md5": "6d04b6df1b79e523f17f346aff4d89b6",
+        "sha1": "fc257d52f4a927b5940aa63705599bc63d4e5670",
+        "sha256": "c6686b1f695d5016e15e4fc09718879a9ecf1230b808d2c8bc1f244107e95da2"
     },
     "app/Source/Database/Commands/MakeModel.php": {
         "md5": "f45c58aa70e849f61362dbab1ed28f2e",
         "sha1": "f926ffee1efc651e8f77b60e23e46a4c1012abc6",
         "sha256": "a7f7bff2b85e841d6ed0004e7e886bbfab13beeceab957972b9a38a51a7780f0"
     },
-    "app/Source/Database/Traits/ModelSchema.php": {
-        "md5": "151e7013d80b3e56f5d962594c2933b6",
-        "sha1": "0c2288b2dcfce6708925de36769c1f5d7f9192a0",
-        "sha256": "e7d25229b5f1e6549f1cc42823dde55c827927b7eb6e18c2b0ac881fea8dfb38"
+    "app/Source/Database/ResultQuery.php": {
+        "md5": "17739565328510e358640e8f35ce455b",
+        "sha1": "2ed516de7a06854f45ea5792f15b6f12f0050249",
+        "sha256": "5500bf1d9b5985a199c63357f8b7333306a334b5de2a9941373ade79f59d490d"
     },
-    "app/Source/Database/ResultCollection.php": {
-        "md5": "f4f0b703349d78f4414942078ba87eb1",
-        "sha1": "9ac329f065c375862b74b30b2fbd7eb89afefad9",
-        "sha256": "0c30678d5eb1da95bf6cf80cef16897d5242785ccf3615305bef415df5598811"
+    "app/Source/Database/Traits/ModelSchema.php": {
+        "md5": "81b06105babcd897b96454f748490779",
+        "sha1": "a25dc29ed0c2a0d6e81747177eeb324bfad44513",
+        "sha256": "7d9d06ea81e325b07a4f9d41df1340db5ad660f763feeffb511bebe183b584df"
     },
     "app/Source/Uploads/ChunkResponse.php": {
-        "md5": "be59666f1d69925b442937714d494624",
-        "sha1": "b9f80d97324177b75153bbed1d71368af4f85ed1",
-        "sha256": "e21b182061c70d278769b257e0030d3ab95d65685725b220f38665aec4f1d41c"
+        "md5": "9aec0acd90470c5c7980f54d4cdcb1e4",
+        "sha1": "c7ca5611f32dbca9be6d9ba42d171296d5e00e27",
+        "sha256": "0603f245ccff58bdcb7a7ebbd6954911fd2a8f3e189830a0660925ca549f0c01"
     },
     "app/Source/Uploads/Exceptions/FileLockedException.php": {
         "md5": "6d5ebe2a7934ba8b2753d46d25672a91",
@@ -295,9 +305,9 @@
         "sha256": "2809f77197c4d294d8e504987e1d4660d5d483f0c0d27964c2faf9c1eb1fc063"
     },
     "app/Source/Uploads/Chunk.php": {
-        "md5": "7d6e34f01e9034583233fc8d0b68a3f8",
-        "sha1": "3390328bf8cd2b94c53dbec8fa5b3ea3e4ee0f86",
-        "sha256": "c99d921aa2bc75bc28e5b118cc1dbdb239c472d52ad0d08ab34aadcdf59eb893"
+        "md5": "98ef629568c1ca3f69ab3aef75244671",
+        "sha1": "5a297caa41b7c54c28a36dfdc2afeb387917a2cf",
+        "sha256": "7c2208a07da1775a62b1970c4439a989f94f610187f4e507423a15867c7f13a4"
     },
     "app/Source/Uploads/Handler.php": {
         "md5": "9e6c2b358d586396066012a414415d46",
@@ -325,9 +335,9 @@
         "sha256": "b19b3b500ff08e11386c4e3b3c58a25723ad205a5ee432dd9365c276e7a8ac3c"
     },
     "app/Source/Models/Schema/ActionSchedulersLogSchema.php": {
-        "md5": "aaf80a1efbf66e266be7b94f65550437",
-        "sha1": "a0aa187764e01c5711ca8ba5689ca00bb026929f",
-        "sha256": "4cb54784d5b575cda24376541d0327209aa2b933fd8eb0c585b57dd647691ad5"
+        "md5": "4aaddf70bf322dba505f221016d35e81",
+        "sha1": "5e062193a5b57e8ec03be43948a750b58aee0642",
+        "sha256": "3bcfeb8f5a5c20fcf13cd85e4dfe178fa5127b2fa232f9bbe5740c72b5f61c85"
     },
     "app/Source/Models/Schema/UserMetaSchema.php": {
         "md5": "41f3d851dabe5bdade907f3ae7abe580",
@@ -335,9 +345,9 @@
         "sha256": "ce404b50370b299d54628a92dc488dedd9a2f3cc461c2d1822b4420b34370287"
     },
     "app/Source/Models/Schema/ActionSchedulerSchema.php": {
-        "md5": "e2d79378ec7b56c4eeb49ebe471aa2c7",
-        "sha1": "f26fe92678a37f1961efd53429999e3b659853b3",
-        "sha256": "23c6b37d003cb2ac73eb3eb0a5ba5cca03e69c0a0799bbf921fb88048974d13f"
+        "md5": "d7b1712012b1396d2b5e33c443da544d",
+        "sha1": "d4bbc464bb30293b374724e8ba29843d5a994d55",
+        "sha256": "59c84e49177896a339ec24f4f369baaf94e9192baac6e5d3b10bf8ef77124759"
     },
     "app/Source/Models/ActionSchedulersLog.php": {
         "md5": "058648ebea1a1a0a9fe36ea14493a985",
@@ -345,9 +355,9 @@
         "sha256": "1503fc0d667ff02ab99f9ff08562105187110eed15f20cc4e0c7fa980db83bbd"
     },
     "app/Source/Models/Factory/Users.php": {
-        "md5": "e0bff492a5aef6b2f3428fbdba6809ff",
-        "sha1": "aade9b62f3519790f53526c8af26bc56d0089d89",
-        "sha256": "9553c15b70f626eef029eff185046ee96860061feee348d0e07e27df4ee502d7"
+        "md5": "47363140ffcc9fe49ce2c12a3bc7b270",
+        "sha1": "90b6ff11e8fff65a9bd666593a833b7d57502cb7",
+        "sha256": "6bfaecb3b2ed89be9232595775b41516c3cab3f69f84ee9701477e70f410e451"
     },
     "app/Source/Models/Factory/README.md": {
         "md5": "a25c1d0544442565a899550b14f61b09",
@@ -355,9 +365,9 @@
         "sha256": "b200f06ef6cab862558f4e8b1d9c12558ad2416444ba25bead4ea087b4057af7"
     },
     "app/Source/Models/Factory/UserMeta.php": {
-        "md5": "1e0a62e42d3bbaa53264dd5e90432c7f",
-        "sha1": "a5f872928fd75607652c9b51c36811c0bbd8fc54",
-        "sha256": "234bb3bc19f324c627fbaf18b5267c4eb38b282d5b43e5c1fff2186ef2e0f442"
+        "md5": "2da949b7b87a13609f1e31135bf40f25",
+        "sha1": "01ff3314966b4c4a81a526648dd8161e5d1fff66",
+        "sha256": "1961829c4e3cd93958f570eb2e5c5f0331acf5f8fbcb94fbdb1c69abd17bb492"
     },
     "app/Source/Scheduler/Scheduler.php": {
         "md5": "50151c53685dd1715e9fcb3415766407",
@@ -385,9 +395,9 @@
         "sha256": "6fb78e20e95eb146c381d228ea2797e87e800459f2a8f1585812f2b85e176e51"
     },
     "app/Source/Scheduler/Commands/RunScheduler.php": {
-        "md5": "0e5483d3e721052b83b394b0f475b450",
-        "sha1": "69ea798b732108923ebe5419c7088e9f48c6c1a3",
-        "sha256": "2b09aa864ec98a8971227f13b5aa6fac497c815e6911b338217a9f26b76aa81b"
+        "md5": "a2c6bc696ee4685644410284ef78a415",
+        "sha1": "7b4797c33f1fc606ce227bbffb1c9421e0d94d94",
+        "sha256": "c7fa4e19b401fd63b1ea90d21c381e35d35de00dda9acb2f8091a84e1483c4a6"
     },
     "app/Source/Scheduler/Commands/MakeScheduler.php": {
         "md5": "8267c276bdb27d20550cc7b5d1ec7a5d",
@@ -410,9 +420,9 @@
         "sha256": "77741dba70a71685ec55f55172cf8aea0d46e844d4f3d90b74aff33c4e88e927"
     },
     "app/Source/Json/EncodeDecode.php": {
-        "md5": "ac83479a545b32b448429b7ef272837e",
-        "sha1": "60f126b503398bc1cc871b6adc809a60106e7210",
-        "sha256": "aca1a204210c6b55f4df9437743297ee9f19be3d0509122e3ec92b2ea4789cbe"
+        "md5": "6c2673f9d9b053b5915eb13755c4ca24",
+        "sha1": "ca75c6866a772960b2d1055933e879a77ecd4796",
+        "sha256": "4dd7924d61cd2d9d7217c4268d4592c4be52f392dcba8f64fbc27b5c56775315"
     },
     "app/Source/Json/Schema/ErrorSource.php": {
         "md5": "2f30963f98096671111e3004f8dc53d0",
@@ -500,9 +510,9 @@
         "sha256": "65a98b7351dc317f6e589e2b94d0b66b27f5dab49e634cfbca1597d51ae82ab3"
     },
     "app/Source/Container.php": {
-        "md5": "52074136c003cc6c100c4bd5240761c0",
-        "sha1": "85c139ce2952ea0a201300bd8c91cb7426d3d57a",
-        "sha256": "d1ec1668766d493c0791fe8a88e20681df852cfe4d5e9df01f15db377b0ab156"
+        "md5": "f005da398afbc5fd041a71d444222e85",
+        "sha1": "661aacf23c7e9f79e89840e0aa98b9f6fdeb7e60",
+        "sha256": "f852923f626147c7530a4d59a9cbec9bccd30cbb7ff67044d823d1c9fb95cdc3"
     },
     "app/Source/Module/Exceptions/ModuleException.php": {
         "md5": "de1bf943bab2bd705deb18bf0a1239ee",
@@ -535,9 +545,9 @@
         "sha256": "7510aacbb341f3449b410d72ecaf281979287b1e36a885c0b97bd88faa1f1088"
     },
     "app/Source/Views/ExceptionsRenderView.php": {
-        "md5": "2c053475166e03bf4f3a2dca7ea15d6b",
-        "sha1": "cebe461b9e19a07b90f5d4c4b3d8fa1515090c3f",
-        "sha256": "1e16e14275e58d78ea58c07e5505db1aa2aad33929f3573970af4c3a7f36696e"
+        "md5": "2319d8903e46045dc6b9eca23d7f8177",
+        "sha1": "c75d54bbece0f95ac92bcaa55deec06ae44d287e",
+        "sha256": "478107d1726163604b7ee88e3af5fb6d265a6bcee32a4fefdb8e36ea2378b406"
     },
     "app/Source/Views/Html/Renderer.php": {
         "md5": "c9a7e1670e26dc06bc27a3c72813c568",
@@ -750,14 +760,14 @@
         "sha256": "4fcb8cbade8a19ba8d7240c427b0e03b5f885845a87f8b65b837646fc7c89d41"
     },
     "app/Source/Console/Runner.php": {
-        "md5": "45096d8eb12c522fd92d22ce1c1918cf",
-        "sha1": "b68541c2bfa967bb85ffd89d86b1aeb43e8c64ce",
-        "sha256": "70192f29560d567397f93c166952c4842ea73da7f50a05b0befab54a01f6011e"
+        "md5": "5dfe6a60efb05a0008339673d65cc1ec",
+        "sha1": "2bcc75c2729b5f0edadf38398e458235d0f7ebad",
+        "sha256": "d217d59a6d0aa574043d8c27824a2d64df069f04c1cc3935dbca5598b1cf1e94"
     },
     "app/Source/Application.php": {
-        "md5": "39fb7d83b7e08fdc385dd3f0942faee3",
-        "sha1": "eab2ebe54450a3c847df83dd16261b86cc9d3565",
-        "sha256": "db85cbf689eeb0a1fea3e34fcfac561d18aee882ab6ae9493aadd505fb827386"
+        "md5": "632de13b3dbc858533cca38641bcc204",
+        "sha1": "27300d24b30b5fd6308998cf33468ee29cec7bd9",
+        "sha256": "0e072e023c644564b62f22975617300bcda901be3df12b3974c4685af8822f7d"
     },
     "app/Source/RouteAnnotations/Annotation/Admin.php": {
         "md5": "4b2895c31395ab52f9e9ccd31c4394ec",
@@ -785,9 +795,9 @@
         "sha256": "c08ac8fb5d2faa09a53a913614fe4ecc9bcca33ff3cd9a6af8881d3c9ad349e9"
     },
     "app/Source/RouteAnnotations/RoutesAnnotations.php": {
-        "md5": "49f788d687a42317080fc29f0433d945",
-        "sha1": "db1cadd56da6d047f4cd20510a75b99c526e4571",
-        "sha256": "a1918ede39c27fbb5be0627f16942894b466a253833dc7d0b079bac7fe96e31c"
+        "md5": "f7f065bb7ef2ec49c131e2257415b051",
+        "sha1": "b70c00de157e4aebebfcac095c9bc94b302ee811",
+        "sha256": "7a01421c507710ba96a7310570a148791de1b3a03e864cccf507f41e9e5903f9"
     },
     "app/Source/RouteAnnotations/Abstracts/AnnotationController.php": {
         "md5": "61443ae1630515516ec301bac30a49c6",
@@ -825,19 +835,19 @@
         "sha256": "fde12dd3422f5f010de7a78bbeef258c1098b2126e934e6887d715e688cc0b30"
     },
     "languages/id.mo": {
-        "md5": "c8ef98ab31c9f5e52a2d0536f13baee1",
-        "sha1": "05966b8d910f185fc6b9e5e43019bf1fba3fb2b1",
-        "sha256": "4407ba6486091fce62ea9d4375b8010d90144ccbf4a1a15d83d239a60f3ebfb4"
+        "md5": "2f2ae032f0ba97d43893192e3e09b41a",
+        "sha1": "f43c49ce60f56fd8507752eeedbc99de810a94c8",
+        "sha256": "7cab8cc076fcf3aaaa476a989f334b16ac49a5239ec2069bda83a8971793c0a8"
     },
     "languages/id.po": {
-        "md5": "4cc54502b51f50893a2054e06d2d59e5",
-        "sha1": "4ece168e75f42b5536b47af0c63b825631cc6b1a",
-        "sha256": "e99f9edd557827d5955020a73d1910fc48009f2444784fa4424d1c4177c75db9"
+        "md5": "204de92fc9ce23e353a3430a53ce797d",
+        "sha1": "f4be3682e893135da2937014e583b6766327569d",
+        "sha256": "a958cc7bf2ac722be40a1545c4a55fd42ddb4fd60ee395388657baf744d2af5f"
     },
     "languages/en.pot": {
-        "md5": "e3fad40007db6b584bc7e69e4b2540c7",
-        "sha1": "761fd484d1b8a430f8441d23ce1ad46cdffee08f",
-        "sha256": "1061a55f5aa95b75412981ae87d963de9c47d19f7b9b854ddc2d0153c4dd4ec2"
+        "md5": "c67e04781b6be03df3ab610ca7b64ea8",
+        "sha1": "3664d5cf869d91a949f000c8e628e19f8967fcb9",
+        "sha256": "16cc7a4c25c47fbb603536d1b82321b555cfd68560d01b9b7c4ad62238366a94"
     },
     "composer.json": {
         "md5": "e3a4078d1fadc9a2e7da95c751397707",
