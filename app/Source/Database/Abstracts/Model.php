@@ -980,6 +980,10 @@ abstract class Model extends AbstractContainerization
             return 0;
         }
 
+        foreach ((array) $params as $key => $value) {
+            $this->set($key, $value);
+        }
+
         $result = $this->createFetchResultQuery(new ResultQuery($this), $found, [
             'modelData',
             'modelOldData',
