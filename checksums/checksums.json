@@ -255,9 +255,9 @@
         "sha256": "a7f7bff2b85e841d6ed0004e7e886bbfab13beeceab957972b9a38a51a7780f0"
     },
     "app/Source/Database/ResultQuery.php": {
-        "md5": "17739565328510e358640e8f35ce455b",
-        "sha1": "2ed516de7a06854f45ea5792f15b6f12f0050249",
-        "sha256": "5500bf1d9b5985a199c63357f8b7333306a334b5de2a9941373ade79f59d490d"
+        "md5": "5e3c5c00cefa4528aaed96171b1e71ff",
+        "sha1": "4b27c8eecdf93d463fc3986ac5db02d688dc8347",
+        "sha256": "6282d88bf2a9634c845d531674a9750c42c5cb09e286b5c3d7232f62bc75f579"
     },
     "app/Source/Database/Traits/ModelSchema.php": {
         "md5": "81b06105babcd897b96454f748490779",
