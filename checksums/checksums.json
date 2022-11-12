@@ -240,9 +240,9 @@
         "sha256": "2468683534ec1269468a29da2f1a1649a372f7e59c2be94aee845bd58593d69d"
     },
     "app/Source/Database/Abstracts/Model.php": {
-        "md5": "17a082274e771e174e2d6b2ccd47935a",
-        "sha1": "fc04d8f50fa56e7f5dcd65659b41be77f6d6aef6",
-        "sha256": "69b515b7f6262f1573103596d2b927078690dd53578e8c5f1bf6e13b090699a0"
+        "md5": "cc42cbf48a446d22b1c788077d33d643",
+        "sha1": "42f72c8fce2ba5f5d2a9f0a31ad72cd3e459305f",
+        "sha256": "4a64f52b00eed1bdd1b9b6f109c6ac2a0fb47a3edb8a1836e8a5a7995c3f7aed"
     },
     "app/Source/Database/ResultData.php": {
         "md5": "6d04b6df1b79e523f17f346aff4d89b6",
