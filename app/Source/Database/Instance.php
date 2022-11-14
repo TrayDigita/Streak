@@ -463,8 +463,11 @@ class Instance extends AbstractContainerization
             $this->eventDispatch('Database:connection', $this->connection, $this);
             $driver = $this->params['driver'];
             $query = null;
+            $charset = $this->params['charset']??'UTF8';
             // set utc timezone
             if (str_contains($driver, 'mysql')) {
+                $charset = $this->params['charset']??'UTF8MB4';
+                $charset = !is_string($charset) || trim($charset) === '' ? 'UTF8MB4' : $charset;
                 $query = "SET NAMES UTF8MB4,";
                 // $query .= "CHARACTER_SET_DATABASE = UTF8MB4,";
                 // $query .= "CHARACTER_SET_SERVER = UTF8MB4,";
@@ -474,7 +477,7 @@ class Instance extends AbstractContainerization
                 $query .= "TIME_ZONE = '+00:00'";
                 $query .= ";";
             } elseif (str_contains($driver, 'postgre')) {
-                $query = "SET NAMES 'UTF8'; SET TIME ZONE '+00:00';";
+                $query = "SET NAMES '$charset'; SET TIME ZONE '+00:00';";
             } elseif (str_contains($driver, 'oci')) {
                 $query = "ALTER DATABASE SET TIME_ZONE='+00:00';";
             } elseif (str_contains($driver, 'ibm')) {
