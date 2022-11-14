@@ -746,7 +746,12 @@ abstract class Model extends AbstractContainerization
                     if (count($indexes) === count($intersect)) {
                         $exAnd = [];
                         foreach ($intersect as $key => $item) {
-                            $exAnd[] = $exp->eq($key, $item);
+                            $random = RandomString::createUniqueHash();
+                            $exAnd[] = $exp->eq($key, ":$random");
+                            $resultQuery
+                                ->model
+                                ->queryBuilder
+                                ->setParameter($random, $item);
                         }
                         if (!empty($exAnd)) {
                             $resultQuery
