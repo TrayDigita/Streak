@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace TrayDigita\Streak\Source\Database\Abstracts;
 
 use BadMethodCallException;
+use DateTimeImmutable;
+use DateTimeZone;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Column;
@@ -306,6 +308,18 @@ abstract class Model extends AbstractContainerization
     public function isModelFetched(): bool
     {
         return $this->modelFetched;
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function nowDateTime() : DateTimeImmutable
+    {
+        try {
+            return new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        } catch (Throwable) {
+            return new DateTimeImmutable();
+        }
     }
 
     /**

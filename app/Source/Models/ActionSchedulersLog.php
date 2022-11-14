@@ -27,7 +27,7 @@ class ActionSchedulersLog extends Model
         if (!$actionSchedulers->isModelFetched()) {
             return false;
         }
-        $obj = new static($actionSchedulers->getContainer());
+        $obj = new static($actionSchedulers->instance);
         $params = [
             'callback' => $actionSchedulers->callback,
             'status' => $actionSchedulers->status,
