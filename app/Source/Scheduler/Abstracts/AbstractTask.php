@@ -121,7 +121,7 @@ abstract class AbstractTask implements Startable
         } else {
             ActionSchedulersLog::insertFromActionScheduler($this->schedulers);
         }
-
+        $this->schedulers->update(['last_execute' => $nowTime]);
         $startTime = microtime(true);
         $this->status = null;
         try {
@@ -181,7 +181,7 @@ abstract class AbstractTask implements Startable
         $this->processedTime = $processed_time;
         $this->schedulers->update([
             'status' => $this->status->getStatusString(),
-            'last_execute' => $nowTime,
+            'last_execute' => $this->getContainer(Time::class)->newDateTimeUTC(),
             'processed_time' => $this->processedTime,
             'message' => (string) $this->status
         ]);
@@ -224,6 +224,7 @@ abstract class AbstractTask implements Startable
             $this->runStatus = TaskStatus::SKIPPED;
             return $this->runStatus;
         }
+
         if (!$last_execute) {
             $this->runStatus = TaskStatus::PENDING;
             return $this->runStatus;

@@ -36,7 +36,7 @@ trait ActionSchedulersLogSchema
             'options' => [
                 'length' => 512,
                 'notnull' => true,
-                'collation' => 'utf8mb4_unicode_ci',
+                'collation' => 'utf8mb4_general_ci',
                 'comment' => 'Scheduler callback'
             ],
             'index' => 'scheduler_log_index_callback'

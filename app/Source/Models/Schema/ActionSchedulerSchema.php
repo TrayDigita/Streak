@@ -28,7 +28,7 @@ trait ActionSchedulerSchema
                 'length' => 512,
                 'notnull' => true,
                 'comment' => 'Scheduler callback',
-                'collation' => 'utf8mb4_unicode_ci'
+                'collation' => 'utf8mb4_general_ci'
             ],
             'index' => 'scheduler_index_callback',
             'unique' => 'scheduler_index_callback',
