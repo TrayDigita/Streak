@@ -465,7 +465,7 @@ class Instance extends AbstractContainerization
             $query = null;
             // set utc timezone
             if (str_contains($driver, 'mysql')) {
-                $query = "SET NAMES UTF8,";
+                $query = "SET NAMES UTF8MB4,";
                 // $query .= "CHARACTER_SET_DATABASE = UTF8MB4,";
                 // $query .= "CHARACTER_SET_SERVER = UTF8MB4,";
                 // $query .= "CHARACTER_SET_RESULTS = UTF8MB4,";
