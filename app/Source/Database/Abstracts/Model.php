@@ -721,18 +721,32 @@ abstract class Model extends AbstractContainerization
         }
 
         if (!empty($this->modelUniqueIndexes)) {
+            $has = false;
             foreach ($propertyToRead as $named) {
                 if (empty($this->$named) || !is_array($this->$named)) {
                     continue;
                 }
+                $exp = $resultQuery->model->queryBuilder->expr();
                 foreach ($this->modelUniqueIndexes as $indexes) {
                     $intersect = array_intersect($this->$named, $indexes);
                     if (count($indexes) === count($intersect)) {
+                        $exAnd = [];
                         foreach ($intersect as $key => $item) {
-                            $resultQuery->is($key, $item);
+                            $exAnd[] = $exp->eq($key, $item);
                         }
-                        return $resultQuery;
+                        if (!empty($exAnd)) {
+                            $resultQuery
+                                ->model
+                                ->queryBuilder
+                                ->orWhere(
+                                    $exp->and(...$exAnd)
+                                );
+                            $has = true;
+                        }
                     }
+                }
+                if ($has) {
+                    return $resultQuery;
                 }
             }
         }
