@@ -24,7 +24,7 @@ class ActionSchedulersLog extends Model
      */
     public static function insertFromActionScheduler(ActionSchedulers $actionSchedulers): bool|int
     {
-        if (!$actionSchedulers->isFetched()) {
+        if (!$actionSchedulers->isModelFetched()) {
             return false;
         }
         $obj = new static($actionSchedulers->getContainer());
