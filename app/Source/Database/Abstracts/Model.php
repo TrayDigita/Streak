@@ -728,9 +728,9 @@ abstract class Model extends AbstractContainerization
                         $resultQuery->orIs($item, $this->$named[$item]);
                     }
                 }
-            }
-            if ($has) {
-                return $resultQuery;
+                if ($has) {
+                    return $resultQuery;
+                }
             }
         }
 
@@ -742,7 +742,7 @@ abstract class Model extends AbstractContainerization
                 }
                 $exp = $resultQuery->model->queryBuilder->expr();
                 foreach ($this->modelUniqueIndexes as $indexes) {
-                    $intersect = array_intersect($this->$named, $indexes);
+                    $intersect = array_intersect_key($this->$named, $indexes);
                     if (count($indexes) === count($intersect)) {
                         $exAnd = [];
                         foreach ($intersect as $key => $item) {
@@ -1015,12 +1015,17 @@ abstract class Model extends AbstractContainerization
         foreach ((array) $params as $key => $value) {
             $this->set($key, $value);
         }
-        $result = $this->createFetchResultQuery(new ResultQuery($this), $found, [
-            'modelData',
-            'modelOldData',
-        ]);
+        $result = $this->createFetchResultQuery(
+            new ResultQuery($this),
+            $found,
+            $this->isModelFetched()
+                ? [
+                'modelData',
+                'modelOldData',
+            ] : null);
         return $result->getResultData()->fetchFirst()
             ? $this->update($params)
             : $this->insert($params);
+
     }
 }
