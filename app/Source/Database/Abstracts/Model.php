@@ -703,15 +703,20 @@ abstract class Model extends AbstractContainerization
             'modelOldData',
         ];
         if (!empty($this->modelPrimaryKeys)) {
+            $has = false;
             foreach ($propertyToRead as $named) {
                 if (empty($this->$named) || !is_array($this->$named)) {
                     continue;
                 }
                 foreach ($this->modelPrimaryKeys as $item) {
                     if (isset($this->$named[$item])) {
-                        return $resultQuery->is($item, $this->$named[$item]);
+                        $has = true;
+                        $resultQuery->orIs($item, $this->$named[$item]);
                     }
                 }
+            }
+            if ($has) {
+                return $resultQuery;
             }
         }
 
@@ -979,16 +984,13 @@ abstract class Model extends AbstractContainerization
         if (empty($params) && empty($this->modelDataSet)) {
             return 0;
         }
-
         foreach ((array) $params as $key => $value) {
             $this->set($key, $value);
         }
-
         $result = $this->createFetchResultQuery(new ResultQuery($this), $found, [
             'modelData',
             'modelOldData',
         ]);
-
         return $result->getResultData()->fetchFirst()
             ? $this->update($params)
             : $this->insert($params);
