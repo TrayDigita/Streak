@@ -390,7 +390,13 @@ trait ModelSchema
         foreach ($indexes as $item) {
             if (!is_array($item)
                 || !isset($item['type'], $item['columns'])
-                || !in_array($item['type'], ['unique', 'index'])
+                || !in_array(strtolower($item['type']), [
+                    'unique',
+                    'index',
+                    'fulltext',
+                    'spatial',
+                    'clustered'
+                ])
             ) {
                 continue;
             }
@@ -422,8 +428,7 @@ trait ModelSchema
                 continue;
             }
             $type = $item['type'];
-            $method = $type === 'index' ? 'addIndex' : 'addUniqueIndex';
-            $table->$method($columns, $name);
+            $table->addIndex($columns, $name, [$type]);
         }
         $prefix = $database->prefix;
         if (!empty($foreign)) {
