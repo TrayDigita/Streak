@@ -61,6 +61,7 @@ final class TaskStatus
             TaskStatus::FAILURE => ActionSchedulers::FAILURE,
             TaskStatus::PENDING => ActionSchedulers::PENDING,
             TaskStatus::SKIPPED => ActionSchedulers::SKIPPED,
+            TaskStatus::PROGRESS => ActionSchedulers::PROGRESS,
             default => ActionSchedulers::UNKNOWN
         };
     }
@@ -105,19 +106,31 @@ final class TaskStatus
     {
         return $this->status === self::FAILURE;
     }
+
     public function isPending() : bool
     {
         return $this->status === self::PENDING;
     }
 
-    public function isSkipper() : bool
+    public function isSkipped() : bool
     {
         return $this->status === self::SKIPPED;
     }
 
+    public function isProgress() : bool
+    {
+        return $this->status === self::PROGRESS;
+    }
+
     public function isUnknown() : bool
     {
-        return !in_array($this->status, [self::SKIPPED, self::SUCCESS, self::PENDING, self::FAILURE], true);
+        return !in_array($this->status, [
+            self::PROGRESS,
+            self::SKIPPED,
+            self::SUCCESS,
+            self::PENDING,
+            self::FAILURE
+        ], true);
     }
 
     public function __toString(): string

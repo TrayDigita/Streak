@@ -280,6 +280,7 @@ final class Normalizer
             $contains = true;
             return utf8_encode($match[0]);
         }, $string);
+        $string = preg_replace('~[\pZ\pC]+~u', ' ', $string);
         $string = str_replace("\t", " ", $string);
         // replace whitespace except space to empty character
         $string = preg_replace('~\x0-\x31~', '', $string);

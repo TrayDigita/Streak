@@ -121,7 +121,7 @@ abstract class AbstractTask implements Startable
         } else {
             ActionSchedulersLog::insertFromActionScheduler($this->schedulers);
         }
-        $this->schedulers->update(['last_execute' => $nowTime]);
+
         $startTime = microtime(true);
         $this->status = null;
         try {
@@ -131,6 +131,7 @@ abstract class AbstractTask implements Startable
                 $this->className
             );
 
+            $this->schedulers->update(['last_execute' => $nowTime, 'status' => ActionSchedulers::PROGRESS]);
             // log
             $this->logDebug($this->translate('Processing task.'), ['task' => $this->getClassName()]);
             $this->status = $this->processTask($args);
