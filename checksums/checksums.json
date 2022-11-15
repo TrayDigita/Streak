@@ -390,9 +390,9 @@
         "sha256": "8a62981b2cf2d7dc078c98e4aeccda5e88732c8caa1f1425145a85d6902f0f42"
     },
     "app/Source/Scheduler/Abstracts/AbstractTask.php": {
-        "md5": "07fd95bde469f5882257d7621a38290e",
-        "sha1": "e5c1256750b514255cfbb394d83118a6cedc2e36",
-        "sha256": "5ebe92de1d7329c6b963c5916e22704207fb4453d0f32333e0484c1c4e260ded"
+        "md5": "802ce6afa3d196007c77558a2c64c9ed",
+        "sha1": "29c6ec3efbf192f169a78f75d6196cb3d0f3f9b8",
+        "sha256": "7875b905ab009f54d065a32ed08f18da1ed98ed31cd42de16d5178ca8642b6c6"
     },
     "app/Source/Scheduler/Commands/RunScheduler.php": {
         "md5": "d08da50c04cefd642c34793cb3b96c61",
