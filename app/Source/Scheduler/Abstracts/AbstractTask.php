@@ -178,7 +178,9 @@ abstract class AbstractTask implements Startable
             }
             $this->processedTime = $processed_time;
             $this->schedulers->update([
-                'status' => $this->status->getStatusString(),
+                'status' => $this->status->isProgress()
+                    ? ActionSchedulers::UNKNOWN
+                    : $this->status->getStatusString(),
                 'last_execute' => $this->getContainer(Time::class)->newDateTimeUTC(),
                 'processed_time' => $this->processedTime,
                 'message' => (string) $this->status
