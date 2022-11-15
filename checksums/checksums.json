@@ -260,9 +260,9 @@
         "sha256": "6282d88bf2a9634c845d531674a9750c42c5cb09e286b5c3d7232f62bc75f579"
     },
     "app/Source/Database/Traits/ModelSchema.php": {
-        "md5": "81b06105babcd897b96454f748490779",
-        "sha1": "a25dc29ed0c2a0d6e81747177eeb324bfad44513",
-        "sha256": "7d9d06ea81e325b07a4f9d41df1340db5ad660f763feeffb511bebe183b584df"
+        "md5": "4f2d57e928ce4b627db1cea00c90e67f",
+        "sha1": "58f72538f83b28a6d26cf1aaa746df9bc66a5feb",
+        "sha256": "4fc5b2872a52aa6e9ee739fe33b4a7075a4fe3e47e9c137b00b245da812e494d"
     },
     "app/Source/Uploads/ChunkResponse.php": {
         "md5": "9aec0acd90470c5c7980f54d4cdcb1e4",
