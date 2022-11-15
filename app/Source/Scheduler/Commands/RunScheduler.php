@@ -19,6 +19,7 @@ use TrayDigita\Streak\Source\Scheduler\Abstracts\AbstractTask;
 use TrayDigita\Streak\Source\Models\ActionSchedulers;
 use TrayDigita\Streak\Source\Models\ActionSchedulersLog;
 use TrayDigita\Streak\Source\Scheduler\Scheduler;
+use TrayDigita\Streak\Source\Scheduler\TaskStatus;
 
 class RunScheduler extends RunCommand
 {
@@ -45,7 +46,7 @@ $translate
 
     <info>%command.full_name%</info>
 EOT
-        );
+            );
         $database = $this->getContainer(Instance::class);
         // add action scheduler
         $database->registerModel(ActionSchedulers::class);
@@ -124,6 +125,12 @@ EOT
         $filtered = array_keys(array_filter($scheduler->getPending(), fn($e) => $e->isNeedToRun()));
         $total = count($filtered);
         if ($total === 0) {
+            $progress = [];
+            foreach ($scheduler->getPending() as $task) {
+                if ($task->getRunStatus() === TaskStatus::PROGRESS) {
+                    $progress[] = $task->getClassName();
+                }
+            }
             $symfonyStyle->writeln(
                 sprintf(
                     '<fg=green>%s</>',
@@ -132,6 +139,24 @@ EOT
                     )
                 )
             );
+            if (!empty($progress)) {
+                $symfonyStyle->writeln(
+                    sprintf(
+                        '<fg=blue>%s</>',
+                        sprintf(
+                            $this->translate(
+                                'There are %d task in progress.'
+                            ),
+                            count($progress)
+                        )
+                    )
+                );
+                foreach ($progress as $name) {
+                    $symfonyStyle->writeln(
+                        sprintf('<fg=gray>- %s</>', $name)
+                    );
+                }
+            }
             return self::SUCCESS;
         }
 

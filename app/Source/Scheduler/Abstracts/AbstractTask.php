@@ -241,7 +241,7 @@ abstract class AbstractTask implements Startable
         );
 
         $interval = $minimumCronTime > $interval ? $minimumCronTime : $interval;
-        $need = $interval_since > $interval;
+        $need = $interval_since < 0 || $interval_since > $interval;
         $rangeOfTime = $this->eventDispatch(
             "Runner:force_time:$this->className",
             $fifteen_minutes,
