@@ -169,23 +169,21 @@ abstract class AbstractTask implements Startable
                     $this->translate('Unknown')
                 );
             }
-        }
+            if ($this->status->getMessage() instanceof Throwable) {
+                $this->status->setStatus(TaskStatus::FAILURE);
+            }
 
-        if ($this->status->getMessage() instanceof Throwable) {
-            $this->status->setStatus(TaskStatus::FAILURE);
+            if ($startTime < self::MINIMUM_EXECUTION_TIME) {
+                $processed_time = 0;
+            }
+            $this->processedTime = $processed_time;
+            $this->schedulers->update([
+                'status' => $this->status->getStatusString(),
+                'last_execute' => $this->getContainer(Time::class)->newDateTimeUTC(),
+                'processed_time' => $this->processedTime,
+                'message' => (string) $this->status
+            ]);
         }
-
-        if ($startTime < self::MINIMUM_EXECUTION_TIME) {
-            $processed_time = 0;
-        }
-
-        $this->processedTime = $processed_time;
-        $this->schedulers->update([
-            'status' => $this->status->getStatusString(),
-            'last_execute' => $this->getContainer(Time::class)->newDateTimeUTC(),
-            'processed_time' => $this->processedTime,
-            'message' => (string) $this->status
-        ]);
 
         $this->schedulers = null;
         return $this->status;
