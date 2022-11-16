@@ -12,7 +12,7 @@ use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Cache;
 use TrayDigita\Streak\Source\Container;
-use TrayDigita\Streak\Source\Helper\Util\Collector\ResultParser;
+use TrayDigita\Streak\Source\Helper\Util\Collector\ClassDefinition;
 use TrayDigita\Streak\Source\Helper\Util\ObjectFileReader;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Clearable;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
@@ -186,24 +186,24 @@ class ControllerReader extends AbstractContainerization implements Clearable, St
          * @var Cache $cache
          */
         $cache = $this->getContainer(Cache::class);
-        $cacheName = sprintf('resultParser%s', md5($this->file));
+        $cacheName = sprintf('resultClassDefinition%s', md5($this->file));
         $mTime = filemtime($this->file);
         try {
             $item = $cache->getItem($cacheName);
             $result = $item->get();
             if (is_array($result)
                 && isset($result['time'], $result['parser'])
-                && $result instanceof ResultParser
+                && $result instanceof ClassDefinition
                 && $result['time'] === $mTime
             ) {
-                $resultParser = $result;
+                $classDefinition = $result;
             }
             unset($result);
         } catch (InvalidArgumentException $e) {
         }
-        if (!isset($resultParser)) {
+        if (!isset($classDefinition)) {
             try {
-                $resultParser = $this
+                $classDefinition = $this
                     ->getContainer(ObjectFileReader::class)
                     ->fromFile($this->file);
             } catch (Throwable $e) {
@@ -219,14 +219,14 @@ class ControllerReader extends AbstractContainerization implements Clearable, St
                         'ControllerReader:expireAfter',
                         static::CACHE_EXPIRED_AFTER,
                         $item,
-                        $resultParser,
+                        $classDefinition,
                         $this
                     );
                     $expiredAfter = !is_int($expiredAfter) && $expiredAfter instanceof DateInterval
                         ? static::CACHE_EXPIRED_AFTER
                         : $expiredAfter;
                     $item
-                        ->set(['time' => $mTime, 'parser' => $resultParser])
+                        ->set(['time' => $mTime, 'parser' => $classDefinition])
                         ->expiresAfter($expiredAfter);
                     $cache->save($item);
                 } catch (Throwable) {
@@ -234,7 +234,7 @@ class ControllerReader extends AbstractContainerization implements Clearable, St
             }
         }
 
-        $className = $resultParser->getFullClassName();
+        $className = $classDefinition->fullName;
         if (!$className) {
             $this->error = sprintf(
                 $this->translate('Could not found object on file %s.'),
@@ -242,7 +242,7 @@ class ControllerReader extends AbstractContainerization implements Clearable, St
             );
             return $this;
         }
-        unset($resultParser);
+        unset($classDefinition);
         if (!class_exists($className)) {
             require_once $this->file;
         }

@@ -249,12 +249,12 @@ class SystemInitialHandler extends AbstractContainerization
                 $this->stream = null;
                 ob_start([$this, 'handleBuffer']);
                 $exception = $this->exception ?? new ErrorException(
-                        $error['message'],
-                        $error['type'],
-                        1,
-                        $error['file'],
-                        $error['line']
-                    );
+                    $error['message'],
+                    $error['type'],
+                    1,
+                    $error['file'],
+                    $error['line']
+                );
                 try {
                     $this->handleException($exception);
                 } catch (Throwable $e) {

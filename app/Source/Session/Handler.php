@@ -211,6 +211,7 @@ class Handler extends SessionHandler implements ContainerizeInterface, ArrayAcce
     /**
      * Create session ID
      * @return string
+     * phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public function create_sid() : string
     {

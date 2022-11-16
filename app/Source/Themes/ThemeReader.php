@@ -13,7 +13,7 @@ use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
 use TrayDigita\Streak\Source\Cache;
 use TrayDigita\Streak\Source\Container;
-use TrayDigita\Streak\Source\Helper\Util\Collector\ResultParser;
+use TrayDigita\Streak\Source\Helper\Util\Collector\ClassDefinition;
 use TrayDigita\Streak\Source\Helper\Util\Consolidation;
 use TrayDigita\Streak\Source\Helper\Util\ObjectFileReader;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Scannable;
@@ -78,6 +78,11 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
      * @var string
      */
     protected string $footerFilePath = 'footer.php';
+
+    /**
+     * @var string
+     */
+    protected string $themeFileName = 'Theme.php';
 
     /**
      * @param Container $container
@@ -200,15 +205,22 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
         $this->headerFilePath = $this->eventDispatch('ThemeReader:headerFile', $this->headerFilePath);
         $this->bodyFilePath   = $this->eventDispatch('ThemeReader:bodyFile', $this->bodyFilePath);
         $this->footerFilePath = $this->eventDispatch('ThemeReader:footerFile', $this->footerFilePath);
+        $this->themeFileName = $this->eventDispatch('ThemeReader:themeFile', $this->themeFileName);
 
         $cache = $this->getContainer(Cache::class);
-        foreach (new DirectoryIterator($this->getThemesDirectory()) as $theme) {
-            if (!$theme->isDir() || $theme->isDot()) {
+        foreach (new DirectoryIterator($themeDirectory) as $theme) {
+            if (!$theme->isDir() || $theme->isDot()
+                || str_starts_with($theme->getBasename(), '.')
+            ) {
                 continue;
             }
-
             $themeDir = $theme->getRealPath();
-            $themeFile = sprintf('%1$s%2$sTheme.php', $theme->getRealPath(), DIRECTORY_SEPARATOR);
+            $themeFile = sprintf(
+                '%1$s%2$s%3$s',
+                $theme->getRealPath(),
+                DIRECTORY_SEPARATOR,
+                $this->themeFileName
+            );
             $baseName = $theme->getBasename();
             $is_readable = true;
             if (!is_file($themeFile) || !($is_readable = is_readable($themeFile))) {
@@ -230,14 +242,14 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                 continue;
             }
 
-            $cacheName = sprintf('resultParser%s', md5($themeFile));
+            $cacheName = sprintf('resultClassDefinition%s', md5($themeFile));
             $mTime = $theme->getMTime();
             try {
                 $item = $cache->getItem($cacheName);
                 $result = $item->get();
                 if (is_array($result)
                     && isset($result['time'], $result['parser'])
-                    && $result instanceof ResultParser
+                    && $result instanceof ClassDefinition
                     && $result['time'] === $mTime
                 ) {
                     $resultParser = $result;
@@ -277,7 +289,7 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                     } catch (Throwable) {
                     }
                 }
-                $className = $resultParser->getFullClassName();
+                $className = $resultParser->fullName;
                 if (!$className) {
                     $this->invalidThemes[$themeDir] = self::CLASS_NOT_FOUND;
                     continue;
@@ -288,8 +300,8 @@ class ThemeReader extends AbstractContainerization implements Scannable, Countab
                     continue;
                 }
 
-                if (!$resultParser->hasMethod('doRender')
-                    || !$resultParser->hasMethod('doRenderException')
+                if (!$resultParser->methods->hasMethod('doRender')
+                    || !$resultParser->methods->hasMethod('doRenderException')
                 ) {
                     $this->invalidThemes[$themeDir] = self::INVALID_CLASS;
                     continue;

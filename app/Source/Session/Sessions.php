@@ -87,6 +87,10 @@ class Sessions extends AbstractContainerization implements
         $this->handler->unregister();
     }
 
+    /**
+     * @return string
+     * phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
     public function create_sid() : string
     {
         return $this->handler->create_sid();

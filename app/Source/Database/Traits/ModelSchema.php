@@ -36,7 +36,7 @@ trait ModelSchema
      * @reference
      * @return array
      * @uses \Doctrine\DBAL\Types\Types::TEXT
-     *
+     * @see AbstractMySQLPlatform
      *     TINYTEXT   : 2 ^  8 - 1 = 255
      *     TEXT       : 2 ^ 16 - 1 = 65535
      *     MEDIUMTEXT : 2 ^ 24 - 1 = 16777215
@@ -52,7 +52,9 @@ trait ModelSchema
 
     public function getTableSchemaEngine() : ?string
     {
-        if (isset($this->tableSchemaEngine) && is_string($this->tableSchemaEngine) && trim($this->tableSchemaEngine) !== '') {
+        if (isset($this->tableSchemaEngine)
+            && is_string($this->tableSchemaEngine)
+            && trim($this->tableSchemaEngine) !== '') {
             return $this->tableSchemaEngine;
         }
         return null;
@@ -395,7 +397,8 @@ trait ModelSchema
                     'index',
                     'fulltext',
                     'spatial',
-                    'clustered'
+                    'clustered',
+                    'nonclustered'
                 ])
             ) {
                 continue;
@@ -427,7 +430,7 @@ trait ModelSchema
             if ($name !== null && $table->hasIndex($name)) {
                 continue;
             }
-            $type = $item['type'];
+            $type = strtolower($item['type']);
             $table->addIndex($columns, $name, [$type]);
         }
         $prefix = $database->prefix;

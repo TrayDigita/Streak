@@ -884,8 +884,11 @@ abstract class Model extends AbstractContainerization
      * @return ?static
      * @throws Exception
      */
-    public static function take(int $offset, array|string|int|float|null $params = null, ?Instance $instance = null): ?static
-    {
+    public static function take(
+        int $offset,
+        array|string|int|float|null $params = null,
+        ?Instance $instance = null
+    ): ?static {
         $args = func_get_args();
         array_shift($args);
         return static::find(...$args)->fetchTake($offset);
@@ -1027,10 +1030,10 @@ abstract class Model extends AbstractContainerization
                 ? [
                 'modelData',
                 'modelOldData',
-            ] : null);
+            ] : null
+        );
         return $result->getResultData()->fetchFirst()
             ? $this->update($params)
             : $this->insert($params);
-
     }
 }
