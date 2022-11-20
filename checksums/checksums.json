@@ -165,9 +165,9 @@
         "sha256": "9c1509fd20515697e73b290b5fac83aef8622dd2b3630f94b50b648b2bcd4b7f"
     },
     "app/Source/Themes/Abstracts/AbstractTheme.php": {
-        "md5": "86914fb271e1a20ebb9dbd18db8a7156",
-        "sha1": "a1b7de9698ea05a5840f4d1f0dba98d1d4029cde",
-        "sha256": "794293c757ee8e3f2367b508b2d2f61d072198399907a4ee965c7dcaf9b0db4c"
+        "md5": "87567fc7efcd828898902eb7d8edd22d",
+        "sha1": "4e88ad1be9058e716b72d71ec0a9d27080332897",
+        "sha256": "5ef9dcfc2d6a00ea4b29089fbd5b86e17767a283f5a9dc1dafdbaafaf0b45cd4"
     },
     "app/Source/Themes/ThemeReader.php": {
         "md5": "b3c89fe7a3a487fd6a48cf137a461858",
@@ -610,9 +610,9 @@
         "sha256": "fe447e448c732410356960acca41d1d2839eee8f358da62145712d729e0420f9"
     },
     "app/Source/Views/Html/AbstractRenderer.php": {
-        "md5": "e4ec38102be14ccc48057a2173c5815e",
-        "sha1": "3071da47b9162b61780b218658713b2d80315e79",
-        "sha256": "d48e3e1d4454c34578c83b028ac792d410e4966a696fcda7328f354dfb571cb3"
+        "md5": "8ea3b2620a44c480275011e1ba335801",
+        "sha1": "9c58a4b32341bb21533108deb8c88e0296abbdb6",
+        "sha256": "f65a367142e301f2f679d51566e63cdb0731db50b55fa628b1caec105f8a904d"
     },
     "app/Source/Views/DefaultRenderView.php": {
         "md5": "31b8e20bbf4c7fbab2bfc1cab7807b94",
@@ -890,19 +890,19 @@
         "sha256": "fde12dd3422f5f010de7a78bbeef258c1098b2126e934e6887d715e688cc0b30"
     },
     "languages/id.mo": {
-        "md5": "41d32b029631b907e1731ff9ce7e0625",
-        "sha1": "233e3b84c2e4966a330c48c9377f1f0d4fe730e0",
-        "sha256": "4b3ca1a33c15f1a06289e84679763cab3b01bf71dec893ef4eea2fbd138d22b9"
+        "md5": "8e74d5e383cee3e18900344c92393d39",
+        "sha1": "f96911eec503f60462540f7bbcde0af25bac610c",
+        "sha256": "3f3e931defd4ff25123780e239f761a9de53ea346e8975c9feb34312ba3d9f26"
     },
     "languages/id.po": {
-        "md5": "ef09960d8012db7be0c77e4db5efc96d",
-        "sha1": "8975150b251fdbf0d30af6b04fa7103f4089da69",
-        "sha256": "f92f22f39dc1fbec885b5ee6220a5b027de06014f32099379004b1d850082c30"
+        "md5": "2a41e5114f3fd203ff853d38ea775c45",
+        "sha1": "221da910dc16d19851d1cbcbdb9aba0d749c06a3",
+        "sha256": "eb569cd3b5be6a74cdeac8dbb2ef37a73d4c063cebdc5ac050e3f8f05dfc3ad3"
     },
     "languages/en.pot": {
-        "md5": "0af7132f75fd658a454ab32feac670f2",
-        "sha1": "8d9a55d6647bf8917d5a33357f3ee9d448872d60",
-        "sha256": "bc4a69270bf298dc9047d357d1fb3b755245caa1a85cc46faad6525f92f4b946"
+        "md5": "ca400138a6bce05ce7fb1ed185f55e13",
+        "sha1": "f727436330ee6577bdb2f6f12de1d9e698b3ca73",
+        "sha256": "ec8e2e0fd613e051805c10a7d8a0166955cb51fc1087f6715f37a24f4dae4f9f"
     },
     "composer.json": {
         "md5": "e3a4078d1fadc9a2e7da95c751397707",
