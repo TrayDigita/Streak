@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-16 14:41+0700\n"
+"POT-Creation-Date: 2022-11-20 12:54+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -306,7 +306,7 @@ msgid "Table for model %s is not exist."
 msgstr ""
 
 #: Source/Database/Abstracts/Model.php:528 Source/Database/Instance.php:972
-#: Source/Themes/Abstracts/AbstractTheme.php:434
+#: Source/Themes/Abstracts/AbstractTheme.php:455
 #, php-format
 msgid "Call to undefined Method %s."
 msgstr ""

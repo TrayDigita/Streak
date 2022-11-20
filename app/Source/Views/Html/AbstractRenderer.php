@@ -1,5 +1,4 @@
 <?php
-/** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Views\Html;
@@ -17,6 +16,7 @@ use TrayDigita\Streak\Source\Interfaces\Abilities\Clearable;
 use TrayDigita\Streak\Source\Interfaces\Html\AttributeInterface;
 use TrayDigita\Streak\Source\Interfaces\Html\RenderInterface;
 use TrayDigita\Streak\Source\Records\Collections;
+use TrayDigita\Streak\Source\SystemInitialHandler;
 use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
 use Wa72\HtmlPageDom\HtmlPageCrawler;
@@ -297,7 +297,6 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
                 $body   = (string)$body;
                 $body   .= $footer;
                 unset($footer);
-
                 $this->setHeaderContent($header);
                 $this->setBodyContent($body);
                 $header = $body = null;
@@ -563,10 +562,14 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
      */
     public function render(ResponseInterface $response, int $httpCode = null): ResponseInterface
     {
-        if ($response->getBody()->isSeekable()) {
-            $response->getBody()->rewind();
+        $body = $response->getBody();
+        if ($body->getSize() > 0) {
+            $body->close();
+            $body = $this->getContainer(SystemInitialHandler::class)->createStream();
         }
-        $response->getBody()->write((string) $this);
+
+        $response = $response->withBody($body);
+        $body->write((string) $this);
         $charset = $this->getCharset();
         if ($httpCode !== null) {
             $statusMessage = Code::statusMessage($httpCode);

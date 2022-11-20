@@ -1,5 +1,4 @@
 <?php
-/** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace TrayDigita\Streak\Source\Themes\Abstracts;
@@ -18,11 +17,13 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpSpecializedException;
 use Throwable;
 use TrayDigita\Streak\Source\Abstracts\AbstractContainerization;
+use TrayDigita\Streak\Source\Application;
 use TrayDigita\Streak\Source\Container;
 use TrayDigita\Streak\Source\Controller\Abstracts\AbstractController;
 use TrayDigita\Streak\Source\Controller\Storage;
 use TrayDigita\Streak\Source\Helper\Http\Code;
 use TrayDigita\Streak\Source\Helper\Util\Consolidation;
+use TrayDigita\Streak\Source\Helper\Util\Path;
 use TrayDigita\Streak\Source\SystemInitialHandler;
 use TrayDigita\Streak\Source\Themes\ThemeReader;
 use TrayDigita\Streak\Source\Traits\EventsMethods;
@@ -113,9 +114,9 @@ abstract class AbstractTheme extends AbstractContainerization
     private ?Throwable $exception = null;
 
     /**
-     * @var bool
+     * @var int
      */
-    private bool $rendered = false;
+    private int $rendered = 0;
 
     /**
      * @var AbstractRenderer|MultiRenderView
@@ -160,7 +161,7 @@ abstract class AbstractTheme extends AbstractContainerization
     /**
      * @return ?ResponseInterface
      */
-    public function getResponse(): ?ResponseInterface
+    public function &getResponse(): ?ResponseInterface
     {
         return $this->response;
     }
@@ -172,6 +173,7 @@ abstract class AbstractTheme extends AbstractContainerization
      * @param ?string $afterURI
      *
      * @return UriInterface
+     * @noinspection PhpUnused
      */
     public function getURI(
         ?string $afterURI = null,
@@ -193,14 +195,35 @@ abstract class AbstractTheme extends AbstractContainerization
     }
 
     /**
+     * @param ?string $afterURI
+     * @param ?ServerRequest $request
+     *
+     * @return UriInterface
+     */
+    public function getBaseURI(
+        ?string $afterURI = null,
+        ?ServerRequest $request = null
+    ) : UriInterface {
+        $uri = Path::getBaseUri(
+            $this->getContainer(Application::class),
+            $request??$this->getRequest()??$this->getContainer(ServerRequestInterface::class)
+        );
+        if ($afterURI) {
+            if ($afterURI[0] === '/') {
+                $afterURI = substr($afterURI, 1);
+            }
+            $path = '/'.ltrim($uri->getPath(), '/').'/';
+            $uri  = $uri->withPath("$path/$afterURI");
+        }
+        return $uri;
+    }
+
+    /**
      * @return StreamInterface
      */
     final public function getHeader() : StreamInterface
     {
-        if ($this->headerStream) {
-            return $this->headerStream;
-        }
-
+        $this->headerStream?->close();
         $this->headerStream = $this->getContainer(SystemInitialHandler::class)->createStream();
         ob_start();
         (function () {
@@ -215,10 +238,7 @@ abstract class AbstractTheme extends AbstractContainerization
      */
     final public function getBody() : StreamInterface
     {
-        if ($this->bodyStream) {
-            return $this->bodyStream;
-        }
-
+        $this->bodyStream?->close();
         $this->bodyStream = $this->getContainer(SystemInitialHandler::class)->createStream();
         ob_start();
         (function () {
@@ -233,10 +253,7 @@ abstract class AbstractTheme extends AbstractContainerization
      */
     final public function getFooter() : StreamInterface
     {
-        if ($this->footerStream) {
-            return $this->footerStream;
-        }
-
+        $this->footerStream?->close();
         $this->footerStream = $this->getContainer(SystemInitialHandler::class)->createStream();
         ob_start();
         (function () {
@@ -272,6 +289,7 @@ abstract class AbstractTheme extends AbstractContainerization
 
     /**
      * @return string
+     * @noinspection PhpUnused
      */
     public function getAuthorName(): string
     {
@@ -280,6 +298,7 @@ abstract class AbstractTheme extends AbstractContainerization
 
     /**
      * @return string
+     * @noinspection PhpUnused
      */
     public function getAuthorURI(): string
     {
@@ -313,6 +332,7 @@ abstract class AbstractTheme extends AbstractContainerization
 
     /**
      * @return bool
+     * @noinspection PhpUnused
      */
     public function is500() : bool
     {
@@ -346,15 +366,16 @@ abstract class AbstractTheme extends AbstractContainerization
         array $params,
         ?AbstractController $controller = null
     ) : ResponseInterface {
-        // prevent loop back
-        if ($this->rendered) {
+        // prevent 3 times looping
+        if ($this->rendered > 3) {
+            $this->response =& $response;
             return $response;
         }
         // switch to standard
         $this->renderView->toStandardRenderView();
         $this->request    = $request;
         $this->response   =& $response;
-        $this->rendered   = true;
+        $this->rendered++;
         $this->eventDispatch(
             'Theme:render',
             $this,
@@ -387,10 +408,11 @@ abstract class AbstractTheme extends AbstractContainerization
         ResponseInterface $response,
         array $params = []
     ) : ResponseInterface {
-        if ($this->rendered) {
+        // prevent 3 times looping
+        if ($this->rendered > 3) {
+            $this->response =& $response;
             return $response;
         }
-
         if ($exception instanceof HttpSpecializedException) {
             $code = $exception->getCode();
             $code = Code::statusMessage($code) ? $code :500;
@@ -401,8 +423,7 @@ abstract class AbstractTheme extends AbstractContainerization
         $this->response  =& $response;
         $this->exception = $exception;
         $this->renderView->toExceptionRenderView($this->exception);
-
-        $this->rendered = true;
+        $this->rendered++;
         $controller = $this->getContainer(Storage::class)->getCurrentController();
         $this->eventDispatch(
             'Theme:renderException',
