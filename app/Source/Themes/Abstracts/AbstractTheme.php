@@ -209,10 +209,14 @@ abstract class AbstractTheme extends AbstractContainerization
             $request??$this->getRequest()??$this->getContainer(ServerRequestInterface::class)
         );
         if ($afterURI) {
+            $url = $uri->getPath();
+            if ($url[0]??'' === '/') {
+                $url = substr($afterURI, 1);
+            }
             if ($afterURI[0] === '/') {
                 $afterURI = substr($afterURI, 1);
             }
-            $path = '/'.ltrim($uri->getPath(), '/').'/';
+            $path = rtrim($url, '/');
             $uri  = $uri->withPath("$path/$afterURI");
         }
         return $uri;
