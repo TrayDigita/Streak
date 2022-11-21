@@ -286,10 +286,11 @@ abstract class AbstractRenderer extends AbstractContainerization implements Rend
         if ($this->getArgument(self::SKIP_THEME) !== true) {
             $activeTheme = $this->getContainer(ThemeReader::class)->getActiveTheme();
             if ($activeTheme) {
-                $header = $activeTheme->getHeader();
-                $header->rewind();
+                // render body first -> then header
                 $body = $activeTheme->getBody();
                 $body->rewind();
+                $header = $activeTheme->getHeader();
+                $header->rewind();
                 $footer = $activeTheme->getFooter();
                 $footer->rewind();
                 $footer = (string)$footer;
