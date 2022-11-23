@@ -403,21 +403,44 @@ trait ModelSchema
             ) {
                 continue;
             }
-            $oldColumn = $item['columns'];
-            $oldColumn = is_string($oldColumn) ? [$oldColumn] : $oldColumn;
-            if (!is_array($oldColumn)) {
+
+            $lengths = [];
+            $columns = $item['columns'];
+            $columns = is_string($columns) ? [$columns] : $columns;
+            if (!is_array($columns)) {
                 continue;
             }
-            $columns = array_filter($oldColumn, 'is_string');
             $continue = true;
-            foreach ($columns as $col) {
+            foreach ($columns as $kC => $col) {
+                if (is_numeric($col) && is_string($kC)) {
+                    if (!$table->hasColumn($kC)) {
+                        $continue = false;
+                        break;
+                    }
+                    $lengths[] = $col;
+                    $columns[$kC] = $kC;
+                    continue;
+                }
+
+                if (!is_string($col)) {
+                    $continue = false;
+                }
+                if (preg_match('~^\s*(?:([^\'\"]?)(?P<colName>[^\1(]+)\1)\s*\(\s*(?P<length>[0-9]+)\)~', $col, $match)) {
+                    if (!$table->hasColumn($match['colName'])) {
+                        $continue = false;
+                        break;
+                    }
+                    $lengths[] = (int) $match['length'];
+                    $columns[$kC] = $match['colName'];
+                    continue;
+                }
                 if (!$table->hasColumn($col)) {
                     $continue = false;
                     break;
                 }
+                $lengths[] = null;
             }
-
-            if (!$continue || count($columns) < count($oldColumn)) {
+            if (!$continue) {
                 continue;
             }
             $name = $item['name']??null;
@@ -431,8 +454,14 @@ trait ModelSchema
                 continue;
             }
             $type = strtolower($item['type']);
-            $table->addIndex($columns, $name, [$type]);
+            $table->addIndex(
+                array_values($columns),
+                $name,
+                [$type],
+                ['lengths' => $lengths]
+            );
         }
+
         $prefix = $database->prefix;
         if (!empty($foreign)) {
             foreach ($foreign as $columnName => $item) {
