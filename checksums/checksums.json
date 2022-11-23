@@ -295,14 +295,14 @@
         "sha256": "cc6333d9019de1ef5df385631b5bd54b5c5cb07d449ee48c77fe3ae3e9e0ce98"
     },
     "app/Source/Database/Abstracts/Model.php": {
-        "md5": "bdb78c282931f1b84e384d7588f4e11c",
-        "sha1": "f7916050c00c89d937be049e50e186860e4c8f8c",
-        "sha256": "f3441cd5b51ad5ef0b5036cdc212f78daec2c9384c82e680a23f2a5040a1d5a8"
+        "md5": "1d7c43f5e33f967c49782b1652afbb25",
+        "sha1": "23c55121e17edfc0b6d031c74775353f0709cac2",
+        "sha256": "bbc8c78c84bf6518a5df936683e2c2e8e6ba58470346b94914a54dad452c1a95"
     },
     "app/Source/Database/ResultData.php": {
-        "md5": "6d04b6df1b79e523f17f346aff4d89b6",
-        "sha1": "fc257d52f4a927b5940aa63705599bc63d4e5670",
-        "sha256": "c6686b1f695d5016e15e4fc09718879a9ecf1230b808d2c8bc1f244107e95da2"
+        "md5": "5080503566689659c9deb172751ee03a",
+        "sha1": "afc75e7970fc3c983d943e926f393d4911270598",
+        "sha256": "9bb9217171cfb8f481b6f2f2f44af38040482514d806cec4cd961fa238acc5e5"
     },
     "app/Source/Database/Commands/MakeModel.php": {
         "md5": "f45c58aa70e849f61362dbab1ed28f2e",
@@ -310,9 +310,9 @@
         "sha256": "a7f7bff2b85e841d6ed0004e7e886bbfab13beeceab957972b9a38a51a7780f0"
     },
     "app/Source/Database/ResultQuery.php": {
-        "md5": "5e3c5c00cefa4528aaed96171b1e71ff",
-        "sha1": "4b27c8eecdf93d463fc3986ac5db02d688dc8347",
-        "sha256": "6282d88bf2a9634c845d531674a9750c42c5cb09e286b5c3d7232f62bc75f579"
+        "md5": "6480029726fd6000f24d05b2674c5481",
+        "sha1": "415ee705cecdd776ce066e86422e5ba96b426a54",
+        "sha256": "df0d9bad4103244f83e3deab17cacb13fe661cd49f3d46441608a38bdd0c0b7d"
     },
     "app/Source/Database/Traits/ModelSchema.php": {
         "md5": "c43a25bdebf4f00c90e4287348f0af4b",
