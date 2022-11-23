@@ -282,7 +282,7 @@ abstract class Model extends AbstractContainerization
 
     public function __clone(): void
     {
-        $this->queryBuilder->resetQueryParts();
+        // $this->queryBuilder->resetQueryParts();
         $this->modelUniqueId = RandomString::createUniqueHash();
     }
 

@@ -31,7 +31,8 @@ class ResultData implements IteratorAggregate, Countable
 
     private function setInternalData(?array $value) : Model
     {
-        $model = clone $this->model;
+        $model = get_class($this->model);
+        $model = new $model($this->model->instance);
         $model->setInternalData($value);
         $model->queryBuilder->resetQueryParts();
         return $model;
@@ -43,9 +44,7 @@ class ResultData implements IteratorAggregate, Countable
      */
     public function result(): ?Result
     {
-        if (!$this->result) {
-            $this->result = $this->model->queryBuilder->executeQuery();
-        }
+        $this->result ??= $this->model->queryBuilder->executeQuery();
         return $this->result;
     }
 

@@ -264,6 +264,7 @@ class ResultQuery
     {
         if (!$this->lastResult || $this->hasChange) {
             $this->lastResult = new ResultData($this->model);
+            $this->hasChange = false;
         }
         return $this->lastResult;
     }
