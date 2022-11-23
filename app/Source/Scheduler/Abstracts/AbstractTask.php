@@ -124,6 +124,7 @@ abstract class AbstractTask implements Startable
 
         $startTime = microtime(true);
         $this->status = null;
+        $doExit = true;
         try {
             $args = $this->eventDispatch(
                 "Scheduler:run:args:$this->className",
@@ -135,10 +136,12 @@ abstract class AbstractTask implements Startable
             // log
             $this->logDebug($this->translate('Processing task.'), ['task' => $this->getClassName()]);
             $this->status = $this->processTask($args);
-            $processed_time = microtime(true) - $startTime;
-            if ($this->status === TaskStatus::PROGRESS) {
+            if ($this->status->getStatus() === TaskStatus::PROGRESS) {
                 $this->status->setStatus(TaskStatus::SUCCESS);
             }
+
+            $doExit = false;
+            $processed_time = microtime(true) - $startTime;
             // log
             $this->logDebug(
                 $this->translate('Task done.'),
@@ -148,6 +151,7 @@ abstract class AbstractTask implements Startable
                 ]
             );
         } catch (Throwable $e) {
+            $doExit = false;
             $this->logError(
                 $this->translate('Task error.'),
                 [
@@ -162,6 +166,18 @@ abstract class AbstractTask implements Startable
                 $e
             );
         } finally {
+            if ($doExit) {
+                if (!$this->status) {
+                    $this->status = TaskStatus::create(
+                        $this,
+                        TaskStatus::FAILURE
+                    );
+                }
+                $this->status->setStatus(TaskStatus::FAILURE);
+                $this->status->setMessage(
+                    $this->translate('Process Exited!')
+                );
+            }
             if ($this->status === null) {
                 $this->status = new TaskStatus(
                     $this,
