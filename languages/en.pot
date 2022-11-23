@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Streak!\n"
-"POT-Creation-Date: 2022-11-23 18:01+0700\n"
+"POT-Creation-Date: 2022-11-23 18:18+0700\n"
 "PO-Revision-Date: 2022-10-05 20:12+0700\n"
 "Last-Translator: \n"
 "Language-Team: Tray Digita\n"
@@ -527,23 +527,24 @@ msgstr ""
 msgid "Class %s is not instance of %s."
 msgstr ""
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:137
-msgid "Processing task."
-msgstr ""
-
-#: Source/Scheduler/Abstracts/AbstractTask.php:147
-msgid "Task done."
-msgstr ""
-
-#: Source/Scheduler/Abstracts/AbstractTask.php:156
-msgid "Task error."
-msgstr ""
-
-#: Source/Scheduler/Abstracts/AbstractTask.php:178
+#: Source/Scheduler/Abstracts/AbstractTask.php:155
+#: Source/Scheduler/Abstracts/AbstractTask.php:222
 msgid "Process Exited!"
 msgstr ""
 
-#: Source/Scheduler/Abstracts/AbstractTask.php:185
+#: Source/Scheduler/Abstracts/AbstractTask.php:180
+msgid "Processing task."
+msgstr ""
+
+#: Source/Scheduler/Abstracts/AbstractTask.php:190
+msgid "Task done."
+msgstr ""
+
+#: Source/Scheduler/Abstracts/AbstractTask.php:199
+msgid "Task error."
+msgstr ""
+
+#: Source/Scheduler/Abstracts/AbstractTask.php:229
 #: Source/Scheduler/Commands/RunScheduler.php:212
 msgid "Unknown"
 msgstr ""

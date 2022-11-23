@@ -9,6 +9,7 @@ use JsonSerializable;
 use Stringable;
 use Throwable;
 use TrayDigita\Streak\Source\Container;
+use TrayDigita\Streak\Source\Helper\Util\Validator;
 use TrayDigita\Streak\Source\Interfaces\Abilities\Startable;
 use TrayDigita\Streak\Source\Models\ActionSchedulers;
 use TrayDigita\Streak\Source\Models\ActionSchedulersLog;
@@ -74,6 +75,11 @@ abstract class AbstractTask implements Startable
     private ?float $processedTime = null;
 
     /**
+     * @var ?callable
+     */
+    private $shutdownHandler = null;
+
+    /**
      * @param Container $container
      */
     final public function __construct(Container $container)
@@ -95,6 +101,15 @@ abstract class AbstractTask implements Startable
      */
     final public function start(): TaskStatus
     {
+        static $registered_handler = null;
+        if (!$registered_handler && Validator::isCli()) {
+            $registered_handler = true;
+            register_shutdown_function(function () {
+                if (is_callable($this->shutdownHandler)) {
+                    call_user_func($this->shutdownHandler, $this);
+                }
+            });
+        }
         if ($this->status) {
             return $this->status;
         }
@@ -121,10 +136,38 @@ abstract class AbstractTask implements Startable
         } else {
             ActionSchedulersLog::insertFromActionScheduler($this->schedulers);
         }
-
         $startTime = microtime(true);
         $this->status = null;
         $doExit = true;
+        $processed_time = null;
+        $this->shutdownHandler = function () use(&$doExit, &$processed_time, $startTime) {
+            if (!$doExit) {
+                return;
+            }
+            if (!$this->status) {
+                $this->status = TaskStatus::create(
+                    $this,
+                    TaskStatus::FAILURE
+                );
+            }
+            $this->status->setStatus(TaskStatus::FAILURE);
+            $this->status->setMessage(
+                $this->translate('Process Exited!')
+            );
+            if ($startTime < self::MINIMUM_EXECUTION_TIME) {
+                $processed_time = 0;
+            }
+            $this->processedTime = $processed_time??(microtime(true) - $startTime);
+            $this->schedulers->update([
+                'status' => $this->status->isProgress()
+                    ? ActionSchedulers::UNKNOWN
+                    : $this->status->getStatusString(),
+                'last_execute' => $this->getContainer(Time::class)->newDateTimeUTC(),
+                'processed_time' => $this->processedTime,
+                'message' => (string) $this->status
+            ]);
+        };
+
         try {
             $args = $this->eventDispatch(
                 "Scheduler:run:args:$this->className",
@@ -166,6 +209,7 @@ abstract class AbstractTask implements Startable
                 $e
             );
         } finally {
+            $this->shutdownHandler = null;
             if ($doExit) {
                 if (!$this->status) {
                     $this->status = TaskStatus::create(
@@ -185,6 +229,7 @@ abstract class AbstractTask implements Startable
                     $this->translate('Unknown')
                 );
             }
+
             if ($this->status->getMessage() instanceof Throwable) {
                 $this->status->setStatus(TaskStatus::FAILURE);
             }
