@@ -12,6 +12,16 @@ class ActionSchedulersLog extends Model
     use ActionSchedulersLogSchema;
 
     /**
+     * @var bool
+     */
+    protected bool $modelUsePrefix = true;
+
+    /**
+     * @var bool
+     */
+    protected bool $modelAutoPrefix = true;
+
+    /**
      * @var string
      */
     protected string $tableName = 'action_schedulers_log';
