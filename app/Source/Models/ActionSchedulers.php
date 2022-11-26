@@ -24,6 +24,16 @@ class ActionSchedulers extends Model
 {
     use ActionSchedulerSchema;
 
+    /**
+     * @var bool
+     */
+    protected bool $modelUsePrefix = true;
+
+    /**
+     * @var bool
+     */
+    protected bool $modelAutoPrefix = true;
+
     const PROGRESS = 'progress';
     const SUCCESS = 'success';
     const PENDING = 'pending';
