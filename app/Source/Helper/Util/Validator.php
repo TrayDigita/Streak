@@ -9,7 +9,7 @@ class Validator
     public static function isValidNamespace(string $nameSpace) : bool
     {
         return (bool) preg_match(
-            '~^(\\\?[A-Z-a-z_\x80-\xff]+(\\\[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*)*\\\?|\\\)$~',
+            '~^(\\\?[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*(\\\[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*)*\\\?|\\\)$~',
             $nameSpace
         );
     }
@@ -17,7 +17,7 @@ class Validator
     public static function isValidClassName(string $className) : bool
     {
         return (bool) preg_match(
-            '~^\\\?[A-Z-a-z_\x80-\xff]+(\\\[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*)*$~',
+            '~^\\\?[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*(\\\[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*)*$~',
             $className
         );
     }
@@ -29,9 +29,9 @@ class Validator
         }
         return preg_replace(
             '~^\\\?(?:
-                    ([A-Z-a-z_\x80-\xff]+(?:\\\[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9]*)*)
+                    ([A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*(?:\\\[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9]*)*)
                 \\\)?
-                ([A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*)
+                ([A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*[A-Z-a-z_0-9\x80-\xff]*)
             $~x',
             '$1',
             $fullClassName,
@@ -46,7 +46,7 @@ class Validator
 
         return preg_replace(
             '~
-                ^\\\?(?:[A-Z-a-z_\x80-\xff]+
+                ^\\\?(?:[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*
                 (?:\\\[A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*)*\\\)?
                 ([A-Z-a-z_\x80-\xff]+[A-Z-a-z_0-9\x80-\xff]*)
             $~x',
