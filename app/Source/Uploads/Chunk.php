@@ -124,7 +124,7 @@ class Chunk extends AbstractContainerization
             if ($item->getMTime() > (time() - self::MAX_AGE_FILE)) {
                 continue;
             }
-            if ($item->isWritable()) {
+            if (!$item->isWritable()) {
                 continue;
             }
             if ($max-- < 0) {
